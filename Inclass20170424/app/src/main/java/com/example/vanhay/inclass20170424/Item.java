@@ -3,7 +3,7 @@ package com.example.vanhay.inclass20170424;
 /**
  * Created by Van Hay on 4/24/2017.
  */
-
+// Note
 public class Item {
     String name;
     int flag;
