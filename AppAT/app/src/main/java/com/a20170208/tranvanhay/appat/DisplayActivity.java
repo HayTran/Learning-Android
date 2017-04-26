@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -26,10 +27,13 @@ import java.net.URL;
 public class DisplayActivity extends AppCompatActivity {
     private static final String TAG = "DisplayActivity";
     DatabaseReference mData;
-    TextView textViewTime,textViewFlame0,textViewFlame1,textViewHumidity,textViewTemperature,textViewLightIntensity,textViewMQ2,textViewMQ7;
+    TextView textViewTime,textViewFlame0,textViewFlame1,textViewHumidity,textViewTemperature;
+    TextView textViewLightIntensity,textViewMQ2,textViewMQ7, textViewImageStatus;
     ImageView imageView;
-    Bitmap bitmap;
+//    Bitmap bitmap;
     Button btnChangeToPingActivity, btnSignOut,btnCheckFCM;
+    String pathImage = "";
+    String atCurrent = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +51,7 @@ public class DisplayActivity extends AppCompatActivity {
         textViewHumidity = (TextView)findViewById(R.id.textViewHumidityDisplayActivity);
         textViewTemperature = (TextView)findViewById(R.id.textViewTemperatureDisplayActivity);
         textViewLightIntensity = (TextView)findViewById(R.id.textViewLightIntensityDisplayActivity);
+        textViewImageStatus = (TextView)findViewById(R.id.textViewImageStatusDisplayActivity);
         imageView = (ImageView)findViewById(R.id.imageViewDisplayActivity);
         btnChangeToPingActivity = (Button)findViewById(R.id.btnChangeToPingActivityDisplayActivity);
         btnSignOut = (Button)findViewById(R.id.btnSignOutDisplayActivity);
@@ -76,43 +81,23 @@ public class DisplayActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        btnCheckFCM.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new FCMServerThread("Testing from App AT").start();
-            }
-        });
+//        btnCheckFCM.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                new FCMServerThread("Testing from App AT").start();
+//            }
+//        });
     }
     private void showInfoFromFirebase() {
         mData.child("At Current").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                textViewTime.setText(dataSnapshot.getValue().toString());
+                atCurrent = dataSnapshot.getValue().toString();
+                textViewTime.setText(atCurrent);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    private void checkImageStorage() {
-        mData.child("Storage Image").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                final String pathImage = dataSnapshot.getValue().toString();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        new LoadImage().execute(pathImage);
-                    }
-                });
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
             }
         });
         // listen when Socket Server has change value then set new value
@@ -193,25 +178,36 @@ public class DisplayActivity extends AppCompatActivity {
 
             }
         });
-        mData.child("At Current").addValueEventListener(new ValueEventListener() {
+    }
+    private void checkImageStorage() {
+        mData.child("Storage Image").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                textViewTime.setText(dataSnapshot.getValue().toString());
+                textViewImageStatus.setText("Checked in Firebase at: " + atCurrent.toString());
+                pathImage = dataSnapshot.getValue().toString();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        new LoadImage().execute(pathImage);
+                    }
+                });
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
+
             }
         });
     }
 
-    private class LoadImage extends AsyncTask<String, Integer, String> {
+    private class LoadImage extends AsyncTask<String, Integer, Bitmap> {
         @Override
-        protected String doInBackground(String... strings) {
+        protected Bitmap doInBackground(String... strings) {
+            Log.d(TAG,"Loading image from Firebase");
             try {
                 URL url = new URL(strings[0]);
-                bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                Bitmap bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
                 //Toast.makeText(SignInActivity.this, "URL= " + strings[0], Toast.LENGTH_SHORT).show();
+                return bitmap;
             } catch (MalformedURLException e) {
                 Log.d("LoadImage", "MaformedURL " + e.getMessage());
             } catch (IOException e) {
@@ -220,8 +216,10 @@ public class DisplayActivity extends AppCompatActivity {
             return null;
         }
         @Override
-        protected void onPostExecute(String s) {
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
             imageView.setImageBitmap(bitmap);
+            Log.d(TAG,"Loading image from Firebase finished!");
             //  Toast.makeText(SignInActivity.this, "Load finish", Toast.LENGTH_SHORT).show();
         }
     }

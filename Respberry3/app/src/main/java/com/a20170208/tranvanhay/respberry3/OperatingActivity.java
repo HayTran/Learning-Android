@@ -25,9 +25,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.ServerSocket;
+import java.net.URL;
 import java.nio.ByteBuffer;
 
 /**
@@ -52,6 +55,7 @@ public class OperatingActivity extends Activity {
     StorageReference storageRef = storage.getReference();
     int count = 0;
     String linkURL = "";
+    String atCurrent = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,7 +83,7 @@ public class OperatingActivity extends Activity {
             public void onDataChange(final DataSnapshot dataSnapshot) {
                 String triggeredData =  dataSnapshot.getValue().toString();
                 Log.d(TAG,"Triggered realtime database. Ref: Warning: "+ triggeredData);
-                new FCMServerThread(triggeredData).start();
+                new FCMServerThread(atCurrent).start();
             }
 
             @Override
@@ -91,15 +95,58 @@ public class OperatingActivity extends Activity {
     /**
      * These below method serve for capture and send image to firebase
      */
+//    private void captureImage(){
+//        // Creates new handlers and associated threads for camera and networking operations.
+//        mCameraThread = new HandlerThread("CameraBackground");
+//        mCameraThread.start();
+//        mCameraHandler = new Handler(mCameraThread.getLooper());
+//        // Camera code is complicated, so we've shoved it all in this closet class for you.
+//        mCamera = CameraRaspi.getInstance();
+//        mCamera.initializeCamera(this, mCameraHandler, mOnImageAvailableListener);
+//        mTakePicture.post(runnableTakePicture);
+//        // Take time to take picture in Firebase
+//        mData.child("TIME_TAKE_PICTURE").addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                TIME_TAKE_PICTURE = Integer.valueOf(dataSnapshot.getValue().toString());
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
+//    private ImageReader.OnImageAvailableListener mOnImageAvailableListener =
+//            new ImageReader.OnImageAvailableListener() {
+//                @Override
+//                public void onImageAvailable(ImageReader reader) {
+//                    Image image = reader.acquireLatestImage();
+//                    // get image bytes
+//                    ByteBuffer imageBuf = image.getPlanes()[0].getBuffer();
+//                    final byte[] imageBytes = new byte[imageBuf.remaining()];
+//                    imageBuf.get(imageBytes);
+//                    image.close();
+//                    // compress byte to byte
+//                    Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+//                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+//                    byte[] byteArray = stream.toByteArray();
+//                    upLoadImage(byteArray);
+//                }
+//            };
+//
+//    private  Handler mTakePicture = new Handler();
+//    private Runnable runnableTakePicture = new Runnable() {
+//        @Override
+//        public void run() {
+//            mCamera.takePicture();
+//            Log.d(TAG,"Run runnableTakePicture");
+//            mTakePicture.postDelayed(runnableTakePicture,TIME_TAKE_PICTURE);
+//        }
+//    };
     private void captureImage(){
-        // Creates new handlers and associated threads for camera and networking operations.
-        mCameraThread = new HandlerThread("CameraBackground");
-        mCameraThread.start();
-        mCameraHandler = new Handler(mCameraThread.getLooper());
-        // Camera code is complicated, so we've shoved it all in this closet class for you.
-        mCamera = CameraRaspi.getInstance();
-        mCamera.initializeCamera(this, mCameraHandler, mOnImageAvailableListener);
-        mTakePicture.post(runnableTakePicture);
+        imageProcess.post(runnableImageProcess);
         // Take time to take picture in Firebase
         mData.child("TIME_TAKE_PICTURE").addValueEventListener(new ValueEventListener() {
             @Override
@@ -113,34 +160,49 @@ public class OperatingActivity extends Activity {
             }
         });
     }
-    private ImageReader.OnImageAvailableListener mOnImageAvailableListener =
-            new ImageReader.OnImageAvailableListener() {
-                @Override
-                public void onImageAvailable(ImageReader reader) {
-                    Image image = reader.acquireLatestImage();
-                    // get image bytes
-                    ByteBuffer imageBuf = image.getPlanes()[0].getBuffer();
-                    final byte[] imageBytes = new byte[imageBuf.remaining()];
-                    imageBuf.get(imageBytes);
-                    image.close();
-                    // compress byte to byte
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                    byte[] byteArray = stream.toByteArray();
-                    upLoadImage(byteArray);
-                }
-            };
-
-    private  Handler mTakePicture = new Handler();
-    private Runnable runnableTakePicture = new Runnable() {
+    /**
+     *
+     * This is zone for get image from IP Webcam and send to Firebase
+     */
+    private  Handler imageProcess = new Handler();
+        private Runnable runnableImageProcess = new Runnable() {
         @Override
         public void run() {
-            mCamera.takePicture();
-            Log.d(TAG,"Run runnableTakePicture");
-            mTakePicture.postDelayed(runnableTakePicture,TIME_TAKE_PICTURE);
+            String link ="http://192.168.1.112:8080/shot.jpg";
+//            new GetImageTask().execute(link);
+            Log.d(TAG,"Run runnableImageProcess");
+            imageProcess.postDelayed(runnableImageProcess,TIME_TAKE_PICTURE);
         }
     };
+    class GetImageTask extends AsyncTask<String,Void,Bitmap>
+    {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            //kết quả sau khi tải xong thì ra cái hình
+            super.onPostExecute(bitmap);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            byte[] byteArray = stream.toByteArray();
+            upLoadImage(byteArray);
+        }
+        @Override
+        protected Bitmap doInBackground(String... params) {
+            try {
+                String link = params[0];
+                Bitmap bitmap = BitmapFactory.decodeStream((InputStream) new URL(link).getContent());
+                return  bitmap;
+            }catch (Exception ex)
+            {
+                Log.e("LOI",ex.toString());
+            }
+            return null;
+        }
+    }
     private void upLoadImage( byte[] data){
         count++;
         Log.d(TAG,"Uploading your image");
@@ -225,7 +287,8 @@ public class OperatingActivity extends Activity {
         mData.child("At Current").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                txtTime.setText(dataSnapshot.getValue().toString());
+                atCurrent = dataSnapshot.getValue().toString();
+                txtTime.setText(atCurrent);
             }
 
             @Override
