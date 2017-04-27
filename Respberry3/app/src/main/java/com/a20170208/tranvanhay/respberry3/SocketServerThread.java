@@ -1,5 +1,4 @@
 package com.a20170208.tranvanhay.respberry3;
-
 import android.util.Log;
 
 import com.google.firebase.database.DatabaseReference;
@@ -9,12 +8,14 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.Enumeration;
 import java.util.Formatter;
+import java.util.concurrent.ExecutionException;
 
 import static android.R.id.message;
 
@@ -26,7 +27,7 @@ public class SocketServerThread extends Thread {
     private static final String TAG = SocketServerThread.class.getSimpleName();
     private DatabaseReference mData = FirebaseDatabase.getInstance().getReference();
     static final int SocketServerPORT = 8080;
-    int count1 = 0, count2 = 0;
+    int count = 0;
     ServerSocket serverSocket;
     SocketServerThread (ServerSocket serverSocket){
         this.serverSocket = serverSocket;
@@ -35,23 +36,28 @@ public class SocketServerThread extends Thread {
     private int flameValue0_0 = 0, flameValue0_1 = 0, lightIntensity0 = 0, lightIntensity1 = 0,flameValue1_0 = 0, flameValue1_1 = 0;
     private int mq2Value0 = 0, mq2Value1 = 0, mq7Value0 = 0, mq7Value1 = 0;
     private static double flameValue0 = 0, flameValue1 = 0, lightIntensity = 0, mq2Value = 0, mq7Value = 0;
-    private byte [] macAddr = new byte[10];
+    ARPNetwork arpNetwork;
     @Override
     public void run() {
+        DataInputStream dIn = null;
         try {
+
             serverSocket = new ServerSocket(SocketServerPORT);
+            Log.d(TAG,"ReuseAddress: " + serverSocket.getReuseAddress());
+//            serverSocket.setReuseAddress(true);
+//            serverSocket.bind(InetSocketAddress.createUnresolved("192.168.1.200", 8080), 1000);
+//            Log.d(TAG,"ReuseAddress: " + serverSocket.getReuseAddress());
             mData.child("SocketServer").child("zNotify").setValue("IP:"+this.getIpAddress()+":"+serverSocket.getLocalPort());
             while (true) {
-                count1 ++;
-                count2 ++;
-                if(count1 >=255){
-                    count1 = 0;
+                count ++;
+                if(count >=255){
+                    count = 0;
                 }
-                Log.d(TAG,"run() before serverSocket.accept()");
                 Socket socket = serverSocket.accept();
-                Log.d(TAG,"run() after serverSocket.accept()");
-                DataInputStream dIn = new DataInputStream(socket.getInputStream());
-                // Read three value sent from ESP
+                Log.d(TAG,"Before Data Input Stream in Receive Side");
+                dIn = new DataInputStream(socket.getInputStream());
+                Log.d(TAG,"After Data Input Stream in Receive Side");
+                    // Read three value sent from ESP
                 humidity = dIn.readUnsignedByte();
                 temperature = dIn.readUnsignedByte();
                 flameValue0_0 = dIn.readUnsignedByte();
@@ -64,25 +70,48 @@ public class SocketServerThread extends Thread {
                 mq2Value1 = dIn.readUnsignedByte();
                 mq7Value0 = dIn.readUnsignedByte();
                 mq7Value1 = dIn.readUnsignedByte();
-                for (int i = 5 ; i >= 0 ; i--){
-                    macAddr[i] = dIn.readByte();
-                }
-                Log.d(TAG,"MAC Addr:"+byteToHex(macAddr).toString());
-                // Convert value
+                Log.d(TAG,"Read sensor value stream from client done");
+                    // Convert value
                 convertValue();
+                Log.d(TAG,"Converting sensor value");
+                    // Send sensor data to Firebase
                 sendDataToFirebase(socket);
-                //new Firebase(socket,temperature,humidity,flameValue,humiditySolid,lightIntensity).sendDataToFirebase();
-                // Initialize a SocketServerReplyThread object
+                    // Initialize a SocketServerReplyThread object
                 SocketServerReplyThread socketServerReplyThread = new SocketServerReplyThread(
-                        socket, count1);
-                // Start running Server Reply Thread
+                        socket, count);
+                    // Start running Server Reply Thread
                 socketServerReplyThread.run();
-                //Log MAC address of a node
-
+                arpNetwork = new ARPNetwork();
+                arpNetwork.execute(socket.getInetAddress().getHostAddress());
+                Log.d(TAG,"Socket's MAC address: "+ arpNetwork.get());
+                dIn.close();
+                Log.d(TAG,"Close Input Stream");
+                Log.d(TAG,"*******************************************************************");
             }
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            mData.child("Error").setValue(e.toString());
+            mData.child("Server Socket Error").child("Receive").push().setValue(e.toString() + " " + TimeAnDate.currentTimeOffline);
+            Log.d(TAG,"Exception Catched: "+ e.toString());
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            Log.d(TAG,"Exception Catched: "+ e.toString());
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            Log.d(TAG,"Exception Catched: "+ e.toString());
+            e.printStackTrace();
+        } catch (NullPointerException e){
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                Log.d(TAG,"Close Input Stream");
+                dIn.close();
+            } catch (IOException e){
+                Log.d(TAG,"Exception Catched: "+ e.toString());
+                e.printStackTrace();
+            } catch (NullPointerException e){
+                e.printStackTrace();
+            }
         }
     }
     // ReplyThreadFromServer Class
@@ -95,18 +124,33 @@ public class SocketServerThread extends Thread {
         }
         @Override
         public void run() {
-            // Create a message to Client's socket
+            Log.d(TAG,"======================================================== Count = " + cnt);
+                // Create a message to Client's socket
+            DataOutputStream dOut = null;
             try {
-                DataOutputStream dOut = new DataOutputStream(hostThreadSocket.getOutputStream());
-                if(!hostThreadSocket.isClosed() || !hostThreadSocket.isConnected() || !hostThreadSocket.isInputShutdown()) {
-                    dOut.writeByte(cnt);
-                    dOut.flush();
-                }
-                dOut.close();
-                hostThreadSocket.close();
+                Log.d(TAG,"Before Data Output Stream in Send Side");
+                dOut = new DataOutputStream(hostThreadSocket.getOutputStream());
+                dOut.writeByte(cnt);
+                dOut.flush();
+                Log.d(TAG,"After Data Output Stream in Send Side");
             } catch (IOException e) {
-                // TODO Auto-generated catch block
-                mData.child("Error").setValue(e.toString());
+                    // TODO Auto-generated catch block
+                mData.child("Server Socket Error").child("Send").push().setValue(e.toString() +" "+ TimeAnDate.currentTimeOffline);
+                e.printStackTrace();
+                Log.d(TAG,"Exception Catched: "+ e.toString());
+            } catch (NullPointerException e){
+                e.printStackTrace();
+            } finally {
+                try {
+                    dOut.close();
+                    hostThreadSocket.close();
+                    Log.d(TAG,"Close Output Stream");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.d(TAG,"Exception Catched: "+ e.toString());
+                } catch (NullPointerException e){
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -120,8 +164,7 @@ public class SocketServerThread extends Thread {
         mq7Value = mq7Value0 + mq7Value1*256;
     }
     public void sendDataToFirebase(Socket socket){
-        // Send to Firebase
-        Log.d(TAG,"Starting send sensor data to firebase");
+            // Send to Firebase
         mData.child("SocketServer").child("Socket IP").setValue("Soket Server: " + socket.getInetAddress());
         mData.child("SocketServer").child("Temperature").setValue(temperature+" Celius        ");
         mData.child("SocketServer").child("Humidity").setValue(humidity+" %      ");
@@ -131,9 +174,9 @@ public class SocketServerThread extends Thread {
         mData.child("SocketServer").child("MQ7").setValue(mq7Value+"           ");
         mData.child("SocketServer").child("Light Intensity").setValue(lightIntensity+" lux        ");
         mData.child("SocketServer").child("zMessage").setValue(message);
-        Log.d(TAG,"Send sensor data to firebase finished!");
+        Log.d(TAG,"Sent sensor data to Firebase");
     }
-    // Get Server's IP waiting socket coming
+        // Get Server's IP waiting socket coming
     private String getIpAddress() {
         String ip = "";
         try {
@@ -158,17 +201,6 @@ public class SocketServerThread extends Thread {
             ip += "Something Wrong! " + e.toString() + "\n";
         }
         return ip;
-    }
-    String byteToHex(final byte[] hash)
-    {
-        Formatter formatter = new Formatter();
-        for (int i = 0; i <= 5 ; i++)
-        {
-            formatter.format("%02x", hash[i]);
-        }
-        String result = formatter.toString();
-        formatter.close();
-        return result;
     }
 }
 

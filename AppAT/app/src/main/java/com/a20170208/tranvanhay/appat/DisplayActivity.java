@@ -81,12 +81,18 @@ public class DisplayActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-//        btnCheckFCM.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                new FCMServerThread("Testing from App AT").start();
-//            }
-//        });
+        btnCheckFCM.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d(TAG,"Run Public IP");
+                        new PublicIP(DisplayActivity.this).execute();
+                    }
+                });
+            }
+        });
     }
     private void showInfoFromFirebase() {
         mData.child("At Current").addValueEventListener(new ValueEventListener() {

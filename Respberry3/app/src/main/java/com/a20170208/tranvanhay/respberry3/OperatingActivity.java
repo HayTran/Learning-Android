@@ -13,6 +13,7 @@ import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -32,6 +33,7 @@ import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.URL;
 import java.nio.ByteBuffer;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Tran Van Hay on 4/22/2017.
@@ -40,17 +42,19 @@ import java.nio.ByteBuffer;
 public class OperatingActivity extends Activity {
     private static final String TAG = OperatingActivity.class.getSimpleName();
     private static int TIME_TAKE_PICTURE = 10000;
-    // Instance for Realtime Database
+        // Instance for Realtime Database
     DatabaseReference mData = FirebaseDatabase.getInstance().getReference();
-    // Instance for creation a Server Socket
+        // Instance for creation a Server Socket
     protected ServerSocket serverSocket;
-    // Variable for display
+        // Instance for thread
+    Thread serverSocketThread;
+        // Variable for display
     TextView txtSensor0,txtSensor1,txtSensor2,txtSensor3,txtSensor4,txtTime;
-    // Instances for camera action
+        // Instances for camera action
     private CameraRaspi mCamera;
     private Handler mCameraHandler;
     private HandlerThread mCameraThread;
-    // Instances for Storage
+        // Instances for Storage
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
     int count = 0;
@@ -62,7 +66,7 @@ public class OperatingActivity extends Activity {
         setContentView(R.layout.activity_operating);
         mapping();
         new TimeAnDate().showCurrentTime();
-        Thread serverSocketThread = new Thread(new SocketServerThread(serverSocket));
+        serverSocketThread = new Thread(new SocketServerThread(serverSocket));
         serverSocketThread.start();
         displayInMonitor();
         captureImage();
@@ -78,6 +82,25 @@ public class OperatingActivity extends Activity {
         txtTime = (TextView)findViewById(R.id.txtTime);
     }
     private void triggerFCM(){
+        mData.child("SocketServerThread").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue().toString().equals("Reset")){
+                    if(serverSocketThread.isAlive()){
+                        serverSocketThread.interrupt();
+                    }
+                    serverSocketThread = new SocketServerThread(serverSocket);
+                    serverSocketThread.start();
+                    Log.d(TAG,"Reset Server Socket Thread");
+                }
+                Log.d(TAG,"Can not reset Server Socket Thread");
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         mData.child("Warning").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(final DataSnapshot dataSnapshot) {

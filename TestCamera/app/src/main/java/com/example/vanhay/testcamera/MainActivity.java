@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         timer.schedule(timerTask,0,200);
     }
     private void xulitaihinh() {
-        String link ="http://192.168.1.112:8080/shot.jpg";
+        String link ="http://42.117.253.238:4567/shot.jpg";
         imagetask task = new imagetask();
         task.execute(link);
     }

@@ -11,7 +11,7 @@ import java.util.TimeZone;
  */
 
 public class TimeAnDate {
-    private static String currentTimeOffline = "";
+    public static String currentTimeOffline = "";
     // Instance for a handler
     private Handler mHandler = new Handler();
     private Runnable fetchCurrentTime = new Runnable() {
