@@ -18,7 +18,7 @@ public class TimeAnDate {
         @Override
         public void run() {
             Date date = new Date(System.currentTimeMillis());
-            SimpleDateFormat format = new SimpleDateFormat("hh:mm:ss --- dd/MM/yyyy");
+            SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss --- dd/MM/yyyy");
             format.setTimeZone(TimeZone.getTimeZone("Asia/Bangkok"));
             new Firebase().sendTimestampToFirebase(format.format(date));
             currentTimeOffline = format.format(date) + "";
