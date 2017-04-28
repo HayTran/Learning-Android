@@ -41,10 +41,10 @@ public class SocketServerThread extends Thread {
     public void run() {
         DataInputStream dIn = null;
         try {
-
-            serverSocket = new ServerSocket(SocketServerPORT);
+            serverSocket = new ServerSocket(); // <-- create an unbound socket first
+            serverSocket.setReuseAddress(true);
+            serverSocket.bind(new InetSocketAddress(SocketServerPORT));
             Log.d(TAG,"ReuseAddress: " + serverSocket.getReuseAddress());
-//            serverSocket.setReuseAddress(true);
 //            serverSocket.bind(InetSocketAddress.createUnresolved("192.168.1.200", 8080), 1000);
 //            Log.d(TAG,"ReuseAddress: " + serverSocket.getReuseAddress());
             mData.child("SocketServer").child("zNotify").setValue("IP:"+this.getIpAddress()+":"+serverSocket.getLocalPort());
