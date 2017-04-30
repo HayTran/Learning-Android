@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:orientation="horizontal">
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:textStyle="bold"
+            android:textColor="#d63232"
+            android:background="#482873"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="Not yet set"
+            android:id="@+id/textViewIDLayoutRow"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:textColor="#085b10"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="Not yet set"
+            android:id="@+id/textViewNameLayoutRow"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:textColor="#234fef"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="Not yet set"
+            android:id="@+id/textViewPhoneNumberLayoutRow"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:textColor="#ab8d8d"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="Not yet set"
+            android:id="@+id/textViewNoteLayoutRow"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+        <Button
+            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_margin="20dp"
+            android:layout_gravity="center"
+            android:id="@+id/btnEditLayoutRow"
+            android:text="Edit"/>
+        <Button
+            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_margin="20dp"
+            android:layout_gravity="center"
+            android:id="@+id/btnDeleteLayoutRow"
+            android:text="Delete"/>
+
+    </LinearLayout>
+
+</LinearLayout>
