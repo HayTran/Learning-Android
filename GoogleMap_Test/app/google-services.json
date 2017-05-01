@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "736598111741",
+    "firebase_url": "https://tranvanhay-5ccab.firebaseio.com",
+    "project_id": "tranvanhay-5ccab",
+    "storage_bucket": "tranvanhay-5ccab.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:736598111741:android:a409354650562236",
+        "android_client_info": {
+          "package_name": "com.example.vanhay.googlemap_test"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "736598111741-qqr8nvacl9kbac3biea2p658u45os53j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXfkXIa7qzz5rY6TuK2T90XblV8-5BeOQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
