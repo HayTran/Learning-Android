@@ -1,8 +1,10 @@
 package com.example.vanhay.googlemap_test;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.support.multidex.MultiDex;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -11,6 +13,8 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -31,6 +35,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -48,102 +53,47 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Marker objectsCurrentLocationMarker;
     DatabaseReference mData;
 
-        // Declare controls
-    RadioButton radioButtonA,radioButtonB;
         // Declare strings
-    String sendSide = "Your Current Position";
-    String receiveSide = "Objects Current Position";
+    String yourSide = "";
+    String objectsSide = "";
+    String objectsLastTimeSend = "";
+        // Declare variable for controls
+    TextView textViewYourPosition;
+    TextView textViewObjectsLastTimeSend;
+    TextView textViewYourSide;
+    TextView textViewTimeNow;
+    Switch switchLookType;
 
+        // Declare variable for just focusing object the first time after finding
+    int firstTimeYourLocationChange = 0;
+    int firstTimeObjectsLocationChange = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        mapping();
-        addControls();
+        MultiDex.install(this);
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFrag.getMapAsync(this);
-        mData = FirebaseDatabase.getInstance().getReference();
+        mapping();
+        init();
+        addControls();
     }
 
     private void addControls() {
-//        radioButtonA.setChecked(true);
-//        if(radioButtonA.isChecked()){
-//            sendSide = "Your Current Position";
-//            receiveSide = "Objects Current Position";
-//        } else {
-//            sendSide = "Objects Current Position";
-//            receiveSide = "Your Current Position";
-//        }
-        radioButtonA.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        switchLookType.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(radioButtonA.isChecked()){
-                    sendSide = "Your Current Position";
-                    receiveSide = "Objects Current Position";
-                    findObjectLocation();
+                if( isChecked){
+                    mGoogleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+                } else {
+                    mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
                 }
             }
         });
-        radioButtonB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mData.child("At Current").child(yourSide).addValueEventListener(new ValueEventListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(radioButtonB.isChecked()){
-                    sendSide = "Objects Current Position";
-                    receiveSide = "Your Current Position";
-                    findObjectLocation();
-                }
-            }
-        });
-
-    }
-
-    private void mapping() {
-        radioButtonA = (RadioButton)findViewById(R.id.radioA);
-        radioButtonB = (RadioButton)findViewById(R.id.radioB);
-    }
-
-    // Get location from firebase
-    private void findObjectLocation() {
-        mData.child(receiveSide).addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                Log.d(TAG,"Checked object position");
-                    // Check reference: Latitude/Longitude and value != 0
-                if(dataSnapshot.getKey().toString().equals("Latitude")){
-                    objectLatitude = Double.valueOf(dataSnapshot.getValue().toString());
-                }
-                if(dataSnapshot.getKey().toString().equals("Longitude")){
-                    objectLongitude = Double.valueOf(dataSnapshot.getValue().toString());
-                }
-                if (objectLatitude != 0 && objectLongitude != 0){
-                    if (objectsCurrentLocationMarker != null) {
-                        objectsCurrentLocationMarker.remove();
-                    }
-                    LatLng objectLatLng = new LatLng(objectLatitude,objectLongitude);
-                    Log.d(TAG,"Latitude: " + objectLatitude);
-                    Log.d(TAG,"Longitude: " + objectLongitude);
-                    MarkerOptions markerOptions1 = new MarkerOptions();
-                    markerOptions1.position(objectLatLng);
-                    markerOptions1.title("Objects Current Position");
-                    markerOptions1.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
-                    objectsCurrentLocationMarker = mGoogleMap.addMarker(markerOptions1);
-                    mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(objectLatLng,16));
-                }
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                textViewTimeNow.setText(dataSnapshot.getValue().toString());
             }
 
             @Override
@@ -151,6 +101,91 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
         });
+        mData.child(objectsSide).child("Latitude").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d(TAG,"Trigger Latitude: " + dataSnapshot.getValue().toString());
+                objectLatitude = Double.valueOf(dataSnapshot.getValue().toString());
+                findObjectLocation();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        mData.child(objectsSide).child("Longitude").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d(TAG,"Trigger Longitude: " + dataSnapshot.getValue().toString());
+                objectLongitude = Double.valueOf(dataSnapshot.getValue().toString());
+                findObjectLocation();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        mData.child(objectsSide).child("SendTime").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                textViewObjectsLastTimeSend.setText(dataSnapshot.getValue().toString());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void mapping() {
+        textViewObjectsLastTimeSend = (TextView)findViewById(R.id.textViewObjectsLastTimeSendMapsActivity);
+        textViewYourPosition = (TextView) findViewById(R.id.textViewYourPositionMapsActivity);
+        textViewYourSide = (TextView)findViewById(R.id.textViewYourSideMapsActivity);
+        switchLookType = (Switch)findViewById(R.id.switchLookTypeMapsActivity);
+        textViewTimeNow = (TextView)findViewById(R.id.textViewTimeNowMapsActivity);
+    }
+
+    private void init() {
+        mData = FirebaseDatabase.getInstance().getReference();
+        switchLookType.setChecked(false);
+        Intent intent = getIntent();
+        String side;
+        side = intent.getStringExtra("Side");
+        if (side.equals("A")){
+            yourSide = "A Side";
+            objectsSide = "B Side";
+            Log.d(TAG,"A Selected");
+            textViewYourSide.setText("Bạn thuộc bên A");
+        } else {
+            yourSide = "B Side";
+            objectsSide = "A Side";
+            Log.d(TAG, "B Selected");
+            textViewYourSide.setText("Bạn thuộc bên B");
+        }
+            // Send its time to firebase
+        new TimeAndDate(yourSide).showCurrentTime();
+    }
+
+    // Get location from firebase when has changing
+    private void findObjectLocation() {
+        if (objectLatitude != 0 && objectLongitude != 0){
+            if (objectsCurrentLocationMarker != null) {
+                objectsCurrentLocationMarker.remove();
+            }
+            LatLng objectLatLng = new LatLng(objectLatitude,objectLongitude);
+            Log.d(TAG,"Gotten Latitude: " + objectLatitude);
+            Log.d(TAG,"Gotten Longitude: " + objectLongitude);
+            MarkerOptions markerOptions1 = new MarkerOptions();
+            markerOptions1.position(objectLatLng);
+            markerOptions1.title("Vị trí của đối phương");
+            markerOptions1.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
+            objectsCurrentLocationMarker = mGoogleMap.addMarker(markerOptions1);
+            // Just focus the first time after specfying object
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(objectLatLng,16));
+        }
     }
 
     @Override
@@ -189,7 +224,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // Place my home position
         LatLng myHomeLatLng = new LatLng(11.331826, 106.713425);
             // Move map camera
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myHomeLatLng,17));
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myHomeLatLng,16));
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -229,13 +264,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         //Place current location marker
         LatLng yourLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-        mData.child(sendSide).child("Latitude").setValue(location.getLatitude());
-        mData.child(sendSide).child("Longitude").setValue(location.getLongitude());
+        mData.child(yourSide).child("Latitude").setValue(location.getLatitude());
+        mData.child(yourSide).child("Longitude").setValue(location.getLongitude());
+        mData.child(yourSide).child("SendTime").setValue(TimeAndDate.currentTimeOffline);
+        textViewYourPosition.setText(location.getLatitude() + ":" + location.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(yourLatLng);
-        markerOptions.title("Your Current Position");
+        markerOptions.title("Vị trí của bạn");
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
         yourCurrentLocationMarker = mGoogleMap.addMarker(markerOptions);
+            // Just focus the first time after specfying object
+        if (firstTimeYourLocationChange == 0){
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(yourLatLng,16));
+            firstTimeYourLocationChange ++;
+        }
     }
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;

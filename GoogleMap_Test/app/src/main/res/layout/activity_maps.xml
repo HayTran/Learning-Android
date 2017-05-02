@@ -7,40 +7,90 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.example.vanhay.googlemap_test.MapsActivity" >
-    <RadioGroup
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:id="@+id/radioGroup"
+        android:gravity="center"
+        android:textColor="#6e0101"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:id="@+id/textViewYourSideMapsActivity"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:orientation="horizontal"
-        android:background="#0c4b16">
-        <RadioButton
+        android:background="#09560c">
+        <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:textColor="#e1d6d6"
-            android:textStyle="bold"
-            android:layout_gravity="center"
-            android:textSize="20sp"
-            android:id="@+id/radioA"
-            android:text="Bên A"/>
-        <RadioButton
+            android:gravity="center"
+            android:textColor="#fff"
+            android:text="Vị trí của bạn:"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:textColor="#fff"
+            android:text="Chưa lấy được"
+            android:id="@+id/textViewYourPositionMapsActivity"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:background="#09560c" >
+        <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:textColor="#e1d6d6"
-            android:textStyle="bold"
+            android:gravity="center"
+            android:textColor="#fff"
+            android:text="Thời điểm gần nhất đối phương gửi lên:"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:textColor="#fff"
+            android:text="Chưa lấy được"
+            android:id="@+id/textViewObjectsLastTimeSendMapsActivity"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <Switch
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             android:layout_gravity="center"
-            android:textSize="20sp"
-            android:id="@+id/radioB"
-            android:text="Bên B"/>
-    </RadioGroup>
+            android:id="@+id/switchLookTypeMapsActivity"
+            android:textOff="Tắt"
+            android:textOn="Bật"
+            android:text="Chế độ vệ tinh"
+            android:checked="false"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:id="@+id/textViewTimeNowMapsActivity"/>
+    </LinearLayout>
+
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="5" />
+        android:layout_weight="8" />
 
 </LinearLayout>
 
