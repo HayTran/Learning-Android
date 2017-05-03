@@ -3,8 +3,6 @@ package com.a20170208.tranvanhay.respberry3;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
-import android.media.ImageReader;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,7 +11,6 @@ import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -26,14 +23,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.URL;
-import java.nio.ByteBuffer;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Tran Van Hay on 4/22/2017.
@@ -47,13 +41,14 @@ public class OperatingActivity extends Activity {
         // Instance for creation a Server Socket
     protected ServerSocket serverSocket;
         // Instance for thread
-    Thread serverSocketThread;
+
         // Variable for display
     TextView txtSensor0,txtSensor1,txtSensor2,txtSensor3,txtSensor4,txtTime;
         // Instances for camera action
     private CameraRaspi mCamera;
     private Handler mCameraHandler;
     private HandlerThread mCameraThread;
+    static SocketServerThread socketServerThread;
         // Instances for Storage
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
@@ -66,8 +61,8 @@ public class OperatingActivity extends Activity {
         setContentView(R.layout.activity_operating);
         mapping();
         new TimeAnDate().showCurrentTime();
-        serverSocketThread = new Thread(new SocketServerThread(serverSocket));
-        serverSocketThread.start();
+        socketServerThread = new SocketServerThread(serverSocket);
+        socketServerThread.execute();
         displayInMonitor();
         captureImage();
         triggerFCM();
@@ -86,11 +81,7 @@ public class OperatingActivity extends Activity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue().toString().equals("Reset")){
-                    if(serverSocketThread.isAlive()){
-                        serverSocketThread.interrupt();
-                    }
-                    serverSocketThread = new SocketServerThread(serverSocket);
-                    serverSocketThread.start();
+
                     Log.d(TAG,"Reset Server Socket Thread");
                 }
                 Log.d(TAG,"Can not reset Server Socket Thread");

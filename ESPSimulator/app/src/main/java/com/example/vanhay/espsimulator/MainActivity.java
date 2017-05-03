@@ -126,7 +126,6 @@ public class MainActivity extends Activity {
         protected Void doInBackground(Void... arg0) {
             Socket socket = null;
             try {
-
                 // Intialize a socket with Address and Port belong to Server.
                 socket = new Socket(dstAddress, dstPort);
                 //Createa stream to send data to server
