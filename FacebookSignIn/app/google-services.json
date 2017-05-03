@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "693800569999",
+    "firebase_url": "https://demo20170209-23256.firebaseio.com",
+    "project_id": "demo20170209-23256",
+    "storage_bucket": "demo20170209-23256.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:693800569999:android:1122b0605a04d786",
+        "android_client_info": {
+          "package_name": "com.example.vanhay.facebooksignin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "693800569999-usbcrg13leborl4nnp3vvf8n0u990pt9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9O5fanlz-EdsZd1iHIq6_YpR5Yr667vk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

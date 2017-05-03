@@ -66,5 +66,5 @@
         android:layout_weight="2"
         android:gravity="bottom|right"
         android:textSize="13sp"
-        android:text="Designed by Hay Tran May 2, 2017" />
+        android:text="Developed by Hay Tran May 2, 2017" />
 </LinearLayout>
