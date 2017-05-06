@@ -60,6 +60,13 @@
         android:layout_gravity="center"
         android:id="@+id/btnOKMainActivity"
         android:text="OK"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:id="@+id/btnStepToNavigationDrawable"
+        android:text="Step to Navigation Drawable"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="0dp"

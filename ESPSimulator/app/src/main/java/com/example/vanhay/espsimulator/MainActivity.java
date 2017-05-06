@@ -130,18 +130,18 @@ public class MainActivity extends Activity {
                 socket = new Socket(dstAddress, dstPort);
                 //Createa stream to send data to server
                 DataOutputStream dOut = new DataOutputStream(socket.getOutputStream());
-                dOut.writeByte(humidity);
-                dOut.writeByte(temperature);
-                dOut.writeByte(flameValue0_0);
-                dOut.writeByte(flameValue0_1);
-                dOut.writeByte(flameValue1_0);
-                dOut.writeByte(flameValue1_1);
-                dOut.writeByte(lightIntensity0);
-                dOut.writeByte(lightIntensity1);
-                dOut.writeByte(mq2Value0);
-                dOut.writeByte(mq2Value1);
-                dOut.writeByte(mq7Value0);
-                dOut.writeByte(mq7Value1);
+                dOut.writeByte(55);
+//                dOut.writeByte(temperature);
+//                dOut.writeByte(flameValue0_0);
+//                dOut.writeByte(flameValue0_1);
+//                dOut.writeByte(flameValue1_0);
+//                dOut.writeByte(flameValue1_1);
+//                dOut.writeByte(lightIntensity0);
+//                dOut.writeByte(lightIntensity1);
+//                dOut.writeByte(mq2Value0);
+//                dOut.writeByte(mq2Value1);
+//                dOut.writeByte(mq7Value0);
+//                dOut.writeByte(mq7Value1);
                 msg.append("Sent finish!\n");
                 MainActivity.this.runOnUiThread(new Runnable() {
                     @Override

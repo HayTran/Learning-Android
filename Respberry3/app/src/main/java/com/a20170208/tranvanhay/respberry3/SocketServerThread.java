@@ -1,5 +1,4 @@
 package com.a20170208.tranvanhay.respberry3;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.firebase.database.DatabaseReference;
@@ -15,13 +14,11 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.Enumeration;
 
-import static android.R.id.message;
-
 /**
  * Created by Tran Van Hay on 3/3/2017.
  */
 
-public class SocketServerThread extends AsyncTask <String,String, Integer> {
+public class SocketServerThread extends Thread {
     private static final String TAG = SocketServerThread.class.getSimpleName();
     private DatabaseReference mData = FirebaseDatabase.getInstance().getReference();
     static final int SocketServerPORT = 8080;
@@ -33,9 +30,10 @@ public class SocketServerThread extends AsyncTask <String,String, Integer> {
     private static int temperature = 0, humidity = 0;
     private int flameValue0_0 = 0, flameValue0_1 = 0, lightIntensity0 = 0, lightIntensity1 = 0,flameValue1_0 = 0, flameValue1_1 = 0;
     private int mq2Value0 = 0, mq2Value1 = 0, mq7Value0 = 0, mq7Value1 = 0;
-    private static double flameValue0 = 0, flameValue1 = 0, lightIntensity = 0, mq2Value = 0, mq7Value = 0;
+    private double flameValue0 = 0, flameValue1 = 0, lightIntensity = 0, mq2Value = 0, mq7Value = 0;
+    String MACAddr = "";
     @Override
-    protected Integer doInBackground(String... params) {
+    public void run() {
         try {
             serverSocket = new ServerSocket(SocketServerPORT);
             mData.child("SocketServer").child("zNotify").setValue("IP:"+this.getIpAddress()+":"+serverSocket.getLocalPort());
@@ -53,11 +51,10 @@ public class SocketServerThread extends AsyncTask <String,String, Integer> {
             }
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            mData.child("Server Socket Error").child("Receive").push().setValue(e.toString() + " " + TimeAnDate.currentTimeOffline);
+            mData.child("Server Socket Accept Error").push().setValue(e.toString() + " " + TimeAnDate.currentTimeOffline);
             Log.d(TAG, "Exception Catched: " + e.toString());
             e.printStackTrace();
         }
-        return 0;
     }
 
     // ReplyThreadFromServer Class
@@ -96,18 +93,29 @@ public class SocketServerThread extends AsyncTask <String,String, Integer> {
                     // Convert value
                 convertValue();
                 Log.d(TAG,"Converting sensor value");
-                    // Send sensor data to Firebase
-                sendDataToFirebase(hostThreadSocket);
+                    // Send sensor data to Sensor
+                sendDataToFirebase();
                 Log.d(TAG,"Before Data Output Stream in Send Side");
                 dOut = new DataOutputStream(hostThreadSocket.getOutputStream());
-                dOut.writeByte(cnt);
-                dOut.flush();
+                dOut.writeByte(humidity);
+                dOut.writeByte(temperature);
+                dOut.writeByte(flameValue0_0);
+                dOut.writeByte(flameValue0_1);
+                dOut.writeByte(flameValue1_0);
+                dOut.writeByte(flameValue1_1);
+                dOut.writeByte(lightIntensity0);
+                dOut.writeByte(lightIntensity1);
+                dOut.writeByte(mq2Value0);
+                dOut.writeByte(mq2Value1);
+                dOut.writeByte(mq7Value0);
+                dOut.writeByte(mq7Value1);
                 Log.d(TAG,"After Data Output Stream in Send Side");
-                Log.d(TAG,"MAC: " + new ARPNetwork(hostThreadSocket.getInetAddress().getHostAddress()).findMAC());
+                MACAddr = new ARPNetwork(hostThreadSocket.getInetAddress().getHostAddress()).findMAC();
+                Log.d(TAG,"MAC: " + MACAddr);
 
             } catch (IOException e) {
                     // TODO Auto-generated catch block
-                mData.child("Server Socket Error").child("Send").push().setValue(e.toString() +" "+ TimeAnDate.currentTimeOffline);
+                mData.child("Server Socket Read and Reply Error").push().setValue(e.toString() +" "+ TimeAnDate.currentTimeOffline);
                 e.printStackTrace();
                 Log.d(TAG,"Exception Catched: "+ e.toString());
             } catch (NullPointerException e){
@@ -121,6 +129,8 @@ public class SocketServerThread extends AsyncTask <String,String, Integer> {
                 } catch (IOException e) {
                     e.printStackTrace();
                     Log.d(TAG,"Exception Catched: "+ e.toString());
+                } catch (NullPointerException e){
+                    e.printStackTrace();
                 }
             }
         }
@@ -134,18 +144,10 @@ public class SocketServerThread extends AsyncTask <String,String, Integer> {
         mq2Value = mq2Value0 + mq2Value1*256;
         mq7Value = mq7Value0 + mq7Value1*256;
     }
-    public void sendDataToFirebase(Socket socket){
-            // Send to Firebase
-        mData.child("SocketServer").child("Socket IP").setValue("Soket Server: " + socket.getInetAddress());
-        mData.child("SocketServer").child("Temperature").setValue(temperature+" Celius        ");
-        mData.child("SocketServer").child("Humidity").setValue(humidity+" %      ");
-        mData.child("SocketServer").child("Flame 0").setValue(flameValue0+" %        ");
-        mData.child("SocketServer").child("Flame 1").setValue(flameValue1+" %         ");
-        mData.child("SocketServer").child("MQ2").setValue(mq2Value+"           ");
-        mData.child("SocketServer").child("MQ7").setValue(mq7Value+"           ");
-        mData.child("SocketServer").child("Light Intensity").setValue(lightIntensity+" lux        ");
-        mData.child("SocketServer").child("zMessage").setValue(message);
-        Log.d(TAG,"Sent sensor data to Firebase");
+    public void sendDataToFirebase(){
+        Sensor sensor = new Sensor(temperature,humidity,lightIntensity,flameValue0,flameValue1,mq2Value,mq7Value,MACAddr);
+        mData.child("SocketServer").setValue(sensor);
+        Log.d(TAG,"Sent sensor data to Sensor");
     }
         // Get Server's IP waiting socket coming
     private String getIpAddress() {

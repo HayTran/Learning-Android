@@ -54,19 +54,19 @@ public class OperatingActivity extends Activity {
     StorageReference storageRef = storage.getReference();
     int count = 0;
     String linkURL = "";
-    String atCurrent = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_operating);
         mapping();
         new TimeAnDate().showCurrentTime();
-        socketServerThread = new SocketServerThread(serverSocket);
-        socketServerThread.execute();
         displayInMonitor();
         captureImage();
         triggerFCM();
+        socketServerThread = new SocketServerThread(serverSocket);
+        socketServerThread.start();
     }
+
     private void mapping() {
         // mapping
         txtSensor0 = (TextView)findViewById(R.id.txtSensor0);
@@ -77,27 +77,12 @@ public class OperatingActivity extends Activity {
         txtTime = (TextView)findViewById(R.id.txtTime);
     }
     private void triggerFCM(){
-        mData.child("SocketServerThread").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue().toString().equals("Reset")){
-
-                    Log.d(TAG,"Reset Server Socket Thread");
-                }
-                Log.d(TAG,"Can not reset Server Socket Thread");
-
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
         mData.child("Warning").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(final DataSnapshot dataSnapshot) {
                 String triggeredData =  dataSnapshot.getValue().toString();
                 Log.d(TAG,"Triggered realtime database. Ref: Warning: "+ triggeredData);
-                new FCMServerThread(atCurrent).start();
+                new FCMServerThread(TimeAnDate.currentTimeOffline).start();
             }
 
             @Override
@@ -118,7 +103,7 @@ public class OperatingActivity extends Activity {
 //        mCamera = CameraRaspi.getInstance();
 //        mCamera.initializeCamera(this, mCameraHandler, mOnImageAvailableListener);
 //        mTakePicture.post(runnableTakePicture);
-//        // Take time to take picture in Firebase
+//        // Take time to take picture in Sensor
 //        mData.child("TIME_TAKE_PICTURE").addValueEventListener(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(DataSnapshot dataSnapshot) {
@@ -161,7 +146,7 @@ public class OperatingActivity extends Activity {
 //    };
     private void captureImage(){
         imageProcess.post(runnableImageProcess);
-        // Take time to take picture in Firebase
+        // Take time to take picture in Sensor
         mData.child("TIME_TAKE_PICTURE").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -176,13 +161,16 @@ public class OperatingActivity extends Activity {
     }
     /**
      *
-     * This is zone for get image from IP Webcam and send to Firebase
+     * This is zone for get image from IP Webcam and send to Sensor
      */
     private  Handler imageProcess = new Handler();
         private Runnable runnableImageProcess = new Runnable() {
         @Override
         public void run() {
             String link ="http://192.168.1.112:8080/shot.jpg";
+            /**
+             *  Uncomment to get image from Webcam IP app and send image to firebase
+             */
 //            new GetImageTask().execute(link);
             Log.d(TAG,"Run runnableImageProcess");
             imageProcess.postDelayed(runnableImageProcess,TIME_TAKE_PICTURE);
@@ -242,73 +230,73 @@ public class OperatingActivity extends Activity {
 
     public void displayInMonitor(){
         // listen when Socket Server has change value then set new value
-        mData.child("SocketServer").child("Temperature").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                txtSensor0.setText(dataSnapshot.getValue().toString());
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        mData.child("SocketServer").child("Humidity").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                txtSensor1.setText(dataSnapshot.getValue().toString());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        mData.child("SocketServer").child("Flame 0").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                txtSensor2.setText(dataSnapshot.getValue().toString());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        mData.child("SocketServer").child("Flame 1").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                txtSensor3.setText(dataSnapshot.getValue().toString());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        mData.child("SocketServer").child("Light Intensity").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                txtSensor4.setText(dataSnapshot.getValue().toString());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        mData.child("At Current").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                atCurrent = dataSnapshot.getValue().toString();
-                txtTime.setText(atCurrent);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
+//        mData.child("SocketServer").child("Temperature").addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                txtSensor0.setText(dataSnapshot.getValue().toString());
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+//        mData.child("SocketServer").child("Humidity").addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                txtSensor1.setText(dataSnapshot.getValue().toString());
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+//        mData.child("SocketServer").child("Flame 0").addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                txtSensor2.setText(dataSnapshot.getValue().toString());
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+//        mData.child("SocketServer").child("Flame 1").addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                txtSensor3.setText(dataSnapshot.getValue().toString());
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+//        mData.child("SocketServer").child("Light Intensity").addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                txtSensor4.setText(dataSnapshot.getValue().toString());
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+//        mData.child("At Current").addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                atCurrent = dataSnapshot.getValue().toString();
+//                txtTime.setText(atCurrent);
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//            }
+//        });
     }
 
     @Override

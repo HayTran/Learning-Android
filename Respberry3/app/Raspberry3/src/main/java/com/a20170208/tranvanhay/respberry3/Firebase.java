@@ -31,7 +31,7 @@ public class Firebase {
         this.socket = socket;
     }
     public void sendDataToFirebase(){
-        // Send to Firebase
+        // Send to Sensor
         mData.child("SocketServer").child("Socket IP").setValue("Soket Server: " + socket.getInetAddress());
         mData.child("SocketServer").child("Temperature").setValue(temperature+" Celius        ");
         mData.child("SocketServer").child("Humidity").setValue(humidity+" %      ");

@@ -4,15 +4,18 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Bundle;
 import android.support.multidex.MultiDex;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
-import android.widget.RadioButton;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,12 +33,13 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -53,6 +57,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Marker objectsCurrentLocationMarker;
     DatabaseReference mData;
 
+
         // Declare strings
     String yourSide = "";
     String objectsSide = "";
@@ -63,10 +68,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     TextView textViewYourSide;
     TextView textViewTimeNow;
     Switch switchLookType;
+    Spinner spinnerFocusSelection;
+    ArrayAdapter arrayAdapter;
+    ArrayList <String> arrayListSelection;
 
         // Declare variable for just focusing object the first time after finding
-    int firstTimeYourLocationChange = 0;
-    int firstTimeObjectsLocationChange = 0;
+    boolean focusObject = false;
+    boolean focusYourSelf = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,6 +146,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
         });
+
+        spinnerFocusSelection.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String notification = "";
+                if (position == 0) {
+                    focusObject = false;
+                    focusYourSelf = true;
+                    notification = "Mỗi khi bạn di chuyển màn hình sẽ di chuyển theo bạn";
+                } else if (position == 1){
+                    focusObject = true;
+                    focusYourSelf = false;
+                    notification = "Mỗi khi đối tượng di chuyển màn hình sẽ di chuyển theo đối tượng";
+                } else if (position == 2) {
+                    focusObject = false;
+                    focusYourSelf = false;
+                    notification = "Màn hình sẽ không di chuyển theo ai cả!";
+                }
+                Toast.makeText(MapsActivity.this, notification, Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
     }
 
     private void mapping() {
@@ -146,6 +180,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         textViewYourSide = (TextView)findViewById(R.id.textViewYourSideMapsActivity);
         switchLookType = (Switch)findViewById(R.id.switchLookTypeMapsActivity);
         textViewTimeNow = (TextView)findViewById(R.id.textViewTimeNowMapsActivity);
+        spinnerFocusSelection = (Spinner)findViewById(R.id.spinnerFocusSelection);
     }
 
     private void init() {
@@ -167,6 +202,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
             // Send its time to firebase
         new TimeAndDate(yourSide).showCurrentTime();
+
+            // Initialize for spinner
+        arrayListSelection = new ArrayList<>();
+        arrayListSelection.add("Tập trung vào chính bạn");
+        arrayListSelection.add("Tập trung vào đối tượng");
+        arrayListSelection.add("Không tập trung");
+        arrayAdapter = new ArrayAdapter(this,android.R.layout.simple_spinner_item,arrayListSelection);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
+        spinnerFocusSelection.setAdapter(arrayAdapter);
     }
 
     // Get location from firebase when has changing
@@ -184,7 +228,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             markerOptions1.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
             objectsCurrentLocationMarker = mGoogleMap.addMarker(markerOptions1);
             // Just focus the first time after specfying object
-            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(objectLatLng,16));
+            if(focusObject) {
+                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(objectLatLng, 16));
+            }
         }
     }
 
@@ -196,6 +242,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (mGoogleApiClient != null) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         }
+        Intent intent = new Intent(getBaseContext(),LocationService.class);
+        this.startService(intent);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Intent intent = new Intent(getBaseContext(),LocationService.class);
+        this.stopService(intent);
     }
 
     @Override
@@ -203,7 +258,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     {
         mGoogleMap=googleMap;
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-
         //Initialize Google Play Services
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(this,android.
@@ -241,7 +295,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(1000);
         mLocationRequest.setFastestInterval(1000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         if (ContextCompat.checkSelfPermission(this,android.
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -274,9 +328,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
         yourCurrentLocationMarker = mGoogleMap.addMarker(markerOptions);
             // Just focus the first time after specfying object
-        if (firstTimeYourLocationChange == 0){
+        if(focusYourSelf){
             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(yourLatLng,16));
-            firstTimeYourLocationChange ++;
         }
     }
 

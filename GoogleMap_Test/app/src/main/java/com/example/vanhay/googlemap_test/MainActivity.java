@@ -1,10 +1,9 @@
 package com.example.vanhay.googlemap_test;
 
 import android.content.Intent;
-import android.provider.MediaStore;
+import android.os.Bundle;
 import android.support.multidex.MultiDex;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
@@ -12,7 +11,7 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     RadioButton radioButtonA, radioButtonB;
-    Button buttonOK;
+    Button buttonOK, buttonStepToNavigationDrawable;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addControls() {
-        buttonOK = (Button)findViewById(R.id.btnOKMainActivity);
+
         buttonOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -47,10 +46,18 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        buttonStepToNavigationDrawable.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     private void mapping() {
         radioButtonA = (RadioButton)findViewById(R.id.radioAMainActivity);
         radioButtonB = (RadioButton)findViewById(R.id.radioBMainActivity);
+        buttonOK = (Button)findViewById(R.id.btnOKMainActivity);
+        buttonStepToNavigationDrawable = (Button)findViewById(R.id.btnStepToNavigationDrawable);
     }
 }

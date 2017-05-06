@@ -71,7 +71,7 @@ public class SocketServerThread extends Thread {
                 // Convert value
                 convertValue();
                 sendDataToFirebase(socket);
-                //new Firebase(socket,temperature,humidity,flameValue,humiditySolid,lightIntensity).sendDataToFirebase();
+                //new Sensor(socket,temperature,humidity,flameValue,humiditySolid,lightIntensity).sendDataToFirebase();
                 // Initialize a SocketServerReplyThread object
                 SocketServerReplyThread socketServerReplyThread = new SocketServerReplyThread(
                         socket, count1);
@@ -120,7 +120,7 @@ public class SocketServerThread extends Thread {
         mq7Value = mq7Value0 + mq7Value1*256;
     }
     public void sendDataToFirebase(Socket socket){
-        // Send to Firebase
+        // Send to Sensor
         mData.child("SocketServer").child("Socket IP").setValue("Soket Server: " + socket.getInetAddress());
         mData.child("SocketServer").child("Temperature").setValue(temperature+" Celius        ");
         mData.child("SocketServer").child("Humidity").setValue(humidity+" %      ");
