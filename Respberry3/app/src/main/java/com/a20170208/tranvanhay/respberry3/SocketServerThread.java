@@ -146,7 +146,7 @@ public class SocketServerThread extends Thread {
     }
     public void sendDataToFirebase(){
         Sensor sensor = new Sensor(temperature,humidity,lightIntensity,flameValue0,flameValue1,mq2Value,mq7Value,MACAddr);
-        mData.child("SocketServer").setValue(sensor);
+        mData.child("SocketServer").child(MACAddr).push().setValue(sensor);
         Log.d(TAG,"Sent sensor data to Sensor");
     }
         // Get Server's IP waiting socket coming
