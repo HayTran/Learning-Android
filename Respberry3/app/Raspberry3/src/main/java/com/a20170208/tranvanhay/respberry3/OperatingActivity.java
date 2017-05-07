@@ -100,7 +100,7 @@ public class OperatingActivity extends Activity {
         mCamera = CameraRaspi.getInstance();
         mCamera.initializeCamera(this, mCameraHandler, mOnImageAvailableListener);
         mTakePicture.post(runnableTakePicture);
-        // Take time to take picture in Sensor
+        // Take time to take picture in NodeSensor
         mData.child("TIME_TAKE_PICTURE").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

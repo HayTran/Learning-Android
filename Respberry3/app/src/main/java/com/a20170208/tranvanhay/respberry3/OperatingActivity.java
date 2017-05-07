@@ -103,7 +103,7 @@ public class OperatingActivity extends Activity {
 //        mCamera = CameraRaspi.getInstance();
 //        mCamera.initializeCamera(this, mCameraHandler, mOnImageAvailableListener);
 //        mTakePicture.post(runnableTakePicture);
-//        // Take time to take picture in Sensor
+//        // Take time to take picture in NodeSensor
 //        mData.child("TIME_TAKE_PICTURE").addValueEventListener(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(DataSnapshot dataSnapshot) {
@@ -146,7 +146,7 @@ public class OperatingActivity extends Activity {
 //    };
     private void captureImage(){
         imageProcess.post(runnableImageProcess);
-        // Take time to take picture in Sensor
+        // Take time to take picture in NodeSensor
         mData.child("TIME_TAKE_PICTURE").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -161,7 +161,7 @@ public class OperatingActivity extends Activity {
     }
     /**
      *
-     * This is zone for get image from IP Webcam and send to Sensor
+     * This is zone for get image from IP Webcam and send to NodeSensor
      */
     private  Handler imageProcess = new Handler();
         private Runnable runnableImageProcess = new Runnable() {
@@ -289,8 +289,7 @@ public class OperatingActivity extends Activity {
 //        mData.child("At Current").addValueEventListener(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(DataSnapshot dataSnapshot) {
-//                atCurrent = dataSnapshot.getValue().toString();
-//                txtTime.setText(atCurrent);
+//
 //            }
 //
 //            @Override

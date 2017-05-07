@@ -4,16 +4,17 @@ package com.a20170208.tranvanhay.respberry3;
  * Created by Tran Van Hay on 3/24/2017.
  */
 
-public class Sensor {
-    private int temperature, humidity;
+public class NodeSensor {
+    private int temperature, humidity, strengthWifi;
     private double lightIntensity, flameValue0, flameValue1, MQ2,MQ7;
     private String MACAddr;
-    public Sensor() {
+    public NodeSensor() {
     }
 
-    public Sensor(int temperature, int humidity, double lightIntensity, double flameValue0, double flameValue1, double MQ2, double MQ7, String MACAddr) {
+    public NodeSensor(int temperature, int humidity, int strengthWifi, double lightIntensity, double flameValue0, double flameValue1, double MQ2, double MQ7, String MACAddr) {
         this.temperature = temperature;
         this.humidity = humidity;
+        this.strengthWifi = strengthWifi;
         this.lightIntensity = lightIntensity;
         this.flameValue0 = flameValue0;
         this.flameValue1 = flameValue1;
@@ -36,6 +37,14 @@ public class Sensor {
 
     public void setHumidity(int humidity) {
         this.humidity = humidity;
+    }
+
+    public int getStrengthWifi() {
+        return strengthWifi;
+    }
+
+    public void setStrengthWifi(int strengthWifi) {
+        this.strengthWifi = strengthWifi;
     }
 
     public double getLightIntensity() {
@@ -88,9 +97,10 @@ public class Sensor {
 
     @Override
     public String toString() {
-        return "Sensor{" +
+        return "NodeSensor{" +
                 "temperature=" + temperature +
                 ", humidity=" + humidity +
+                ", strengthWifi=" + strengthWifi +
                 ", lightIntensity=" + lightIntensity +
                 ", flameValue0=" + flameValue0 +
                 ", flameValue1=" + flameValue1 +

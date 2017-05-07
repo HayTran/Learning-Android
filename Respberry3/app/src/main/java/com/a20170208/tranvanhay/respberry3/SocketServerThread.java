@@ -27,6 +27,7 @@ public class SocketServerThread extends Thread {
     SocketServerThread (ServerSocket serverSocket){
         this.serverSocket = serverSocket;
     }
+    private int strengthWifi = 0;
     private static int temperature = 0, humidity = 0;
     private int flameValue0_0 = 0, flameValue0_1 = 0, lightIntensity0 = 0, lightIntensity1 = 0,flameValue1_0 = 0, flameValue1_1 = 0;
     private int mq2Value0 = 0, mq2Value1 = 0, mq7Value0 = 0, mq7Value1 = 0;
@@ -77,6 +78,7 @@ public class SocketServerThread extends Thread {
                 dIn = new DataInputStream(hostThreadSocket.getInputStream());
                 Log.d(TAG,"After Data Input Stream in Receive Side");
                     // Read three value sent from ESP
+                strengthWifi = dIn.readUnsignedByte();
                 humidity = dIn.readUnsignedByte();
                 temperature = dIn.readUnsignedByte();
                 flameValue0_0 = dIn.readUnsignedByte();
@@ -93,10 +95,11 @@ public class SocketServerThread extends Thread {
                     // Convert value
                 convertValue();
                 Log.d(TAG,"Converting sensor value");
-                    // Send sensor data to Sensor
+                    // Send sensor data to NodeSensor
                 sendDataToFirebase();
                 Log.d(TAG,"Before Data Output Stream in Send Side");
                 dOut = new DataOutputStream(hostThreadSocket.getOutputStream());
+                dOut.writeByte(strengthWifi);
                 dOut.writeByte(humidity);
                 dOut.writeByte(temperature);
                 dOut.writeByte(flameValue0_0);
@@ -145,9 +148,9 @@ public class SocketServerThread extends Thread {
         mq7Value = mq7Value0 + mq7Value1*256;
     }
     public void sendDataToFirebase(){
-        Sensor sensor = new Sensor(temperature,humidity,lightIntensity,flameValue0,flameValue1,mq2Value,mq7Value,MACAddr);
-        mData.child("SocketServer").child(MACAddr).push().setValue(sensor);
-        Log.d(TAG,"Sent sensor data to Sensor");
+        NodeSensor nodeSensor = new NodeSensor(temperature,humidity,strengthWifi,lightIntensity,flameValue0,flameValue1,mq2Value,mq7Value,MACAddr);
+        mData.child("SocketServer").child(MACAddr).setValue(nodeSensor);
+        Log.d(TAG,"Sent nodeSensor data to NodeSensor");
     }
         // Get Server's IP waiting socket coming
     private String getIpAddress() {

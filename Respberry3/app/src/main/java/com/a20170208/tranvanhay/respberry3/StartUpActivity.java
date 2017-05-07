@@ -83,6 +83,7 @@ public class StartUpActivity extends Activity {
             Log.d(TAG,"CheckStep: User = " + user.getUid());
             Intent intent = new Intent(StartUpActivity.this,OperatingActivity.class);
             startActivity(intent);
+            finish();
         } else {
             Log.d(TAG,"CheckStep: Not user");
         }
