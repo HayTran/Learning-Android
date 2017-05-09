@@ -28,11 +28,12 @@ public class SocketServerThread extends Thread {
         this.serverSocket = serverSocket;
     }
     private int strengthWifi = 0;
-    private static int temperature = 0, humidity = 0;
-    private int flameValue0_0 = 0, flameValue0_1 = 0, lightIntensity0 = 0, lightIntensity1 = 0,flameValue1_0 = 0, flameValue1_1 = 0;
+    private int temperature = 0, humidity = 0;
+    private int lightIntensity0 = 0, lightIntensity1 = 0;
+    private int flameValue0_0 = 0, flameValue0_1 = 0,flameValue1_0 = 0, flameValue1_1 = 0;
+    private int flameValue2_0 = 0, flameValue2_1 = 0,flameValue3_0 = 0, flameValue3_1 = 0;
     private int mq2Value0 = 0, mq2Value1 = 0, mq7Value0 = 0, mq7Value1 = 0;
-    private double flameValue0 = 0, flameValue1 = 0, lightIntensity = 0, mq2Value = 0, mq7Value = 0;
-    String MACAddr = "";
+    private double flameValue0 = 0, flameValue1 = 0, flameValue2 = 0, flameValue3 = 0, lightIntensity = 0, mq2Value = 0, mq7Value = 0;
     @Override
     public void run() {
         try {
@@ -44,10 +45,10 @@ public class SocketServerThread extends Thread {
                     count = 0;
                 }
                 Socket socket = serverSocket.accept();
-                // Initialize a SocketServerReplyThread object
+                    // Initialize a SocketServerReplyThread object
                 SocketServerReplyThread socketServerReplyThread = new SocketServerReplyThread(
                         socket, count);
-                // Start running Server Reply Thread
+                    // Start running Server Reply Thread
                 socketServerReplyThread.start();
             }
         } catch (IOException e) {
@@ -58,7 +59,7 @@ public class SocketServerThread extends Thread {
         }
     }
 
-    // ReplyThreadFromServer Class
+        // ReplyThreadFromServer Class
     class SocketServerReplyThread extends Thread {
         ARPNetwork arpNetwork;
         private Socket hostThreadSocket;  //this object specify whether this socket of which host
@@ -74,50 +75,50 @@ public class SocketServerThread extends Thread {
             DataOutputStream dOut = null;
             DataInputStream dIn = null;
             try {
-                Log.d(TAG,"Before Data Input Stream in Receive Side");
                 dIn = new DataInputStream(hostThreadSocket.getInputStream());
-                Log.d(TAG,"After Data Input Stream in Receive Side");
-                    // Read three value sent from ESP
-                strengthWifi = dIn.readUnsignedByte();
-                humidity = dIn.readUnsignedByte();
+                    // Read data which sent from client
                 temperature = dIn.readUnsignedByte();
+                humidity = dIn.readUnsignedByte();
                 flameValue0_0 = dIn.readUnsignedByte();
                 flameValue0_1 = dIn.readUnsignedByte();
                 flameValue1_0 = dIn.readUnsignedByte();
                 flameValue1_1 = dIn.readUnsignedByte();
+                flameValue2_0 = dIn.readUnsignedByte();
+                flameValue2_1 = dIn.readUnsignedByte();
+                flameValue3_0 = dIn.readUnsignedByte();
+                flameValue3_1 = dIn.readUnsignedByte();
                 lightIntensity0 = dIn.readUnsignedByte();
                 lightIntensity1 = dIn.readUnsignedByte();
                 mq2Value0 = dIn.readUnsignedByte();
                 mq2Value1 = dIn.readUnsignedByte();
                 mq7Value0 = dIn.readUnsignedByte();
                 mq7Value1 = dIn.readUnsignedByte();
-                Log.d(TAG,"Read sensor value stream from client done");
-                    // Convert value
-                convertValue();
-                Log.d(TAG,"Converting sensor value");
-                    // Send sensor data to NodeSensor
-                sendDataToFirebase();
-                Log.d(TAG,"Before Data Output Stream in Send Side");
+                strengthWifi = dIn.readUnsignedByte();
+                    // Reply to client data already received.
                 dOut = new DataOutputStream(hostThreadSocket.getOutputStream());
-                dOut.writeByte(strengthWifi);
-                dOut.writeByte(humidity);
                 dOut.writeByte(temperature);
+                dOut.writeByte(humidity);
                 dOut.writeByte(flameValue0_0);
                 dOut.writeByte(flameValue0_1);
                 dOut.writeByte(flameValue1_0);
                 dOut.writeByte(flameValue1_1);
+                dOut.writeByte(flameValue2_0);
+                dOut.writeByte(flameValue2_1);
+                dOut.writeByte(flameValue3_0);
+                dOut.writeByte(flameValue3_1);
                 dOut.writeByte(lightIntensity0);
                 dOut.writeByte(lightIntensity1);
                 dOut.writeByte(mq2Value0);
                 dOut.writeByte(mq2Value1);
                 dOut.writeByte(mq7Value0);
                 dOut.writeByte(mq7Value1);
-                Log.d(TAG,"After Data Output Stream in Send Side");
-                MACAddr = new ARPNetwork(hostThreadSocket.getInetAddress().getHostAddress()).findMAC();
-                Log.d(TAG,"MAC: " + MACAddr);
-
+                dOut.writeByte(strengthWifi);
+                    // Convert value
+                convertValue();
+                    // Send sensor data to NodeSensor
+                sendDataToFirebase(new ARPNetwork(hostThreadSocket.getInetAddress().getHostAddress()).findMAC());
             } catch (IOException e) {
-                    // TODO Auto-generated catch block
+                // TODO Auto-generated catch block
                 mData.child("Server Socket Read and Reply Error").push().setValue(e.toString() +" "+ TimeAnDate.currentTimeOffline);
                 e.printStackTrace();
                 Log.d(TAG,"Exception Catched: "+ e.toString());
@@ -143,16 +144,23 @@ public class SocketServerThread extends Thread {
         flameValue0 = 100 - (flameValue0/1024)*100;
         flameValue1 = flameValue1_0 + flameValue1_1*256;
         flameValue1 = 100 - (flameValue1/1024)*100;
+        flameValue2 = flameValue2_0 + flameValue2_1*256;
+        flameValue2 = 100 - (flameValue2/1024)*100;
+        flameValue3 = flameValue3_0 + flameValue3_1*256;
+        flameValue3 = 100 - (flameValue3/1024)*100;
         lightIntensity = lightIntensity0 + lightIntensity1*256;
         mq2Value = mq2Value0 + mq2Value1*256;
         mq7Value = mq7Value0 + mq7Value1*256;
     }
-    public void sendDataToFirebase(){
-        NodeSensor nodeSensor = new NodeSensor(temperature,humidity,strengthWifi,lightIntensity,flameValue0,flameValue1,mq2Value,mq7Value,MACAddr);
+    public void sendDataToFirebase(String MACAddr){
+        NodeSensor nodeSensor = new NodeSensor(strengthWifi,temperature,humidity,
+                flameValue0,flameValue1,flameValue2,flameValue3,
+                lightIntensity,mq2Value,mq7Value,MACAddr);
+
         mData.child("SocketServer").child(MACAddr).setValue(nodeSensor);
         Log.d(TAG,"Sent nodeSensor data to NodeSensor");
     }
-        // Get Server's IP waiting socket coming
+    // Get Server's IP waiting socket coming
     private String getIpAddress() {
         String ip = "";
         try {
@@ -179,5 +187,6 @@ public class SocketServerThread extends Thread {
         return ip;
     }
 }
+
 
 

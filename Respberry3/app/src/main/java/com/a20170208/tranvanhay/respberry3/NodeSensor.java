@@ -5,22 +5,34 @@ package com.a20170208.tranvanhay.respberry3;
  */
 
 public class NodeSensor {
-    private int temperature, humidity, strengthWifi;
-    private double lightIntensity, flameValue0, flameValue1, MQ2,MQ7;
+    private int strengthWifi,temperature, humidity;
+    private double  flameValue0, flameValue1, flameValue2,flameValue3, lightIntensity, MQ2,MQ7;
     private String MACAddr;
     public NodeSensor() {
     }
 
-    public NodeSensor(int temperature, int humidity, int strengthWifi, double lightIntensity, double flameValue0, double flameValue1, double MQ2, double MQ7, String MACAddr) {
+    public NodeSensor(int strengthWifi, int temperature, int humidity,
+                      double flameValue0, double flameValue1, double flameValue2, double flameValue3,
+                      double lightIntensity, double MQ2, double MQ7, String MACAddr) {
+        this.strengthWifi = strengthWifi;
         this.temperature = temperature;
         this.humidity = humidity;
-        this.strengthWifi = strengthWifi;
-        this.lightIntensity = lightIntensity;
         this.flameValue0 = flameValue0;
         this.flameValue1 = flameValue1;
+        this.flameValue2 = flameValue2;
+        this.flameValue3 = flameValue3;
+        this.lightIntensity = lightIntensity;
         this.MQ2 = MQ2;
         this.MQ7 = MQ7;
         this.MACAddr = MACAddr;
+    }
+
+    public int getStrengthWifi() {
+        return strengthWifi;
+    }
+
+    public void setStrengthWifi(int strengthWifi) {
+        this.strengthWifi = strengthWifi;
     }
 
     public int getTemperature() {
@@ -39,22 +51,6 @@ public class NodeSensor {
         this.humidity = humidity;
     }
 
-    public int getStrengthWifi() {
-        return strengthWifi;
-    }
-
-    public void setStrengthWifi(int strengthWifi) {
-        this.strengthWifi = strengthWifi;
-    }
-
-    public double getLightIntensity() {
-        return lightIntensity;
-    }
-
-    public void setLightIntensity(double lightIntensity) {
-        this.lightIntensity = lightIntensity;
-    }
-
     public double getFlameValue0() {
         return flameValue0;
     }
@@ -69,6 +65,30 @@ public class NodeSensor {
 
     public void setFlameValue1(double flameValue1) {
         this.flameValue1 = flameValue1;
+    }
+
+    public double getFlameValue2() {
+        return flameValue2;
+    }
+
+    public void setFlameValue2(double flameValue2) {
+        this.flameValue2 = flameValue2;
+    }
+
+    public double getFlameValue3() {
+        return flameValue3;
+    }
+
+    public void setFlameValue3(double flameValue3) {
+        this.flameValue3 = flameValue3;
+    }
+
+    public double getLightIntensity() {
+        return lightIntensity;
+    }
+
+    public void setLightIntensity(double lightIntensity) {
+        this.lightIntensity = lightIntensity;
     }
 
     public double getMQ2() {
@@ -98,12 +118,14 @@ public class NodeSensor {
     @Override
     public String toString() {
         return "NodeSensor{" +
-                "temperature=" + temperature +
+                "strengthWifi=" + strengthWifi +
+                ", temperature=" + temperature +
                 ", humidity=" + humidity +
-                ", strengthWifi=" + strengthWifi +
-                ", lightIntensity=" + lightIntensity +
                 ", flameValue0=" + flameValue0 +
                 ", flameValue1=" + flameValue1 +
+                ", flameValue2=" + flameValue2 +
+                ", flameValue3=" + flameValue3 +
+                ", lightIntensity=" + lightIntensity +
                 ", MQ2=" + MQ2 +
                 ", MQ7=" + MQ7 +
                 ", MACAddr='" + MACAddr + '\'' +
