@@ -2,17 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:keepScreenOn="true"
     android:orientation="vertical">
     <VideoView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="2"
-        android:id="@+id/videoView"/>
+        android:keepScreenOn="true"
+        android:id="@+id/videoView_MainActivity"/>
     <Button
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:text="Change activity5"
-        android:id="@+id/btnChangeActivity"/>
+        android:id="@+id/btnChangeActivity_MainActivity"/>
 
 </LinearLayout>
