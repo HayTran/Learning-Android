@@ -61,84 +61,86 @@ public class SocketServerThread extends Thread {
 
         // ReplyThreadFromServer Class
     class SocketServerReplyThread extends Thread {
-        ARPNetwork arpNetwork;
-        private Socket hostThreadSocket;  //this object specify whether this socket of which host
-        int cnt;
-        SocketServerReplyThread(Socket socket, int c) {
-            hostThreadSocket = socket;
-            cnt = c;
-        }
-        @Override
-        public void run() {
-            Log.d(TAG,"======================================================== Count = " + cnt);
+            ARPNetwork arpNetwork;
+            private Socket hostThreadSocket;  //this object specify whether this socket of which host
+            int cnt;
+
+            SocketServerReplyThread(Socket socket, int c) {
+                hostThreadSocket = socket;
+                cnt = c;
+            }
+
+            @Override
+            public void run() {
+                Log.d(TAG, "======================================================== Count = " + cnt);
                 // Create a message to Client's socket
-            DataOutputStream dOut = null;
-            DataInputStream dIn = null;
-            try {
-                dIn = new DataInputStream(hostThreadSocket.getInputStream());
-                    // Read data which sent from client
-                temperature = dIn.readUnsignedByte();
-                humidity = dIn.readUnsignedByte();
-                flameValue0_0 = dIn.readUnsignedByte();
-                flameValue0_1 = dIn.readUnsignedByte();
-                flameValue1_0 = dIn.readUnsignedByte();
-                flameValue1_1 = dIn.readUnsignedByte();
-                flameValue2_0 = dIn.readUnsignedByte();
-                flameValue2_1 = dIn.readUnsignedByte();
-                flameValue3_0 = dIn.readUnsignedByte();
-                flameValue3_1 = dIn.readUnsignedByte();
-                lightIntensity0 = dIn.readUnsignedByte();
-                lightIntensity1 = dIn.readUnsignedByte();
-                mq2Value0 = dIn.readUnsignedByte();
-                mq2Value1 = dIn.readUnsignedByte();
-                mq7Value0 = dIn.readUnsignedByte();
-                mq7Value1 = dIn.readUnsignedByte();
-                strengthWifi = dIn.readUnsignedByte();
-                    // Reply to client data already received.
-                dOut = new DataOutputStream(hostThreadSocket.getOutputStream());
-                dOut.writeByte(temperature);
-                dOut.writeByte(humidity);
-                dOut.writeByte(flameValue0_0);
-                dOut.writeByte(flameValue0_1);
-                dOut.writeByte(flameValue1_0);
-                dOut.writeByte(flameValue1_1);
-                dOut.writeByte(flameValue2_0);
-                dOut.writeByte(flameValue2_1);
-                dOut.writeByte(flameValue3_0);
-                dOut.writeByte(flameValue3_1);
-                dOut.writeByte(lightIntensity0);
-                dOut.writeByte(lightIntensity1);
-                dOut.writeByte(mq2Value0);
-                dOut.writeByte(mq2Value1);
-                dOut.writeByte(mq7Value0);
-                dOut.writeByte(mq7Value1);
-                dOut.writeByte(strengthWifi);
-                    // Convert value
-                convertValue();
-                    // Send sensor data to NodeSensor
-                sendDataToFirebase(new ARPNetwork(hostThreadSocket.getInetAddress().getHostAddress()).findMAC());
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                mData.child("Server Socket Read and Reply Error").push().setValue(e.toString() +" "+ TimeAnDate.currentTimeOffline);
-                e.printStackTrace();
-                Log.d(TAG,"Exception Catched: "+ e.toString());
-            } catch (NullPointerException e){
-                e.printStackTrace();
-            } finally {
+                DataOutputStream dOut = null;
+                DataInputStream dIn = null;
                 try {
-                    dOut.close();
-                    dIn.close();
-                    hostThreadSocket.close();
-                    Log.d(TAG,"Close Input, Output Stream, Socket");
+                    dIn = new DataInputStream(hostThreadSocket.getInputStream());
+                    // Read data which sent from client
+                    temperature = dIn.readUnsignedByte();
+                    humidity = dIn.readUnsignedByte();
+                    flameValue0_0 = dIn.readUnsignedByte();
+                    flameValue0_1 = dIn.readUnsignedByte();
+                    flameValue1_0 = dIn.readUnsignedByte();
+                    flameValue1_1 = dIn.readUnsignedByte();
+                    flameValue2_0 = dIn.readUnsignedByte();
+                    flameValue2_1 = dIn.readUnsignedByte();
+                    flameValue3_0 = dIn.readUnsignedByte();
+                    flameValue3_1 = dIn.readUnsignedByte();
+                    lightIntensity0 = dIn.readUnsignedByte();
+                    lightIntensity1 = dIn.readUnsignedByte();
+                    mq2Value0 = dIn.readUnsignedByte();
+                    mq2Value1 = dIn.readUnsignedByte();
+                    mq7Value0 = dIn.readUnsignedByte();
+                    mq7Value1 = dIn.readUnsignedByte();
+                    strengthWifi = dIn.readUnsignedByte();
+                    // Reply to client data already received.
+                    dOut = new DataOutputStream(hostThreadSocket.getOutputStream());
+                    dOut.writeByte(temperature);
+                    dOut.writeByte(humidity);
+                    dOut.writeByte(flameValue0_0);
+                    dOut.writeByte(flameValue0_1);
+                    dOut.writeByte(flameValue1_0);
+                    dOut.writeByte(flameValue1_1);
+                    dOut.writeByte(flameValue2_0);
+                    dOut.writeByte(flameValue2_1);
+                    dOut.writeByte(flameValue3_0);
+                    dOut.writeByte(flameValue3_1);
+                    dOut.writeByte(lightIntensity0);
+                    dOut.writeByte(lightIntensity1);
+                    dOut.writeByte(mq2Value0);
+                    dOut.writeByte(mq2Value1);
+                    dOut.writeByte(mq7Value0);
+                    dOut.writeByte(mq7Value1);
+                    dOut.writeByte(strengthWifi);
+                    // Convert value
+                    convertValue();
+                    // Send sensor data to NodeSensor
+                    sendDataToFirebase(new ARPNetwork(hostThreadSocket.getInetAddress().getHostAddress()).findMAC());
                 } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    mData.child("Server Socket Read and Reply Error").push().setValue(e.toString() + " " + TimeAnDate.currentTimeOffline);
                     e.printStackTrace();
-                    Log.d(TAG,"Exception Catched: "+ e.toString());
-                } catch (NullPointerException e){
+                    Log.d(TAG, "Exception Catched: " + e.toString());
+                } catch (NullPointerException e) {
                     e.printStackTrace();
+                } finally {
+                    try {
+                        dOut.close();
+                        dIn.close();
+                        hostThreadSocket.close();
+                        Log.d(TAG, "Close Input, Output Stream, Socket");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Log.d(TAG, "Exception Catched: " + e.toString());
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
-    }
     private void convertValue(){
         flameValue0 = flameValue0_0 + flameValue0_1*256;
         flameValue0 = 100 - (flameValue0/1024)*100;

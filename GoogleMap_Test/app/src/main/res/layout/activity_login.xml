@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    tools:context="com.example.vanhay.googlemap_test.LogInActivity">
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:src="@drawable/ic_pin_drop_black_24dp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:gravity="center"
+        android:textSize="24sp"
+        android:textColor="#3ace11"
+        android:textStyle="bold"
+        android:text="CHÀO MỪNG ĐẾN VỚI CONNECT YOUR FRIENDS" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:orientation="vertical"
+        android:layout_margin="30dp">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/editTextUsername_LogInActivity"
+            android:hint="Tên tài khoản"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/editTextPassword_LogInActivity"
+            android:inputType="textPassword"
+            android:hint="Mật khẩu"/>
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:background="#4e59cf"
+        android:textColor="#fff"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp"
+        android:id="@+id/btnLogIn_LogInActivity"
+        android:text="Đăng nhập"/>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:id="@+id/textViewChangeToSignUp_LogInActivity"
+        android:text="Bạn chưa có tài khoản? Đăng ký tại đây"
+        android:textColor="#542c2c" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="bottom|right"
+        android:textSize="13sp"
+        android:text="Developed by Hay Tran May 2, 2017" />
+</LinearLayout>

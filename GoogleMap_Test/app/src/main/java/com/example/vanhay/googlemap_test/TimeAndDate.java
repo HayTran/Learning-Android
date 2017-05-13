@@ -18,8 +18,8 @@ import java.util.TimeZone;
  */
 
 public class TimeAndDate {
+    private static final String TAG = TimeAndDate.class.getSimpleName();
     public String contextTime;
-
     public TimeAndDate(String contextTime) {
         this.contextTime = contextTime;
     }

@@ -14,6 +14,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -24,8 +26,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     DatabaseReference mData;
     LocationRequest mLocationRequest;
     GoogleApiClient mGoogleApiClient;
-    Location yourLastLocation;
-    String yourSide = "B Side";
+    FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
 
     public LocationService() {
     }
@@ -61,11 +62,14 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     @Override
     public void onLocationChanged(Location location)
     {
-        yourLastLocation = location;
         //Place current location marker
-        mData.child(yourSide).child("Latitude").setValue(location.getLatitude());
-        mData.child(yourSide).child("Longitude").setValue(location.getLongitude());
-        mData.child(yourSide).child("SendTime").setValue(TimeAndDate.currentTimeOffline);
+        UserPosition userPosition = new UserPosition(mUser.getDisplayName(),"online",0,
+                location.getLatitude(),location.getLongitude(),
+                TimeAndDate.currentTimeOffline);
+        mData.child("Data").child(mUser.getDisplayName()).child("Latitude").setValue(location.getLatitude());
+        mData.child("Data").child(mUser.getDisplayName()).child("Longitude").setValue(location.getLongitude());
+        mData.child("Data").child(mUser.getDisplayName()).child("TimeSend").setValue(TimeAndDate.currentTimeOffline);
+        mData.child("User").child(mUser.getDisplayName()).setValue(TimeAndDate.currentTimeOffline);
     }
 
     @Override
@@ -80,7 +84,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         super.onCreate();
         mData = FirebaseDatabase.getInstance().getReference();
         buildGoogleApiClient();
-        new TimeAndDate(yourSide+"Service").showCurrentTime();
+        new TimeAndDate("Service").showCurrentTime();
         Log.d(TAG,"onCreate() called");
     }
 

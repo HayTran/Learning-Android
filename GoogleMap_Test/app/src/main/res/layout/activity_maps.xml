@@ -6,27 +6,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:padding="15dp"
     tools:context="com.example.vanhay.googlemap_test.MapsActivity" >
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="horizontal">
-        <TextView
+        <Button
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center"
-            android:textColor="#6e0101"
-            android:textSize="17sp"
-            android:textStyle="bold"
-            android:id="@+id/textViewYourSideMapsActivity"/>
-        <TextView
+            android:id="@+id/btnSelectUser_MapsActivity"
+            android:text="Chọn bạn kết nối"/>
+        <Button
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center"
-            android:id="@+id/textViewTimeNowMapsActivity"/>
+            android:id="@+id/btnSignOut_MapsActivity"
+            android:text="Đăng xuất"/>
     </LinearLayout>
 
     <LinearLayout
@@ -55,30 +53,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="horizontal"
-        android:background="#09560c" >
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textColor="#fff"
-            android:text="Thời điểm gần nhất đối phương gửi lên:"/>
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:gravity="center"
-            android:textColor="#fff"
-            android:text="Chưa lấy được"
-            android:id="@+id/textViewObjectsLastTimeSendMapsActivity"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
         android:orientation="horizontal">
-
         <Switch
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -94,9 +69,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:id="@+id/spinnerFocusSelection"></Spinner>
-
     </LinearLayout>
-
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"

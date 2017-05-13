@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -33,6 +34,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -40,6 +43,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+
+import static android.os.Build.VERSION_CODES.M;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -50,28 +55,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     SupportMapFragment mapFrag;
     LocationRequest mLocationRequest;
     GoogleApiClient mGoogleApiClient;
-    Location yourLastLocation;
-    Double objectLatitude = 0.0;
-    Double objectLongitude = 0.0;
     Marker yourCurrentLocationMarker;
-    Marker objectsCurrentLocationMarker;
     DatabaseReference mData;
-
-
-        // Declare strings
-    String yourSide = "";
-    String objectsSide = "";
-    String objectsLastTimeSend = "";
+    LatLng yourLatLng;
         // Declare variable for controls
     TextView textViewYourPosition;
-    TextView textViewObjectsLastTimeSend;
-    TextView textViewYourSide;
-    TextView textViewTimeNow;
+    Button btnSignOut, btnSelectUser;
     Switch switchLookType;
     Spinner spinnerFocusSelection;
     ArrayAdapter arrayAdapter;
     ArrayList <String> arrayListSelection;
-
+        // Declare for Firebase
+    FirebaseUser mUser;
+        // Manage selected user list
+    ArrayList <UserPosition> selectedUserArrayList;
         // Declare variable for just focusing object the first time after finding
     boolean focusObject = false;
     boolean focusYourSelf = false;
@@ -80,73 +77,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         MultiDex.install(this);
-        mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFrag.getMapAsync(this);
         mapping();
         init();
         addControls();
     }
 
     private void addControls() {
+        /**
+         *  Control setting
+         */
         switchLookType.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if( isChecked){
+                if (isChecked) {
                     mGoogleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
                 } else {
                     mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
                 }
             }
         });
-        mData.child("At Current").child(yourSide).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                textViewTimeNow.setText(dataSnapshot.getValue().toString());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        mData.child(objectsSide).child("Latitude").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d(TAG,"Trigger Latitude: " + dataSnapshot.getValue().toString());
-                objectLatitude = Double.valueOf(dataSnapshot.getValue().toString());
-                findObjectLocation();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        mData.child(objectsSide).child("Longitude").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d(TAG,"Trigger Longitude: " + dataSnapshot.getValue().toString());
-                objectLongitude = Double.valueOf(dataSnapshot.getValue().toString());
-                findObjectLocation();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        mData.child(objectsSide).child("SendTime").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                textViewObjectsLastTimeSend.setText(dataSnapshot.getValue().toString());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
         spinnerFocusSelection.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -155,7 +104,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     focusObject = false;
                     focusYourSelf = true;
                     notification = "Mỗi khi bạn di chuyển màn hình sẽ di chuyển theo bạn";
-                } else if (position == 1){
+                } else if (position == 1) {
                     focusObject = true;
                     focusYourSelf = false;
                     notification = "Mỗi khi đối tượng di chuyển màn hình sẽ di chuyển theo đối tượng";
@@ -166,43 +115,41 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
                 Toast.makeText(MapsActivity.this, notification, Toast.LENGTH_SHORT).show();
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
-
+        btnSelectUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendSelectedUserList();
+            }
+        });
+        btnSignOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signOutFromApp();
+            }
+        });
     }
 
     private void mapping() {
-        textViewObjectsLastTimeSend = (TextView)findViewById(R.id.textViewObjectsLastTimeSendMapsActivity);
+        btnSignOut = (Button)findViewById(R.id.btnSignOut_MapsActivity);
+        btnSelectUser = (Button)findViewById(R.id.btnSelectUser_MapsActivity);
         textViewYourPosition = (TextView) findViewById(R.id.textViewYourPositionMapsActivity);
-        textViewYourSide = (TextView)findViewById(R.id.textViewYourSideMapsActivity);
         switchLookType = (Switch)findViewById(R.id.switchLookTypeMapsActivity);
-        textViewTimeNow = (TextView)findViewById(R.id.textViewTimeNowMapsActivity);
         spinnerFocusSelection = (Spinner)findViewById(R.id.spinnerFocusSelection);
     }
-
     private void init() {
+            // Set up for google map
+        mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFrag.getMapAsync(this);
+            // Set up for firebase
         mData = FirebaseDatabase.getInstance().getReference();
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
         switchLookType.setChecked(false);
-        Intent intent = getIntent();
-        String side;
-        side = intent.getStringExtra("Side");
-        if (side.equals("A")){
-            yourSide = "A Side";
-            objectsSide = "B Side";
-            Log.d(TAG,"A Selected");
-            textViewYourSide.setText("Bạn thuộc bên A");
-        } else {
-            yourSide = "B Side";
-            objectsSide = "A Side";
-            Log.d(TAG, "B Selected");
-            textViewYourSide.setText("Bạn thuộc bên B");
-        }
-            // Send its time to firebase
-        new TimeAndDate(yourSide).showCurrentTime();
-
             // Initialize for spinner
         arrayListSelection = new ArrayList<>();
         arrayListSelection.add("Tập trung vào chính bạn");
@@ -211,29 +158,87 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         arrayAdapter = new ArrayAdapter(this,android.R.layout.simple_spinner_item,arrayListSelection);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
         spinnerFocusSelection.setAdapter(arrayAdapter);
+            // Get users
+        getUsersWantToConnect();
+        triggerUsersPosition();
     }
+    /**
+     * Trigger position people
+     */
+    private void triggerUsersPosition(){
+        for (final UserPosition userPosition : selectedUserArrayList) {
+            mData.child("Data").child(userPosition.getDisplayname()).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    double objectLatitude = 0, objectLongitude = 0;
+                    for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+                        if (dataSnapshot1.getKey().toString().equals("Latitude")) {
+                            objectLatitude = Double.valueOf(dataSnapshot1.getValue().toString());
+                        }
+                        if (dataSnapshot1.getKey().toString().equals("Longitude")) {
+                            objectLongitude = Double.valueOf(dataSnapshot1.getValue().toString());
+                        }
+                    }
+                    findObjectLocation(objectLatitude,objectLongitude, userPosition);
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-    // Get location from firebase when has changing
-    private void findObjectLocation() {
-        if (objectLatitude != 0 && objectLongitude != 0){
-            if (objectsCurrentLocationMarker != null) {
-                objectsCurrentLocationMarker.remove();
-            }
-            LatLng objectLatLng = new LatLng(objectLatitude,objectLongitude);
-            Log.d(TAG,"Gotten Latitude: " + objectLatitude);
-            Log.d(TAG,"Gotten Longitude: " + objectLongitude);
-            MarkerOptions markerOptions1 = new MarkerOptions();
-            markerOptions1.position(objectLatLng);
-            markerOptions1.title("Vị trí của đối phương");
-            markerOptions1.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
-            objectsCurrentLocationMarker = mGoogleMap.addMarker(markerOptions1);
-            // Just focus the first time after specfying object
-            if(focusObject) {
-                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(objectLatLng, 16));
-            }
+                }
+            });
+        }
+
+    }
+    private void getUsersWantToConnect(){
+        Intent intent = getIntent();
+        selectedUserArrayList =  (ArrayList) intent.getExtras().getParcelableArrayList("SelectedUserArrayList");
+    }
+    private void sendSelectedUserList(){
+        Intent intent = new Intent(MapsActivity.this,SelectGroupActivity.class);
+        intent.setFlags(2);
+        intent.putParcelableArrayListExtra("SelectedUserArrayList",selectedUserArrayList);
+        startActivity(intent);
+    }
+        // Get location from firebase when has changing
+    private void findObjectLocation(double objectLatitude, double objectLongitude, UserPosition userPosition) {
+        if (userPosition.getMarker() != null) {
+            userPosition.getMarker().remove();
+        }
+        LatLng objectLatLng = new LatLng(objectLatitude,objectLongitude);
+        Log.d(TAG,"Gotten Latitude: " + objectLatitude);
+        Log.d(TAG,"Gotten Longitude: " + objectLongitude);
+        Toast.makeText(this, "Lấy được vị trí của " + userPosition.getDisplayname(), Toast.LENGTH_SHORT).show();
+        MarkerOptions markerOptions1 = new MarkerOptions();
+        markerOptions1.position(objectLatLng);
+        markerOptions1.title(userPosition.getDisplayname());
+        markerOptions1.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
+        userPosition.setMarker(mGoogleMap.addMarker(markerOptions1));
+        // Just focus the first time after specfying object
+        if(focusObject) {
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(objectLatLng, 16));
         }
     }
-
+    private void signOutFromApp(){
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(MapsActivity.this);
+        alertDialog.setTitle("ĐĂNG XUẤT");
+        alertDialog.setMessage("Bạn thực sự muốn đăng xuất khỏi ứng dụng?");
+        alertDialog.setPositiveButton("Có", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(MapsActivity.this, LogInActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+        alertDialog.setNegativeButton("Không", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        alertDialog.create().show();
+    }
     @Override
     public void onPause() {
         super.onPause();
@@ -259,7 +264,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mGoogleMap=googleMap;
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         //Initialize Google Play Services
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+        if (android.os.Build.VERSION.SDK_INT >= M) {
             if (ContextCompat.checkSelfPermission(this,android.
                     Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
@@ -312,15 +317,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onLocationChanged(Location location)
     {
-        yourLastLocation = location;
         if (yourCurrentLocationMarker != null) {
             yourCurrentLocationMarker.remove();
         }
         //Place current location marker
-        LatLng yourLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-        mData.child(yourSide).child("Latitude").setValue(location.getLatitude());
-        mData.child(yourSide).child("Longitude").setValue(location.getLongitude());
-        mData.child(yourSide).child("SendTime").setValue(TimeAndDate.currentTimeOffline);
+        yourLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+        mData.child("Data").child(mUser.getDisplayName()).child("Latitude").setValue(location.getLatitude());
+        mData.child("Data").child(mUser.getDisplayName()).child("Longitude").setValue(location.getLongitude());
+        mData.child("Data").child(mUser.getDisplayName()).child("TimeSend").setValue(TimeAndDate.currentTimeOffline);
+        mData.child("User").child(mUser.getDisplayName()).setValue(TimeAndDate.currentTimeOffline);
         textViewYourPosition.setText(location.getLatitude() + ":" + location.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(yourLatLng);
@@ -346,8 +351,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
                 new AlertDialog.Builder(this)
-                        .setTitle("Location Permission Needed")
-                        .setMessage("This app needs the Location permission, please accept to use location functionality")
+                        .setTitle("Quyền truy cập vị trí")
+                        .setMessage("Ứng dụng cần truy cập vị trí của bạn, vui lòng chấp nhân để ứng dụng có thể hoạt động")
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -395,13 +400,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
-                    Toast.makeText(this, "permission denied", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Quyền truy cập vị trí bị từ chối", Toast.LENGTH_LONG).show();
                 }
                 return;
             }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
         }
     }
 }

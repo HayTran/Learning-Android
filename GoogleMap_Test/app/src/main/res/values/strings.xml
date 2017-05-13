@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GoogleMap_Test</string>
+    <string name="app_name">Connect Your Friends</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_navigation_drawable">NavigationDrawableActivity</string>
 
