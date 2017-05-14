@@ -13,6 +13,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.Enumeration;
+import java.util.HashMap;
 
 /**
  * Created by Tran Van Hay on 3/3/2017.
@@ -23,17 +24,11 @@ public class SocketServerThread extends Thread {
     private DatabaseReference mData = FirebaseDatabase.getInstance().getReference();
     static final int SocketServerPORT = 8080;
     int count = 0;
+    HashMap <String,NodeSensor> nodeSensorHashMap = new HashMap<>();
     ServerSocket serverSocket;
     SocketServerThread (ServerSocket serverSocket){
         this.serverSocket = serverSocket;
     }
-    private int strengthWifi = 0;
-    private int temperature = 0, humidity = 0;
-    private int lightIntensity0 = 0, lightIntensity1 = 0;
-    private int flameValue0_0 = 0, flameValue0_1 = 0,flameValue1_0 = 0, flameValue1_1 = 0;
-    private int flameValue2_0 = 0, flameValue2_1 = 0,flameValue3_0 = 0, flameValue3_1 = 0;
-    private int mq2Value0 = 0, mq2Value1 = 0, mq7Value0 = 0, mq7Value1 = 0;
-    private double flameValue0 = 0, flameValue1 = 0, flameValue2 = 0, flameValue3 = 0, lightIntensity = 0, mq2Value = 0, mq7Value = 0;
     @Override
     public void run() {
         try {
@@ -61,15 +56,30 @@ public class SocketServerThread extends Thread {
 
         // ReplyThreadFromServer Class
     class SocketServerReplyThread extends Thread {
-            ARPNetwork arpNetwork;
+            private int firstByteReceive = 0;
+            private int secondByteReceive = 0;
+            private static final int BEGIN_SESSION_FLAG = 110;
+            private static final int FIRST_CONFIRM_SESSION_FLAG = 120;
+            private static final int SECOND_CONFIRM_SESSION_FLAG = 130;
+            private static final int END_CONFIRM_SESSION_FLAG = 140;
+            private static final int BEGIN_SESSION_SENSOR_BYTE = 19;
+            private static final int RESULT_SESSION_FLAG = 150;
+            private static final int FIRST_CONFIRM_SENSOR_SESSION_BYTE = 20;
+            private static final int SECOND_CONFRIM_SENSOR_SESSION_BYTE = 1;
+            private int strengthWifi = 0;
+            private int temperature = 0, humidity = 0;
+            private int lightIntensity0 = 0, lightIntensity1 = 0;
+            private int flameValue0_0 = 0, flameValue0_1 = 0,flameValue1_0 = 0, flameValue1_1 = 0;
+            private int flameValue2_0 = 0, flameValue2_1 = 0,flameValue3_0 = 0, flameValue3_1 = 0;
+            private int mq2Value0 = 0, mq2Value1 = 0, mq7Value0 = 0, mq7Value1 = 0;
+            private double flameValue0 = 0, flameValue1 = 0, flameValue2 = 0, flameValue3 = 0, lightIntensity = 0, mq2Value = 0, mq7Value = 0;
             private Socket hostThreadSocket;  //this object specify whether this socket of which host
             int cnt;
-
+            private NodeSensor nodeSensor;
             SocketServerReplyThread(Socket socket, int c) {
                 hostThreadSocket = socket;
                 cnt = c;
             }
-
             @Override
             public void run() {
                 Log.d(TAG, "======================================================== Count = " + cnt);
@@ -78,47 +88,38 @@ public class SocketServerThread extends Thread {
                 DataInputStream dIn = null;
                 try {
                     dIn = new DataInputStream(hostThreadSocket.getInputStream());
-                    // Read data which sent from client
-                    temperature = dIn.readUnsignedByte();
-                    humidity = dIn.readUnsignedByte();
-                    flameValue0_0 = dIn.readUnsignedByte();
-                    flameValue0_1 = dIn.readUnsignedByte();
-                    flameValue1_0 = dIn.readUnsignedByte();
-                    flameValue1_1 = dIn.readUnsignedByte();
-                    flameValue2_0 = dIn.readUnsignedByte();
-                    flameValue2_1 = dIn.readUnsignedByte();
-                    flameValue3_0 = dIn.readUnsignedByte();
-                    flameValue3_1 = dIn.readUnsignedByte();
-                    lightIntensity0 = dIn.readUnsignedByte();
-                    lightIntensity1 = dIn.readUnsignedByte();
-                    mq2Value0 = dIn.readUnsignedByte();
-                    mq2Value1 = dIn.readUnsignedByte();
-                    mq7Value0 = dIn.readUnsignedByte();
-                    mq7Value1 = dIn.readUnsignedByte();
-                    strengthWifi = dIn.readUnsignedByte();
-                    // Reply to client data already received.
                     dOut = new DataOutputStream(hostThreadSocket.getOutputStream());
-                    dOut.writeByte(temperature);
-                    dOut.writeByte(humidity);
-                    dOut.writeByte(flameValue0_0);
-                    dOut.writeByte(flameValue0_1);
-                    dOut.writeByte(flameValue1_0);
-                    dOut.writeByte(flameValue1_1);
-                    dOut.writeByte(flameValue2_0);
-                    dOut.writeByte(flameValue2_1);
-                    dOut.writeByte(flameValue3_0);
-                    dOut.writeByte(flameValue3_1);
-                    dOut.writeByte(lightIntensity0);
-                    dOut.writeByte(lightIntensity1);
-                    dOut.writeByte(mq2Value0);
-                    dOut.writeByte(mq2Value1);
-                    dOut.writeByte(mq7Value0);
-                    dOut.writeByte(mq7Value1);
-                    dOut.writeByte(strengthWifi);
-                    // Convert value
-                    convertValue();
-                    // Send sensor data to NodeSensor
-                    sendDataToFirebase(new ARPNetwork(hostThreadSocket.getInetAddress().getHostAddress()).findMAC());
+                    // Read data which sent from client
+                    firstByteReceive = dIn.readUnsignedByte();
+                    secondByteReceive = dIn.readUnsignedByte();
+                    if (firstByteReceive == BEGIN_SESSION_FLAG) {
+                        if (secondByteReceive == BEGIN_SESSION_SENSOR_BYTE){ // 17 corresponding with sensor node
+                                // Read sensor data
+                            int [] arrayBytes = new int[BEGIN_SESSION_SENSOR_BYTE];
+                            for (int i = 0 ; i < arrayBytes.length; i++){
+                                arrayBytes[i] = dIn.readUnsignedByte();
+                            }
+                                // Intialize a Node Sensor object without confirmed
+                            String MACAddr = new ARPNetwork(hostThreadSocket.getInetAddress().getHostAddress()).findMAC();
+                            nodeSensor = new NodeSensor(arrayBytes, MACAddr, false);
+                            nodeSensor.convertValue();
+                            Log.d(TAG,"Node sensor: " + nodeSensor.toString());
+                            nodeSensorHashMap.put(MACAddr,nodeSensor);
+                                // Reply to client data already received.
+                            dOut.writeByte(FIRST_CONFIRM_SESSION_FLAG);
+                            for (int i = 0 ; i < arrayBytes.length; i++){
+                                dOut.writeByte(arrayBytes[i]);
+                            }
+                        }
+                    } else if (firstByteReceive == SECOND_CONFIRM_SESSION_FLAG){
+                        if (secondByteReceive == SECOND_CONFRIM_SENSOR_SESSION_BYTE) {
+                            Log.d(TAG,"Result code: " + dIn.readUnsignedByte());
+                            String MACAddr = new ARPNetwork(hostThreadSocket.getInetAddress().getHostAddress()).findMAC();
+                            nodeSensorHashMap.get(MACAddr).convertValue();
+                            Log.d(TAG,"Node sensor: " + nodeSensor.toString());
+                        }
+                    }
+
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
                     mData.child("Server Socket Read and Reply Error").push().setValue(e.toString() + " " + TimeAnDate.currentTimeOffline);
@@ -141,27 +142,6 @@ public class SocketServerThread extends Thread {
                 }
             }
         }
-    private void convertValue(){
-        flameValue0 = flameValue0_0 + flameValue0_1*256;
-        flameValue0 = 100 - (flameValue0/1024)*100;
-        flameValue1 = flameValue1_0 + flameValue1_1*256;
-        flameValue1 = 100 - (flameValue1/1024)*100;
-        flameValue2 = flameValue2_0 + flameValue2_1*256;
-        flameValue2 = 100 - (flameValue2/1024)*100;
-        flameValue3 = flameValue3_0 + flameValue3_1*256;
-        flameValue3 = 100 - (flameValue3/1024)*100;
-        lightIntensity = lightIntensity0 + lightIntensity1*256;
-        mq2Value = mq2Value0 + mq2Value1*256;
-        mq7Value = mq7Value0 + mq7Value1*256;
-    }
-    public void sendDataToFirebase(String MACAddr){
-        NodeSensor nodeSensor = new NodeSensor(strengthWifi,temperature,humidity,
-                flameValue0,flameValue1,flameValue2,flameValue3,
-                lightIntensity,mq2Value,mq7Value,MACAddr);
-
-        mData.child("SocketServer").child(MACAddr).setValue(nodeSensor);
-        Log.d(TAG,"Sent nodeSensor data to NodeSensor");
-    }
     // Get Server's IP waiting socket coming
     private String getIpAddress() {
         String ip = "";
