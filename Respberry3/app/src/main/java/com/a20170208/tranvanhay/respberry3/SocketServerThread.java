@@ -1,4 +1,5 @@
 package com.a20170208.tranvanhay.respberry3;
+
 import android.util.Log;
 
 import com.google.firebase.database.DatabaseReference;
@@ -106,6 +107,7 @@ public class SocketServerThread extends Thread {
                             String sendTime = TimeAnDate.currentTimeOffline;
                             NodeSensor nodeSensor = new NodeSensor(arrayBytes, MACAddr, sendTime, false);
                             nodeSensor.convertValue();
+                            Log.d(TAG,"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Begin session: ");
                             Log.d(TAG,"Node sensor: " + nodeSensor.toString());
                             nodeSensorHashMap.put(MACAddr,nodeSensor);
                                 // Reply to client data already received.
@@ -132,12 +134,13 @@ public class SocketServerThread extends Thread {
                          * if BEGIN_SESSION_SENSOR_BYTE corresponding with Node Sensor
                          */
                         if (secondByteReceive == SECOND_CONFRIM_SESSION_SENSOR_BYTE) {
+                            Log.d(TAG,"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ First confirm session: ");
                             Log.d(TAG,"Result code: " + dIn.readUnsignedByte());
                             String MACAddr = new ARPNetwork(hostThreadSocket.getInetAddress().getHostAddress()).findMAC();
-                            nodeSensorHashMap.get(MACAddr).convertValue();
                             nodeSensorHashMap.get(MACAddr).setConfirmed(true);
                             Log.d(TAG,"Size: " + nodeSensorHashMap.size());
                             Log.d(TAG,"Node sensor: " + nodeSensorHashMap.get(MACAddr).toString());
+                            checkSendDataToServer();
                         }
                         /**
                          * if BEGIN_SESSION_SENSOR_BYTE corresponding with Node PowDev
@@ -171,6 +174,14 @@ public class SocketServerThread extends Thread {
                         e.printStackTrace();
                     }
                 }
+            }
+            private void checkSendDataToServer(){
+//                for (NodeSensor nodeSensor : nodeSensorHashMap.values()){
+//                    if (nodeSensor.isConfirmed()) {
+////                        nodeSensor.sendToFirebase();
+////                        nodeSensor.setConfirmed(false);
+//                    }
+//                }
             }
         }
     // Get Server's IP waiting socket coming

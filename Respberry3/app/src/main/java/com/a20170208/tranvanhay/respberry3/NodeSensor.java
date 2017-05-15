@@ -1,17 +1,20 @@
 package com.a20170208.tranvanhay.respberry3;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 /**
  * Created by Tran Van Hay on 3/24/2017.
  */
 
 public class NodeSensor {
+    DatabaseReference mData = FirebaseDatabase.getInstance().getReference();
     private double strengthWifi,temperature, humidity;
     private double  flameValue0, flameValue1, flameValue2,flameValue3, lightIntensity, MQ2,MQ7;
     private String MACAddr;
     private boolean isConfirmed;
     private String sendTime;
     private int [] arrayBytes;
-
 
     public NodeSensor() {
     }
@@ -38,7 +41,15 @@ public class NodeSensor {
         MQ7 = arrayBytes[14] + arrayBytes[15]*256;
         strengthWifi = arrayBytes[16];
     }
-
+//    public void sendToFirebase(){
+//        mData.child("SocketServer").child(MACAddr).child("Temperature").setValue(temperature);
+//        mData.child("SocketServer").child(MACAddr).child("Humidity").setValue(humidity);
+//        mData.child("SocketServer").child(MACAddr).child("Light Intensity").setValue(lightIntensity);
+//        mData.child("SocketServer").child(MACAddr).child("Flame 0").setValue(flameValue0);
+//        mData.child("SocketServer").child(MACAddr).child("MQ2").setValue(MQ2);
+//        mData.child("SocketServer").child(MACAddr).child("MQ7").setValue(MQ7);
+//        mData.child("SocketServer").child(MACAddr).child("isConfirmed").setValue(isConfirmed);
+//    }
     public double getStrengthWifi() {
         return strengthWifi;
     }
@@ -161,4 +172,5 @@ public class NodeSensor {
                 ", sendTime='" + sendTime + '\'' +
                 '}';
     }
+
 }
