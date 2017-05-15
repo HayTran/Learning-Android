@@ -62,20 +62,18 @@ public class SocketServerThread extends Thread {
             private static final int FIRST_CONFIRM_SESSION_FLAG = 120;
             private static final int SECOND_CONFIRM_SESSION_FLAG = 130;
             private static final int END_CONFIRM_SESSION_FLAG = 140;
-            private static final int BEGIN_SESSION_SENSOR_BYTE = 19;
             private static final int RESULT_SESSION_FLAG = 150;
-            private static final int FIRST_CONFIRM_SENSOR_SESSION_BYTE = 20;
-            private static final int SECOND_CONFRIM_SENSOR_SESSION_BYTE = 1;
-            private int strengthWifi = 0;
-            private int temperature = 0, humidity = 0;
-            private int lightIntensity0 = 0, lightIntensity1 = 0;
-            private int flameValue0_0 = 0, flameValue0_1 = 0,flameValue1_0 = 0, flameValue1_1 = 0;
-            private int flameValue2_0 = 0, flameValue2_1 = 0,flameValue3_0 = 0, flameValue3_1 = 0;
-            private int mq2Value0 = 0, mq2Value1 = 0, mq7Value0 = 0, mq7Value1 = 0;
-            private double flameValue0 = 0, flameValue1 = 0, flameValue2 = 0, flameValue3 = 0, lightIntensity = 0, mq2Value = 0, mq7Value = 0;
+                // Flags for sensor
+            private static final int BEGIN_SESSION_SENSOR_BYTE = 19;            // 17 byte data, 1 flag, 1 its data
+            private static final int FIRST_CONFIRM_SESSION_SENSOR_BYTE = 18;
+            private static final int SECOND_CONFRIM_SESSION_SENSOR_BYTE = 1;
+                // Flags for powdev
+            private static final int BEGIN_SESSION_POWDEV_BYTE = 2;             // 1 byte flag and its contain
+            private static final int FIRST_CONFIRM_SESSION_POWDEV_BYTE = 5;     // 4 byte data, 1 flag
+            private static final int SECOND_CONFRIM_SESSION_POWDEV_BYTE = 6;    // 4 byte data, 1 flag, 1 its contain
+            private static final int END_CONFIRM_SESSION_POWDEV_BYTE = 140;
             private Socket hostThreadSocket;  //this object specify whether this socket of which host
             int cnt;
-            private NodeSensor nodeSensor;
             SocketServerReplyThread(Socket socket, int c) {
                 hostThreadSocket = socket;
                 cnt = c;
@@ -89,19 +87,24 @@ public class SocketServerThread extends Thread {
                 try {
                     dIn = new DataInputStream(hostThreadSocket.getInputStream());
                     dOut = new DataOutputStream(hostThreadSocket.getOutputStream());
-                    // Read data which sent from client
+                    // Read 2 flags
                     firstByteReceive = dIn.readUnsignedByte();
                     secondByteReceive = dIn.readUnsignedByte();
+                        // Begin session
                     if (firstByteReceive == BEGIN_SESSION_FLAG) {
-                        if (secondByteReceive == BEGIN_SESSION_SENSOR_BYTE){ // 17 corresponding with sensor node
+                        /**
+                         * if BEGIN_SESSION_SENSOR_BYTE corresponding with Node Sensor
+                         */
+                        if (secondByteReceive == BEGIN_SESSION_SENSOR_BYTE){
                                 // Read sensor data
-                            int [] arrayBytes = new int[BEGIN_SESSION_SENSOR_BYTE];
+                            int [] arrayBytes = new int[BEGIN_SESSION_SENSOR_BYTE - 2]; // Subtract 2 byte flags, and number of bytes will send
                             for (int i = 0 ; i < arrayBytes.length; i++){
                                 arrayBytes[i] = dIn.readUnsignedByte();
                             }
                                 // Intialize a Node Sensor object without confirmed
                             String MACAddr = new ARPNetwork(hostThreadSocket.getInetAddress().getHostAddress()).findMAC();
-                            nodeSensor = new NodeSensor(arrayBytes, MACAddr, false);
+                            String sendTime = TimeAnDate.currentTimeOffline;
+                            NodeSensor nodeSensor = new NodeSensor(arrayBytes, MACAddr, sendTime, false);
                             nodeSensor.convertValue();
                             Log.d(TAG,"Node sensor: " + nodeSensor.toString());
                             nodeSensorHashMap.put(MACAddr,nodeSensor);
@@ -111,13 +114,41 @@ public class SocketServerThread extends Thread {
                                 dOut.writeByte(arrayBytes[i]);
                             }
                         }
-                    } else if (firstByteReceive == SECOND_CONFIRM_SESSION_FLAG){
-                        if (secondByteReceive == SECOND_CONFRIM_SENSOR_SESSION_BYTE) {
+                        /**
+                         * if BEGIN_SESSION_SENSOR_BYTE corresponding with Node PowDev
+                         */
+                        else if (secondByteReceive == BEGIN_SESSION_POWDEV_BYTE) {
+                            int strengthWifi = dIn.readUnsignedByte();
+                            Log.d(TAG,"StrengthWifi: " + strengthWifi);
+                            dOut.writeByte(FIRST_CONFIRM_SESSION_FLAG);
+                            dOut.writeByte(count + 1);
+                            dOut.writeByte(count + 2);
+                            dOut.writeByte(count + 3);
+                            dOut.writeByte(count + 4);
+                        }
+                    }   // Second confirm session flag
+                    else if (firstByteReceive == SECOND_CONFIRM_SESSION_FLAG){
+                        /**
+                         * if BEGIN_SESSION_SENSOR_BYTE corresponding with Node Sensor
+                         */
+                        if (secondByteReceive == SECOND_CONFRIM_SESSION_SENSOR_BYTE) {
                             Log.d(TAG,"Result code: " + dIn.readUnsignedByte());
                             String MACAddr = new ARPNetwork(hostThreadSocket.getInetAddress().getHostAddress()).findMAC();
                             nodeSensorHashMap.get(MACAddr).convertValue();
-                            Log.d(TAG,"Node sensor: " + nodeSensor.toString());
+                            nodeSensorHashMap.get(MACAddr).setConfirmed(true);
+                            Log.d(TAG,"Size: " + nodeSensorHashMap.size());
+                            Log.d(TAG,"Node sensor: " + nodeSensorHashMap.get(MACAddr).toString());
                         }
+                        /**
+                         * if BEGIN_SESSION_SENSOR_BYTE corresponding with Node PowDev
+                         */
+                        else if (secondByteReceive == SECOND_CONFRIM_SESSION_POWDEV_BYTE) {
+                                for (int i = 0 ; i < SECOND_CONFRIM_SESSION_POWDEV_BYTE - 2; i ++){
+                                    Log.d(TAG,"Value: " + dIn.readUnsignedByte());
+                                }
+                                dOut.writeByte(END_CONFIRM_SESSION_FLAG);
+                                dOut.writeByte(RESULT_SESSION_FLAG);
+                            }
                     }
 
                 } catch (IOException e) {
