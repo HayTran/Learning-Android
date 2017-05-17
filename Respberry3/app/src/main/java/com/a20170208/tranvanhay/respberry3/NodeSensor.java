@@ -19,9 +19,8 @@ public class NodeSensor {
     public NodeSensor() {
     }
 
-    public NodeSensor(int[] arrayBytes, String MACAddr, String sendTime, boolean isConfirmed) {
+    public NodeSensor(int[] arrayBytes, String MACAddr, boolean isConfirmed) {
         this.arrayBytes = arrayBytes;
-        this.sendTime = sendTime;
         this.MACAddr = MACAddr;
         this.isConfirmed = isConfirmed;
     }
@@ -41,15 +40,19 @@ public class NodeSensor {
         MQ7 = arrayBytes[14] + arrayBytes[15]*256;
         strengthWifi = arrayBytes[16];
     }
-//    public void sendToFirebase(){
-//        mData.child("SocketServer").child(MACAddr).child("Temperature").setValue(temperature);
-//        mData.child("SocketServer").child(MACAddr).child("Humidity").setValue(humidity);
-//        mData.child("SocketServer").child(MACAddr).child("Light Intensity").setValue(lightIntensity);
-//        mData.child("SocketServer").child(MACAddr).child("Flame 0").setValue(flameValue0);
-//        mData.child("SocketServer").child(MACAddr).child("MQ2").setValue(MQ2);
-//        mData.child("SocketServer").child(MACAddr).child("MQ7").setValue(MQ7);
-//        mData.child("SocketServer").child(MACAddr).child("isConfirmed").setValue(isConfirmed);
-//    }
+    public void sendToFirebase(){
+        mData.child("SocketServer").child(MACAddr).child("Temperature").setValue(temperature);
+        mData.child("SocketServer").child(MACAddr).child("Humidity").setValue(humidity);
+        mData.child("SocketServer").child(MACAddr).child("Flame 0").setValue(flameValue0);
+        mData.child("SocketServer").child(MACAddr).child("Flame 1").setValue(flameValue1);
+        mData.child("SocketServer").child(MACAddr).child("Flame 2").setValue(flameValue2);
+        mData.child("SocketServer").child(MACAddr).child("Flame 3").setValue(flameValue3);
+        mData.child("SocketServer").child(MACAddr).child("Light Intensity").setValue(lightIntensity);
+        mData.child("SocketServer").child(MACAddr).child("MQ2").setValue(MQ2);
+        mData.child("SocketServer").child(MACAddr).child("MQ7").setValue(MQ7);
+        mData.child("SocketServer").child(MACAddr).child("isConfirmed").setValue(isConfirmed);
+        mData.child("SocketServer").child(MACAddr).child("Send time").setValue(sendTime);
+    }
     public double getStrengthWifi() {
         return strengthWifi;
     }
