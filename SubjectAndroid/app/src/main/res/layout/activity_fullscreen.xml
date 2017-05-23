@@ -66,17 +66,7 @@
                     android:layout_weight="1"
                     android:id="@+id/btnSound"
                     android:src="@drawable/ic_volume_off_black_24dp"/>
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"/>
-                <ImageButton
-                    android:id="@+id/btnFastRewind"
-                    style="?metaButtonBarButtonStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_fast_rewind_black_24dp"/>
+
                 <Space
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -87,18 +77,18 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:src="@drawable/ic_pause_circle_filled_black_24dp" />
+                    android:src="@drawable/ic_pause_black_24dp" />
+
                 <Space
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"/>
                 <ImageButton
-                    android:id="@+id/btnFastForward"
-                    style="?metaButtonBarButtonStyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:src="@drawable/ic_fast_forward_black_24dp"/>
+                    android:id="@+id/btnStop"
+                    android:src="@drawable/ic_stop_black_24dp"/>
                 <Space
                     android:layout_width="0dp"
                     android:layout_height="match_parent"

@@ -7,9 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.media.AudioManager;
-import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -34,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
-    ImageButton btnChangeActivity,btnPlayPause, btnFastRewind, btnFastForward, btnSound;
+    ImageButton btnChangeActivity, btnPlayPause,btnSound, btnStop;
     VideoView videoView;
     SeekBar seekBar;
     ListView listViewLastViewed;
@@ -98,6 +96,14 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        btnStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                videoView.pause();
+                videoView.seekTo(0);
+                isPlaying = !isPlaying;
+            }
+        });
         btnPlayPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                     btnPlayPause.setImageResource(R.drawable.ic_play_arrow_black_24dp);
                     videoView.pause();
                 } else  {
-                    btnPlayPause.setImageResource(R.drawable.ic_pause_circle_filled_black_24dp);
+                    btnPlayPause.setImageResource(R.drawable.ic_pause_black_24dp);
                     videoView.seekTo(videoView.getCurrentPosition());
                     videoView.start();
                 }
@@ -128,27 +134,6 @@ public class MainActivity extends AppCompatActivity {
                 videoView.pause();
                 videoView.seekTo(seekBar.getProgress());
                 videoView.start();
-            }
-        });
-        btnFastRewind.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentPosition = videoView.getCurrentPosition();
-                int SUBTRACT_TIME = 5000;
-                if(currentPosition - SUBTRACT_TIME > 0 )  {
-                    videoView.seekTo(currentPosition - SUBTRACT_TIME);
-                }
-            }
-        });
-        btnFastForward.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentPosition = videoView.getCurrentPosition();
-                videoDuration = videoView.getDuration();
-                int ADD_TIME = 5000;
-                if(currentPosition + ADD_TIME < videoDuration)  {
-                    videoView.seekTo(currentPosition + ADD_TIME);
-                }
             }
         });
         btnSound.setOnClickListener(new View.OnClickListener() {
@@ -283,8 +268,7 @@ public class MainActivity extends AppCompatActivity {
     private void mapping() {
         videoView = (VideoView)findViewById(R.id.videoView);
         btnChangeActivity = (ImageButton)findViewById(R.id.btnChangeActivity);
-        btnFastForward = (ImageButton)findViewById(R.id.btnFastForward);
-        btnFastRewind = (ImageButton)findViewById(R.id.btnFastRewind);
+        btnStop  = (ImageButton)findViewById(R.id.btnStop);
         btnPlayPause = (ImageButton)findViewById(R.id.btnPlayPause);
         btnSound = (ImageButton)findViewById(R.id.btnSound);
         seekBar = (SeekBar)findViewById(R.id.seekBar);
@@ -312,24 +296,7 @@ public class MainActivity extends AppCompatActivity {
         long seconds =  TimeUnit.MILLISECONDS.toSeconds((long) milliseconds - (minutes * 60000)) ;
         return minutes+":"+ seconds;
     }
-    // Create a thumbnail for video icon
-    private Bitmap getVideoFrame(String uri) {
-        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        try {
-            retriever.setDataSource(uri);
-            return retriever.getFrameAtTime(1);
-        } catch (IllegalArgumentException ex) {
-            ex.printStackTrace();
-        } catch (RuntimeException ex) {
-            ex.printStackTrace();
-        } finally {
-            try {
-                retriever.release();
-            } catch (RuntimeException ex) {
-            }
-        }
-        return null;
-    }
+
         // Storage Permissions variables
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {

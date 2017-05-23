@@ -92,7 +92,7 @@ public class FullscreenActivity extends AppCompatActivity {
             return false;
         }
     };
-    ImageButton btnChangeActivity,btnPlayPause, btnFastRewind, btnFastForward, btnSound;
+    ImageButton btnChangeActivity,btnPlayPause, btnSound , btnStop;
     SeekBar seekBar;
     VideoView videoView;
     TextView textViewVideoTitile, textViewCurrentTime, textViewMaxTime;
@@ -142,7 +142,14 @@ public class FullscreenActivity extends AppCompatActivity {
         });
             // Auto hide after request show from user
         findViewById(R.id.contentView).setOnTouchListener(mDelayHideTouchListener);
-
+        btnStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                videoView.pause();
+                videoView.seekTo(0);
+                isPlaying = !isPlaying;
+            }
+        });
         btnChangeActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -162,7 +169,7 @@ public class FullscreenActivity extends AppCompatActivity {
                     btnPlayPause.setImageResource(R.drawable.ic_play_arrow_black_24dp);
                     videoView.pause();
                 } else  {
-                    btnPlayPause.setImageResource(R.drawable.ic_pause_circle_filled_black_24dp);
+                    btnPlayPause.setImageResource(R.drawable.ic_pause_black_24dp);
                     videoView.seekTo(videoView.getCurrentPosition());
                     videoView.start();
                 }
@@ -185,27 +192,6 @@ public class FullscreenActivity extends AppCompatActivity {
                 videoView.pause();
                 videoView.seekTo(seekBar.getProgress());
                 videoView.start();
-            }
-        });
-        btnFastRewind.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentPosition = videoView.getCurrentPosition();
-                int SUBTRACT_TIME = 5000;
-                if(currentPosition - SUBTRACT_TIME > 0 )  {
-                    videoView.seekTo(currentPosition - SUBTRACT_TIME);
-                }
-            }
-        });
-        btnFastForward.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentPosition = videoView.getCurrentPosition();
-                videoDuration = videoView.getDuration();
-                int ADD_TIME = 5000;
-                if(currentPosition + ADD_TIME < videoDuration)  {
-                    videoView.seekTo(currentPosition + ADD_TIME);
-                }
             }
         });
         btnSound.setOnClickListener(new View.OnClickListener() {
@@ -270,8 +256,7 @@ public class FullscreenActivity extends AppCompatActivity {
         mContentView = findViewById(R.id.contentView);
         videoView = (VideoView)findViewById(R.id.videoView);
         btnChangeActivity = (ImageButton)findViewById(R.id.btnChangeActivity);
-        btnFastForward = (ImageButton)findViewById(R.id.btnFastForward);
-        btnFastRewind = (ImageButton)findViewById(R.id.btnFastRewind);
+        btnStop = (ImageButton)findViewById(R.id.btnStop);
         btnPlayPause = (ImageButton)findViewById(R.id.btnPlayPause);
         btnSound = (ImageButton)findViewById(R.id.btnSound);
         seekBar = (SeekBar)findViewById(R.id.seekBar);
