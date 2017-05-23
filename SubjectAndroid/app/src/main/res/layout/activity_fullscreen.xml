@@ -9,27 +9,27 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/contentView_FullScreenActivity"/>
+        android:id="@+id/contentView"/>
     <VideoView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:keepScreenOn="true"
         android:layout_weight="2"
-        android:id="@+id/videoView_FullScreenActivity"/>
+        android:id="@+id/videoView"/>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
-        android:id="@+id/contentControl_FullScreenActivity">
+        android:id="@+id/contentControl">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
             android:background="@color/black_overlay">
             <TextView
-                android:id="@+id/textViewVideoTitle_FullScreenActivity"
+                android:id="@+id/textViewVideoTitle"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center_horizontal"
@@ -48,26 +48,30 @@
             <SeekBar
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/seekBar_FullScreenActivity"/>
+                android:id="@+id/seekBar"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <Space
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1.5"
+                    android:gravity="center|top"
+                    android:textColor="#f5f0f0"
+                    android:id="@+id/textViewCurrentTime"
+                    android:text="00:00"/>
                 <ImageButton
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:id="@+id/btnSound_FullScreenActivity"
+                    android:id="@+id/btnSound"
                     android:src="@drawable/ic_volume_off_black_24dp"/>
                 <Space
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"/>
                 <ImageButton
-                    android:id="@+id/btnFastRewind_FullScreenActivity"
+                    android:id="@+id/btnFastRewind"
                     style="?metaButtonBarButtonStyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -78,7 +82,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"/>
                 <ImageButton
-                    android:id="@+id/btnPlayPause_FullScreenActivity"
+                    android:id="@+id/btnPlayPause"
                     style="?metaButtonBarButtonStyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -89,7 +93,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"/>
                 <ImageButton
-                    android:id="@+id/btnFastForward_FullScreenActivity"
+                    android:id="@+id/btnFastForward"
                     style="?metaButtonBarButtonStyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -103,12 +107,16 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:id="@+id/btnChangeActivity_FullScreenActivity"
+                    android:id="@+id/btnChangeActivity"
                     android:src="@drawable/ic_stay_current_portrait_black_24dp"/>
-                <Space
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1.5"
+                    android:textColor="#f5f0f0"
+                    android:id="@+id/textViewMaxTime"
+                    android:gravity="center|top"
+                    android:text="00:00"/>
             </LinearLayout>
         </LinearLayout>
     </FrameLayout>

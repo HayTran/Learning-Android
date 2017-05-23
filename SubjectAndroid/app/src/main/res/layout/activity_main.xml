@@ -3,18 +3,144 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:keepScreenOn="true"
+    android:background="#fff"
     android:orientation="vertical">
     <VideoView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"
+        android:layout_weight="3"
         android:keepScreenOn="true"
-        android:id="@+id/videoView_MainActivity"/>
-    <Button
+        android:id="@+id/videoView" />
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:text="Change activity5"
-        android:id="@+id/btnChangeActivity_MainActivity"/>
+        android:layout_weight="5"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/textViewVideoTitle"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            android:gravity="center_horizontal"
+            android:text="Video title"
+            android:textColor="#33b5e5"
+            android:textSize="18sp"/>
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            android:id="@+id/seekBar" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp">
+            <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5"
+            android:gravity="center|top"
+            android:textColor="#160101"
+            android:id="@+id/textViewCurrentTime"
+            android:text="00:00"/>
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:id="@+id/btnSound"
+                android:layout_gravity="center"
+                android:background="#fff"
+                android:src="@drawable/ic_volume_off_black_24dp"/>
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/btnFastRewind"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:background="#fff"
+                android:src="@drawable/ic_fast_rewind_black_24dp"/>
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/btnPlayPause"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:background="#fff"
+                android:src="@drawable/ic_pause_circle_filled_black_24dp" />
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/btnFastForward"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:background="#fff"
+                android:src="@drawable/ic_fast_forward_black_24dp"/>
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:id="@+id/btnChangeActivity"
+                android:layout_gravity="center"
+                android:background="#fff"
+                android:src="@drawable/ic_stay_current_portrait_black_24dp"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.5"
+                android:textColor="#160101"
+                android:id="@+id/textViewMaxTime"
+                android:gravity="center|top"
+                android:text="00:00"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+          <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+              android:gravity="center"
+              android:textSize="20sp"
+              android:textColor="#0f7b37"
+            android:text="Last Viewed"
+              android:id="@+id/textViewLastViewed"
+              />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="5"
+            android:orientation="horizontal">
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/listViewLastViewed"/>
+        </LinearLayout>
+
+
+    </LinearLayout>
 
 </LinearLayout>

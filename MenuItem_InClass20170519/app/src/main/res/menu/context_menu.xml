@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item android:title="Edit Context"
+            android:id="@+id/editMenuContext"
+            android:icon="@drawable/ic_alarm_on_black_24dp" />
+        <item android:title="Save Context"
+            android:id="@+id/saveMenuContext"
+            android:icon="@drawable/ic_assignment_ind_black_24dp" />
+    </group>
+
+</menu>

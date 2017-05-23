@@ -19,6 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
@@ -77,7 +79,7 @@ public class FullscreenActivity extends AppCompatActivity {
         }
     };
     /**
-     * Touch listener to use for in-layout UI controls to delay hiding the
+     * Touch listener to use for in-layout_row UI controls to delay hiding the
      * system UI. This is to prevent the jarring behavior of controls going away
      * while interacting with activity UI.
      */
@@ -93,7 +95,7 @@ public class FullscreenActivity extends AppCompatActivity {
     ImageButton btnChangeActivity,btnPlayPause, btnFastRewind, btnFastForward, btnSound;
     SeekBar seekBar;
     VideoView videoView;
-    TextView textViewTitleVideo;
+    TextView textViewVideoTitile, textViewCurrentTime, textViewMaxTime;
     Uri path;
     int currentPosition = 0;
     int videoDuration = 0;
@@ -101,6 +103,7 @@ public class FullscreenActivity extends AppCompatActivity {
     boolean isPlaying = true;
     boolean isMuted = false;
     private Handler threadHandler = new Handler();
+    DBHelper dbHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,7 +112,26 @@ public class FullscreenActivity extends AppCompatActivity {
         init();
         addControls();
     }
-
+    @Override
+    protected void onDestroy() {
+        Log.d(TAG,"On Destroy");
+        Log.d(TAG,"Current Position:" + currentPosition);
+        if (path != null) {
+            MyVideo myVideo = new MyVideo(filename,videoDuration,currentPosition,path+"");
+            dbHelper.insertOrUpdateVideo(myVideo);
+        }
+        super.onDestroy();
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG,"On Destroy");
+        Log.d(TAG,"Current Position:" + currentPosition);
+        videoView.pause();
+        videoView.seekTo(currentPosition);
+        videoView.start();
+        textViewVideoTitile.setText(filename);
+    }
     private void addControls() {
             // Set up the user interaction to manually show or hide the system UI.
         mContentView.setOnClickListener(new View.OnClickListener() {
@@ -118,11 +140,14 @@ public class FullscreenActivity extends AppCompatActivity {
                 toggle();
             }
         });
+            // Auto hide after request show from user
+        findViewById(R.id.contentView).setOnTouchListener(mDelayHideTouchListener);
+
         btnChangeActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(FullscreenActivity.this,MainActivity.class);
-                intent.addFlags(105);
+                intent.setFlags(105);
                 intent.putExtra("path",path+"");
                 intent.putExtra("currentPosition",videoView.getCurrentPosition());
                 intent.putExtra("filename",filename);
@@ -212,10 +237,10 @@ public class FullscreenActivity extends AppCompatActivity {
                 videoDuration = videoView.getDuration();
                 Log.d(TAG,"duration = " + videoDuration);
                 seekBar.setMax(videoDuration);
+                textViewMaxTime.setText(millisecondsToString(videoDuration));
             }
         });
-            // Auto hide after request show from user
-        findViewById(R.id.contentView_FullScreenActivity).setOnTouchListener(mDelayHideTouchListener);
+
     }
 
     private void init() {
@@ -224,36 +249,54 @@ public class FullscreenActivity extends AppCompatActivity {
         currentPosition = intent.getIntExtra("currentPosition",0);
         path = Uri.parse(intent.getStringExtra("path"));
         filename = intent.getStringExtra("filename");
+        Log.d(TAG,"getIntent");
+        Log.d(TAG,"Path: " +intent.getStringExtra("path").toString() );
         if(path != null){
             videoView.setVideoURI(path);
             videoView.seekTo(currentPosition);
             videoView.start();
-            textViewTitleVideo.setText(filename);
+            textViewVideoTitile.setText(filename);
             UpdateSeekBarThread updateSeekBarThread = new UpdateSeekBarThread();
             threadHandler.postDelayed(updateSeekBarThread,50);
         } else {
-            Toast.makeText(this, "Có lỗi, vui lòng thử lại", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Ooh! Has a error", Toast.LENGTH_SHORT).show();
         }
+        // Register for SQLite
+        dbHelper = new DBHelper(FullscreenActivity.this);
 
     }
     private void mapping() {
-        mControlsView = findViewById(R.id.contentControl_FullScreenActivity);
-        mContentView = findViewById(R.id.contentView_FullScreenActivity);
-        videoView = (VideoView)findViewById(R.id.videoView_FullScreenActivity);
-        btnChangeActivity = (ImageButton)findViewById(R.id.btnChangeActivity_FullScreenActivity);
-        btnFastForward = (ImageButton)findViewById(R.id.btnFastForward_FullScreenActivity);
-        btnFastRewind = (ImageButton)findViewById(R.id.btnFastRewind_FullScreenActivity);
-        btnPlayPause = (ImageButton)findViewById(R.id.btnPlayPause_FullScreenActivity);
-        btnSound = (ImageButton)findViewById(R.id.btnSound_FullScreenActivity);
-        seekBar = (SeekBar)findViewById(R.id.seekBar_FullScreenActivity);
-        textViewTitleVideo = (TextView)findViewById(R.id.textViewVideoTitle_FullScreenActivity);
+        mControlsView = findViewById(R.id.contentControl);
+        mContentView = findViewById(R.id.contentView);
+        videoView = (VideoView)findViewById(R.id.videoView);
+        btnChangeActivity = (ImageButton)findViewById(R.id.btnChangeActivity);
+        btnFastForward = (ImageButton)findViewById(R.id.btnFastForward);
+        btnFastRewind = (ImageButton)findViewById(R.id.btnFastRewind);
+        btnPlayPause = (ImageButton)findViewById(R.id.btnPlayPause);
+        btnSound = (ImageButton)findViewById(R.id.btnSound);
+        seekBar = (SeekBar)findViewById(R.id.seekBar);
+        textViewVideoTitile = (TextView)findViewById(R.id.textViewVideoTitle);
+        textViewCurrentTime = (TextView)findViewById(R.id.textViewCurrentTime);
+        textViewMaxTime = (TextView)findViewById(R.id.textViewMaxTime);
+
     }
         // Thread used to update for seekbar
     class UpdateSeekBarThread implements Runnable {
         public void run()  {
+            if (videoView.getCurrentPosition() > 0) {
+                currentPosition = videoView.getCurrentPosition();
+            }
+            Log.d(TAG,"Current Position: " + currentPosition);
             seekBar.setProgress(videoView.getCurrentPosition());
+            textViewCurrentTime.setText(millisecondsToString(videoView.getCurrentPosition()));
             threadHandler.postDelayed(this, 50);
         }
+    }
+    // Convert milisecond to time
+    private String millisecondsToString(int milliseconds)  {
+        long minutes = TimeUnit.MILLISECONDS.toMinutes((long) milliseconds);
+        long seconds =  TimeUnit.MILLISECONDS.toSeconds((long) milliseconds - (minutes * 60000)) ;
+        return minutes+":"+ seconds;
     }
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {

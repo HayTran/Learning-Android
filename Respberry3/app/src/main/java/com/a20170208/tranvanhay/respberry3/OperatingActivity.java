@@ -54,17 +54,21 @@ public class OperatingActivity extends Activity {
     StorageReference storageRef = storage.getReference();
     int count = 0;
     String linkURL = "";
+    DBHelper dbHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_operating);
         mapping();
-        new TimeAnDate().showCurrentTime();
+        new TimeAndDate().showCurrentTime();
         displayInMonitor();
         captureImage();
         triggerFCM();
         socketServerThread = new SocketServerThread(serverSocket);
         socketServerThread.start();
+        dbHelper = new DBHelper(OperatingActivity.this);
+        dbHelper.insertEmployee();
+        dbHelper.getAllEmployee();
     }
 
     private void mapping() {
@@ -82,7 +86,7 @@ public class OperatingActivity extends Activity {
             public void onDataChange(final DataSnapshot dataSnapshot) {
                 String triggeredData =  dataSnapshot.getValue().toString();
                 Log.d(TAG,"Triggered realtime database. Ref: Warning: "+ triggeredData);
-                new FCMServerThread(TimeAnDate.currentTimeOffline).start();
+                new FCMServerThread(TimeAndDate.currentTimeOffline).start();
             }
 
             @Override

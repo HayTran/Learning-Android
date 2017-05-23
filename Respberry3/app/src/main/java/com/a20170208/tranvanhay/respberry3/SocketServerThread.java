@@ -56,7 +56,7 @@ public class SocketServerThread extends Thread {
             }
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            mData.child("Server Socket Accept Error").push().setValue(e.toString() + " " + TimeAnDate.currentTimeOffline);
+            mData.child("Server Socket Accept Error").push().setValue(e.toString() + " " + TimeAndDate.currentTimeOffline);
             Log.d(TAG, "Exception Catched: " + e.toString());
             e.printStackTrace();
         }
@@ -170,7 +170,7 @@ public class SocketServerThread extends Thread {
                             Log.d(TAG,"Result code: " + dIn.readUnsignedByte());
                             String MACAddr = new ARPNetwork(hostThreadSocket.getInetAddress().getHostAddress()).findMAC();
                             nodeSensorHashMap.get(MACAddr).setConfirmed(true);
-                            nodeSensorHashMap.get(MACAddr).setSendTime(TimeAnDate.currentTimeOffline);
+                            nodeSensorHashMap.get(MACAddr).setSendTime(TimeAndDate.currentTimeOffline);
                             Log.d(TAG,"Size: " + nodeSensorHashMap.size());
                             Log.d(TAG,"Node sensor: " + nodeSensorHashMap.get(MACAddr).toString());
                             checkSendDataToServer();
@@ -196,7 +196,7 @@ public class SocketServerThread extends Thread {
 
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
-                    mData.child("Server Socket Read and Reply Error").push().setValue(e.toString() + " " + TimeAnDate.currentTimeOffline);
+                    mData.child("Server Socket Read and Reply Error").push().setValue(e.toString() + " " + TimeAndDate.currentTimeOffline);
                     e.printStackTrace();
                     Log.d(TAG, "Exception Catched: " + e.toString());
                 } catch (NullPointerException e) {

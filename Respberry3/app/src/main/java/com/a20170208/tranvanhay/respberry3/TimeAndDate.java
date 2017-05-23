@@ -13,8 +13,8 @@ import java.util.TimeZone;
  * Created by Tran Van Hay on 3/27/2017.
  */
 
-public class TimeAnDate {
-    private static final String TAG = TimeAnDate.class.getSimpleName();
+public class TimeAndDate {
+    private static final String TAG = TimeAndDate.class.getSimpleName();
     DatabaseReference mData = FirebaseDatabase.getInstance().getReference();
     public static String currentTimeOffline = "";
     // Instance for a handler
