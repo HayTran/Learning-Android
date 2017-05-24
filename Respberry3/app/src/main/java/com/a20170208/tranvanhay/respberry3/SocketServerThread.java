@@ -2,11 +2,8 @@ package com.a20170208.tranvanhay.respberry3;
 
 import android.util.Log;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -28,29 +25,27 @@ public class SocketServerThread extends Thread {
     private DatabaseReference mData = FirebaseDatabase.getInstance().getReference();
     static final int SocketServerPORT = 8080;
     int count = 0;
-    int D1 = 0 ,D2 = 0 , D3 = 0, D4 = 0, D5 = 0;
+    HashMap <String,String> MACAddrAndIDHashMap = new HashMap<>();  // help server recognize || help user recognize
     HashMap <String,NodeSensor> nodeSensorHashMap = new HashMap<>();
     HashMap <String,NodePowDev> nodePowDevHashMap = new HashMap<>();
-    HashMap <String,String> MACAddrAndIDHashMap = new HashMap<>();  // help server recognize || help user recognize
     ServerSocket serverSocket;
     SocketServerThread (ServerSocket serverSocket){
         this.serverSocket = serverSocket;
     }
     @Override
     public void run() {
-        triggerPowDev();
         mappingMACAddrAndID();
         try {
             serverSocket = new ServerSocket(SocketServerPORT);
             mData.child("SocketServer").child("zNotify").setValue("IP:"+this.getIpAddress()+":"+serverSocket.getLocalPort());
             while (true) {
                 count ++;
-                if(count >=255){
+                if(count >= 255){
                     count = 0;
                 }
                 Socket socket = serverSocket.accept();
                     // Set time out for not delay
-                socket.setSoTimeout(3000);
+                socket.setSoTimeout(2000);
                     // Initialize a SocketServerReplyThread object
                 SocketServerReplyThread socketServerReplyThread = new SocketServerReplyThread(
                         socket, count);
@@ -67,35 +62,6 @@ public class SocketServerThread extends Thread {
     private void mappingMACAddrAndID() {
         MACAddrAndIDHashMap.put("5c:cf:7f:ab:ac:81","NodeSensor0");
         MACAddrAndIDHashMap.put("a0:20:a6:02:10:57","NodePowDev0");
-    }
-    private void triggerPowDev(){
-        mData.child("At PowDev").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                    if (dataSnapshot1.getKey().equals("D1")) {
-                        D1 = Integer.valueOf(dataSnapshot1.getValue().toString());
-                    }
-                    if (dataSnapshot1.getKey().equals("D2")) {
-                        D2 =  Integer.valueOf(dataSnapshot1.getValue().toString());
-                    }
-                    if (dataSnapshot1.getKey().equals("D3")){
-                        D3 =  Integer.valueOf(dataSnapshot1.getValue().toString());
-                    }
-                    if (dataSnapshot1.getKey().equals("D4")){
-                        D4 =  Integer.valueOf(dataSnapshot1.getValue().toString());
-                    }
-                    if (dataSnapshot1.getKey().equals("D5")){
-                        D5 =  Integer.valueOf(dataSnapshot1.getValue().toString());
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
     }
         // ReplyThreadFromServer Class
     class SocketServerReplyThread extends Thread {
@@ -149,11 +115,10 @@ public class SocketServerThread extends Thread {
                             String MACAddr = ARPNetwork.findMAC(hostThreadSocket.getInetAddress().getHostAddress());
                             if (isNodeSensorObjectExisting(MACAddr) == false) {
                                 String ID = MACAddrAndIDHashMap.get(MACAddr);
-                                NodeSensor nodeSensor = new NodeSensor(MACAddr,ID,arrayBytes,false);
+                                NodeSensor nodeSensor = new NodeSensor(MACAddr,ID,arrayBytes);
                                 nodeSensorHashMap.put(MACAddr,nodeSensor);
                             } else {
                                 nodeSensorHashMap.get(MACAddr).setArrayBytes(arrayBytes);
-                                nodeSensorHashMap.get(MACAddr).setConfirmed(false);
                             }
                                 // Reply to client data already received.
                             dOut.writeByte(FIRST_CONFIRM_SESSION_FLAG);
@@ -193,12 +158,14 @@ public class SocketServerThread extends Thread {
                          * if SECOND_SESSION_SENSOR_BYTE corresponding with Node Sensor
                          */
                         if (secondByteReceive == SECOND_CONFRIM_SESSION_SENSOR_BYTE) {
-                            Log.d(TAG,"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ First confirm session: ");
-                            Log.d(TAG,"Result code: " + dIn.readUnsignedByte());
-                            String MACAddr = ARPNetwork.findMAC(hostThreadSocket.getInetAddress().getHostAddress());;
-                            nodeSensorHashMap.get(MACAddr).setConfirmed(true);
-                            nodeSensorHashMap.get(MACAddr).setTimeSend(TimeAndDate.currentTimeOffline);
-                            checkSendDataToServer();
+                            int resultCode = dIn.readUnsignedByte();
+                            if (resultCode == SUCCESS_SESSION_FLAG) {
+                                String MACAddr = ARPNetwork.findMAC(hostThreadSocket.getInetAddress().getHostAddress());;
+                                nodeSensorHashMap.get(MACAddr).setTimeSend(TimeAndDate.currentTimeOffline);
+                                nodeSensorHashMap.get(MACAddr).sendToFirebase();
+                            } else if (resultCode == FAILED_SESSION_FLAG) {
+                                Log.d(TAG,"Node Sensor session failed at " + TimeAndDate.currentTimeOffline);
+                            }
                         }
                         /**
                          * if SECOND_SESSION_SENSOR_BYTE corresponding with Node PowDev
@@ -224,6 +191,7 @@ public class SocketServerThread extends Thread {
                             } else {
                                 dOut.writeByte(END_CONFIRM_SESSION_FLAG);
                                 dOut.writeByte(FAILED_SESSION_FLAG);
+                                Log.d(TAG,"Node PowDev session failed at " + TimeAndDate.currentTimeOffline);
                             }
                         }
                     }
@@ -246,14 +214,6 @@ public class SocketServerThread extends Thread {
                         Log.d(TAG, "Exception Catched: " + e.toString());
                     } catch (NullPointerException e) {
                         e.printStackTrace();
-                    }
-                }
-            }
-            private void checkSendDataToServer(){
-                for (NodeSensor nodeSensor : nodeSensorHashMap.values()){
-                    if (nodeSensor.isConfirmed()) {
-                        nodeSensor.sendToFirebase();
-                        nodeSensor.setConfirmed(false);
                     }
                 }
             }

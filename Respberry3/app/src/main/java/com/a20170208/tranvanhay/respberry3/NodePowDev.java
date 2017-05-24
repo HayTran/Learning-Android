@@ -43,7 +43,7 @@ public class NodePowDev {
     }
     private void initNodeInFirebase(){
         mData.child("SocketServer").child(this.ID).child("MACAddress").setValue(MACAddr);
-        mData.child("SocketServer").child(this.ID).child("strength Wifi").setValue(strengthWifi);
+        mData.child("SocketServer").child(this.ID).child("strengthWifi").setValue(strengthWifi);
         mData.child("SocketServer").child(this.ID).child("dev0").setValue(dev0);
         mData.child("SocketServer").child(this.ID).child("dev1").setValue(dev1);
         mData.child("SocketServer").child(this.ID).child("buzzer").setValue(buzzer);
@@ -116,7 +116,7 @@ public class NodePowDev {
 
     public void setStrengthWifi(int strengthWifi) {
         this.strengthWifi = strengthWifi;
-        mData.child("SocketServer").child(this.ID).child("strength Wifi").setValue(strengthWifi);
+        mData.child("SocketServer").child(this.ID).child("strengthWifi").setValue(strengthWifi);
     }
 
     public int getDev0() {

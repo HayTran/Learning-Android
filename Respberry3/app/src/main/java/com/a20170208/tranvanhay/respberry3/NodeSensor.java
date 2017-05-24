@@ -13,7 +13,6 @@ public class NodeSensor {
     private String ID;      // help user recognize
     private double strengthWifi,temperature, humidity;
     private double  flameValue0, flameValue1, flameValue2,flameValue3, lightIntensity, MQ2,MQ7;
-    private boolean isConfirmed;
     private String timeSend;
     private int [] arrayBytes;
 
@@ -21,11 +20,10 @@ public class NodeSensor {
     public NodeSensor() {
     }
 
-    public NodeSensor(String MACAddr, String ID, int[] arrayBytes, boolean isConfirmed) {
+    public NodeSensor(String MACAddr, String ID, int[] arrayBytes) {
         this.MACAddr = MACAddr;
         this.ID = ID;
         this.arrayBytes = arrayBytes;
-        this.isConfirmed = isConfirmed;
         this.convertValue();
     }
     protected void convertValue(){
@@ -45,18 +43,18 @@ public class NodeSensor {
         strengthWifi = arrayBytes[16];
     }
     public void sendToFirebase(){
-        mData.child("SocketServer").child(ID).child("MACAddress").setValue(MACAddr);
-        mData.child("SocketServer").child(ID).child("temperature").setValue(temperature);
-        mData.child("SocketServer").child(ID).child("humidity").setValue(humidity);
-        mData.child("SocketServer").child(ID).child("flame0").setValue(flameValue0);
-        mData.child("SocketServer").child(ID).child("flame1").setValue(flameValue1);
-        mData.child("SocketServer").child(ID).child("flame2").setValue(flameValue2);
-        mData.child("SocketServer").child(ID).child("flame3").setValue(flameValue3);
-        mData.child("SocketServer").child(ID).child("lightIntensity").setValue(lightIntensity);
-        mData.child("SocketServer").child(ID).child("MQ2").setValue(MQ2);
-        mData.child("SocketServer").child(ID).child("MQ7").setValue(MQ7);
-        mData.child("SocketServer").child(ID).child("isConfirmed").setValue(isConfirmed);
-        mData.child("SocketServer").child(ID).child("timeSend").setValue(timeSend);
+        mData.child("SocketServer").child(this.ID).child("MACAddress").setValue(MACAddr);
+        mData.child("SocketServer").child(this.ID).child("strengthWifi").setValue(strengthWifi);
+        mData.child("SocketServer").child(this.ID).child("temperature").setValue(temperature);
+        mData.child("SocketServer").child(this.ID).child("humidity").setValue(humidity);
+        mData.child("SocketServer").child(this.ID).child("flame0").setValue(flameValue0);
+        mData.child("SocketServer").child(this.ID).child("flame1").setValue(flameValue1);
+        mData.child("SocketServer").child(this.ID).child("flame2").setValue(flameValue2);
+        mData.child("SocketServer").child(this.ID).child("flame3").setValue(flameValue3);
+        mData.child("SocketServer").child(this.ID).child("lightIntensity").setValue(lightIntensity);
+        mData.child("SocketServer").child(this.ID).child("MQ2").setValue(MQ2);
+        mData.child("SocketServer").child(this.ID).child("MQ7").setValue(MQ7);
+        mData.child("SocketServer").child(this.ID).child("timeSend").setValue(timeSend);
     }
 
     public String getMACAddr() {
@@ -155,14 +153,6 @@ public class NodeSensor {
         this.MQ7 = MQ7;
     }
 
-    public boolean isConfirmed() {
-        return isConfirmed;
-    }
-
-    public void setConfirmed(boolean confirmed) {
-        isConfirmed = confirmed;
-    }
-
     public String getTimeSend() {
         return timeSend;
     }
@@ -193,7 +183,6 @@ public class NodeSensor {
                 ", lightIntensity=" + lightIntensity +
                 ", MQ2=" + MQ2 +
                 ", MQ7=" + MQ7 +
-                ", isConfirmed=" + isConfirmed +
                 ", sendTime='" + timeSend + '\'' +
                 ", MACAddr='" + MACAddr + '\'' +
                 ", ID='" + ID + '\'' +
