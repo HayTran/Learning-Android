@@ -12,12 +12,7 @@ import java.io.IOException;
 
 public class ARPNetwork {
     private static final String TAG = ARPNetwork.class.getSimpleName();
-    String ipAddress;
-
-    public ARPNetwork(String ipAddress) {
-        this.ipAddress = ipAddress;
-    }
-    public String findMAC(){
+    public static String findMAC(String ipAddress){
         // params[0] is IP address want to resolve to MAC address
         if ( ipAddress == null){
             return null;

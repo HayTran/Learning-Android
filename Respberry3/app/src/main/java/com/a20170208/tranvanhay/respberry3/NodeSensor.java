@@ -9,20 +9,24 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class NodeSensor {
     DatabaseReference mData = FirebaseDatabase.getInstance().getReference();
+    private String MACAddr; // help server recognize
+    private String ID;      // help user recognize
     private double strengthWifi,temperature, humidity;
     private double  flameValue0, flameValue1, flameValue2,flameValue3, lightIntensity, MQ2,MQ7;
-    private String MACAddr;
     private boolean isConfirmed;
-    private String sendTime;
+    private String timeSend;
     private int [] arrayBytes;
+
 
     public NodeSensor() {
     }
 
-    public NodeSensor(int[] arrayBytes, String MACAddr, boolean isConfirmed) {
-        this.arrayBytes = arrayBytes;
+    public NodeSensor(String MACAddr, String ID, int[] arrayBytes, boolean isConfirmed) {
         this.MACAddr = MACAddr;
+        this.ID = ID;
+        this.arrayBytes = arrayBytes;
         this.isConfirmed = isConfirmed;
+        this.convertValue();
     }
     protected void convertValue(){
         temperature = arrayBytes[0];
@@ -41,18 +45,36 @@ public class NodeSensor {
         strengthWifi = arrayBytes[16];
     }
     public void sendToFirebase(){
-        mData.child("SocketServer").child(MACAddr).child("Temperature").setValue(temperature);
-        mData.child("SocketServer").child(MACAddr).child("Humidity").setValue(humidity);
-        mData.child("SocketServer").child(MACAddr).child("Flame 0").setValue(flameValue0);
-        mData.child("SocketServer").child(MACAddr).child("Flame 1").setValue(flameValue1);
-        mData.child("SocketServer").child(MACAddr).child("Flame 2").setValue(flameValue2);
-        mData.child("SocketServer").child(MACAddr).child("Flame 3").setValue(flameValue3);
-        mData.child("SocketServer").child(MACAddr).child("Light Intensity").setValue(lightIntensity);
-        mData.child("SocketServer").child(MACAddr).child("MQ2").setValue(MQ2);
-        mData.child("SocketServer").child(MACAddr).child("MQ7").setValue(MQ7);
-        mData.child("SocketServer").child(MACAddr).child("isConfirmed").setValue(isConfirmed);
-        mData.child("SocketServer").child(MACAddr).child("Send time").setValue(sendTime);
+        mData.child("SocketServer").child(ID).child("MACAddress").setValue(MACAddr);
+        mData.child("SocketServer").child(ID).child("temperature").setValue(temperature);
+        mData.child("SocketServer").child(ID).child("humidity").setValue(humidity);
+        mData.child("SocketServer").child(ID).child("flame0").setValue(flameValue0);
+        mData.child("SocketServer").child(ID).child("flame1").setValue(flameValue1);
+        mData.child("SocketServer").child(ID).child("flame2").setValue(flameValue2);
+        mData.child("SocketServer").child(ID).child("flame3").setValue(flameValue3);
+        mData.child("SocketServer").child(ID).child("lightIntensity").setValue(lightIntensity);
+        mData.child("SocketServer").child(ID).child("MQ2").setValue(MQ2);
+        mData.child("SocketServer").child(ID).child("MQ7").setValue(MQ7);
+        mData.child("SocketServer").child(ID).child("isConfirmed").setValue(isConfirmed);
+        mData.child("SocketServer").child(ID).child("timeSend").setValue(timeSend);
     }
+
+    public String getMACAddr() {
+        return MACAddr;
+    }
+
+    public void setMACAddr(String MACAddr) {
+        this.MACAddr = MACAddr;
+    }
+
+    public String getID() {
+        return ID;
+    }
+
+    public void setID(String ID) {
+        this.ID = ID;
+    }
+
     public double getStrengthWifi() {
         return strengthWifi;
     }
@@ -133,14 +155,6 @@ public class NodeSensor {
         this.MQ7 = MQ7;
     }
 
-    public String getMACAddr() {
-        return MACAddr;
-    }
-
-    public void setMACAddr(String MACAddr) {
-        this.MACAddr = MACAddr;
-    }
-
     public boolean isConfirmed() {
         return isConfirmed;
     }
@@ -149,12 +163,21 @@ public class NodeSensor {
         isConfirmed = confirmed;
     }
 
-    public String getSendTime() {
-        return sendTime;
+    public String getTimeSend() {
+        return timeSend;
     }
 
-    public void setSendTime(String sendTime) {
-        this.sendTime = sendTime;
+    public void setTimeSend(String timeSend) {
+        this.timeSend = timeSend;
+    }
+
+    public int[] getArrayBytes() {
+        return arrayBytes;
+    }
+
+    public void setArrayBytes(int[] arrayBytes) {
+        this.arrayBytes = arrayBytes;
+        this.convertValue();
     }
 
     @Override
@@ -170,10 +193,10 @@ public class NodeSensor {
                 ", lightIntensity=" + lightIntensity +
                 ", MQ2=" + MQ2 +
                 ", MQ7=" + MQ7 +
-                ", MACAddr='" + MACAddr + '\'' +
                 ", isConfirmed=" + isConfirmed +
-                ", sendTime='" + sendTime + '\'' +
+                ", sendTime='" + timeSend + '\'' +
+                ", MACAddr='" + MACAddr + '\'' +
+                ", ID='" + ID + '\'' +
                 '}';
     }
-
 }
