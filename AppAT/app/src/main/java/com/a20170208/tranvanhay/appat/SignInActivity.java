@@ -51,12 +51,12 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void mapping(){
-        editTextUsername = (EditText)findViewById(R.id.editTextUsernameSignInActivity);
-        editTextPassword = (EditText)findViewById(R.id.editTextPasswordSignInActivity);
-        btnLogIn = (Button)findViewById(R.id.btnLogInSignInActivity);
-        btnSignUp = (Button)findViewById(R.id.btnSignUpSignInActivity);
-        textViewForgotPassword = (TextView)findViewById(R.id.textViewForgotPasswordSignInActivity);
-        checkBoxRememberAccount  = (CheckBox)findViewById(R.id.checkBoxRememberSignInActivity);
+        editTextUsername = (EditText)findViewById(R.id.editTextUsername);
+        editTextPassword = (EditText)findViewById(R.id.editTextPassword);
+        btnLogIn = (Button)findViewById(R.id.btnLogIn);
+        btnSignUp = (Button)findViewById(R.id.btnSignUp);
+        textViewForgotPassword = (TextView)findViewById(R.id.textViewForgotPassword);
+        checkBoxRememberAccount  = (CheckBox)findViewById(R.id.checkBoxRemember);
     }
     private void configureFirebaseMessaging() {
         if (getIntent().getExtras() != null) {
@@ -164,6 +164,7 @@ public class SignInActivity extends AppCompatActivity {
             Log.d(TAG,"Đã check account");
             Intent intent = new Intent(SignInActivity.this,DisplayActivity.class);
             startActivity(intent);
+            finish();
         } else {
             Log.d(TAG,"CheckStep: Not user");
         }

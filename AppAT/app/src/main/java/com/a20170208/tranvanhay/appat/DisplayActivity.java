@@ -1,5 +1,6 @@
 package com.a20170208.tranvanhay.appat;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,7 +12,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -34,6 +34,7 @@ public class DisplayActivity extends AppCompatActivity {
     Button btnChangeToPingActivity, btnSignOut,btnCheckFCM;
     String pathImage = "";
     String atCurrent = "";
+    ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,20 +43,26 @@ public class DisplayActivity extends AppCompatActivity {
         init();
         addControl();
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
     private void mapping() {
-        textViewMQ2 = (TextView)findViewById(R.id.textViewMQ2DisplayActivity);
-        textViewMQ7 = (TextView)findViewById(R.id.textViewMQ7DisplayActivity);
-        textViewTime = (TextView)findViewById(R.id.textViewTimeDisplayActivity);
-        textViewFlame0 = (TextView)findViewById(R.id.textViewFlame0DisplayActivity);
-        textViewFlame1 = (TextView)findViewById(R.id.textViewFlame1DisplayActivity);
-        textViewHumidity = (TextView)findViewById(R.id.textViewHumidityDisplayActivity);
-        textViewTemperature = (TextView)findViewById(R.id.textViewTemperatureDisplayActivity);
-        textViewLightIntensity = (TextView)findViewById(R.id.textViewLightIntensityDisplayActivity);
-        textViewImageStatus = (TextView)findViewById(R.id.textViewImageStatusDisplayActivity);
+        textViewMQ2 = (TextView)findViewById(R.id.textViewMQ2);
+        textViewMQ7 = (TextView)findViewById(R.id.textViewMQ7);
+        textViewTime = (TextView)findViewById(R.id.textViewTime);
+        textViewFlame0 = (TextView)findViewById(R.id.textViewFlame0);
+        textViewFlame1 = (TextView)findViewById(R.id.textViewFlame1);
+        textViewHumidity = (TextView)findViewById(R.id.textViewHumidity);
+        textViewTemperature = (TextView)findViewById(R.id.textViewTemperature);
+        textViewLightIntensity = (TextView)findViewById(R.id.textViewLightIntensity);
+        textViewImageStatus = (TextView)findViewById(R.id.textViewImageStatus);
         imageView = (ImageView)findViewById(R.id.imageViewDisplayActivity);
-        btnChangeToPingActivity = (Button)findViewById(R.id.btnChangeToPingActivityDisplayActivity);
-        btnSignOut = (Button)findViewById(R.id.btnSignOutDisplayActivity);
-        btnCheckFCM = (Button)findViewById(R.id.btnCheckFCMDisplayActivity);
+        btnChangeToPingActivity = (Button)findViewById(R.id.btnChangeToPingActivity);
+        btnSignOut = (Button)findViewById(R.id.btnSignOut);
+        btnCheckFCM = (Button)findViewById(R.id.btnCheckFCM);
     }
     private void init() {
         // Define instance for firebase connection
@@ -84,55 +91,37 @@ public class DisplayActivity extends AppCompatActivity {
         btnCheckFCM.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d(TAG,"Run Public IP");
-                        new PublicIP(DisplayActivity.this).execute();
-                    }
-                });
+                new PublicIP(DisplayActivity.this).execute();
             }
         });
     }
     private void showInfoFromFirebase() {
-        mData.child("At Current").addValueEventListener(new ValueEventListener() {
+        mData.child("SocketServer").child("NodeDetails").child("NodeSensor").child("NodeSensor0").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                atCurrent = dataSnapshot.getValue().toString();
-                textViewTime.setText(atCurrent);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-        // listen when Socket Server has change value then set new value
-        mData.child("SocketServer").child("Temperature").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                textViewTemperature.setText(dataSnapshot.getValue().toString());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        mData.child("SocketServer").child("Humidity").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                textViewHumidity.setText(dataSnapshot.getValue().toString());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        mData.child("SocketServer").child("Flame 0").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                textViewFlame0.setText(dataSnapshot.getValue().toString());
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                    if (dataSnapshot1.getKey().equals("MQ2")) {
+                        textViewMQ2.setText(dataSnapshot1.getValue().toString());
+                    }
+                    if (dataSnapshot1.getKey().equals("MQ7")) {
+                        textViewMQ7.setText(dataSnapshot1.getValue().toString());
+                    }
+                    if (dataSnapshot1.getKey().equals("flame0")) {
+                        textViewFlame0.setText(dataSnapshot1.getValue().toString());
+                    }
+                    if (dataSnapshot1.getKey().equals("flame1")) {
+                        textViewFlame1.setText(dataSnapshot1.getValue().toString());
+                    }
+                    if (dataSnapshot1.getKey().equals("temperature")) {
+                        textViewTemperature.setText(dataSnapshot1.getValue().toString());
+                    }
+                    if (dataSnapshot1.getKey().equals("humidity")) {
+                        textViewHumidity.setText(dataSnapshot1.getValue().toString());
+                    }
+                    if (dataSnapshot1.getKey().equals("lightIntensity")) {
+                        textViewLightIntensity.setText(dataSnapshot1.getValue().toString());
+                    }
+                }
             }
 
             @Override
@@ -140,50 +129,13 @@ public class DisplayActivity extends AppCompatActivity {
 
             }
         });
-        mData.child("SocketServer").child("Flame 1").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                textViewFlame1.setText(dataSnapshot.getValue().toString());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        mData.child("SocketServer").child("Light Intensity").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                textViewLightIntensity.setText(dataSnapshot.getValue().toString());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        mData.child("SocketServer").child("MQ2").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                textViewMQ2.setText(dataSnapshot.getValue().toString());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        mData.child("SocketServer").child("MQ7").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                textViewMQ7.setText(dataSnapshot.getValue().toString());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+    }
+    private void showProgressDialog(){
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Đang lấy dữ liệu, vui lòng chờ");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setIndeterminate(false);
+        progressDialog.show();
     }
     private void checkImageStorage() {
         mData.child("Storage Image").addValueEventListener(new ValueEventListener() {

@@ -38,12 +38,12 @@ public class PingActivity extends AppCompatActivity {
     }
 
     private void mapping() {
-        editTextIPAddress = (EditText)findViewById(R.id.editTextIPAddressPingActivity);
+        editTextIPAddress = (EditText)findViewById(R.id.editTextIPAddress);
         btnPing = (Button)findViewById(R.id.btnPingPingActivity);
-        btnChangeToDisplayActivity = (Button)findViewById(R.id.btnChangeToDisplayActivityPingActivity);
-        textViewClearPingResult = (TextView)findViewById(R.id.textViewClearPingResultActivity);
-        textViewPingResultPingActivity = (TextView)findViewById(R.id.textViewPingResultPingActivity);
-        scrollView = (ScrollView)findViewById(R.id.scrollViewPingActivity);
+        btnChangeToDisplayActivity = (Button)findViewById(R.id.btnChangeToDisplayActivity);
+        textViewClearPingResult = (TextView)findViewById(R.id.textViewClearPingResult);
+        textViewPingResultPingActivity = (TextView)findViewById(R.id.textViewPingResult);
+        scrollView = (ScrollView)findViewById(R.id.scrollView);
     }
     private void addControl() {
         btnPing.setOnClickListener(new View.OnClickListener() {

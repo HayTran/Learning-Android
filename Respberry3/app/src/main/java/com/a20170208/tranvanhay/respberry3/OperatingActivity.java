@@ -86,7 +86,7 @@ public class OperatingActivity extends Activity {
             public void onDataChange(final DataSnapshot dataSnapshot) {
                 String triggeredData =  dataSnapshot.getValue().toString();
                 Log.d(TAG,"Triggered realtime database. Ref: Warning: "+ triggeredData);
-                new FCMServerThread(TimeAndDate.currentTimeOffline).start();
+                new FCMServerThread(TimeAndDate.currentTime).start();
             }
 
             @Override

@@ -19,13 +19,13 @@
             android:layout_weight="1"
             android:layout_gravity="start"
             android:background="#967171"
-            android:id="@+id/btnChangeToPingActivityDisplayActivity"
+            android:id="@+id/btnChangeToPingActivity"
             android:text="Ping Activity"/>
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="3"
-            android:id="@+id/textViewTimeDisplayActivity"
+            android:id="@+id/textViewTime"
             android:gravity="center"
             android:text="Not yet get data"/>
         <Button
@@ -34,7 +34,7 @@
             android:layout_weight="1"
             android:layout_gravity="end"
             android:background="#967171"
-            android:id="@+id/btnSignOutDisplayActivity"
+            android:id="@+id/btnSignOut"
             android:text="Sign Out"/>
     </LinearLayout>
     <LinearLayout
@@ -70,7 +70,7 @@
                 android:gravity="right"
                 android:text="Not yet get data"
                 android:textColor="#41ae5a"
-                android:id="@+id/textViewFlame0DisplayActivity"
+                android:id="@+id/textViewFlame0"
                 android:textSize="16sp"/>
         </LinearLayout>
         <LinearLayout
@@ -93,7 +93,7 @@
                 android:gravity="right"
                 android:text="Not yet get data"
                 android:textColor="#41ae5a"
-                android:id="@+id/textViewFlame1DisplayActivity"
+                android:id="@+id/textViewFlame1"
                 android:textSize="16sp"/>
         </LinearLayout>
         <LinearLayout
@@ -114,7 +114,7 @@
                 android:gravity="right"
                 android:text="Not yet get data"
                 android:textColor="#41ae5a"
-                android:id="@+id/textViewHumidityDisplayActivity"
+                android:id="@+id/textViewHumidity"
                 android:textSize="16sp"/>
         </LinearLayout>
         <LinearLayout
@@ -135,7 +135,7 @@
                 android:gravity="right"
                 android:text="Not yet get data"
                 android:textColor="#41ae5a"
-                android:id="@+id/textViewTemperatureDisplayActivity"
+                android:id="@+id/textViewTemperature"
                 android:textSize="16sp"/>
         </LinearLayout>
         <LinearLayout
@@ -156,7 +156,7 @@
                 android:gravity="right"
                 android:text="Not yet get data"
                 android:textColor="#41ae5a"
-                android:id="@+id/textViewLightIntensityDisplayActivity"
+                android:id="@+id/textViewLightIntensity"
                 android:textSize="16sp"/>
         </LinearLayout>
         <LinearLayout
@@ -177,7 +177,7 @@
                 android:gravity="right"
                 android:text="Not yet get data"
                 android:textColor="#41ae5a"
-                android:id="@+id/textViewMQ2DisplayActivity"
+                android:id="@+id/textViewMQ2"
                 android:textSize="16sp"/>
         </LinearLayout>
         <LinearLayout
@@ -198,7 +198,7 @@
                 android:gravity="right"
                 android:text="Not yet get data"
                 android:textColor="#41ae5a"
-                android:id="@+id/textViewMQ7DisplayActivity"
+                android:id="@+id/textViewMQ7"
                 android:textSize="16sp"/>
         </LinearLayout>
     </LinearLayout>
@@ -221,7 +221,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="Check"
-            android:id="@+id/btnCheckFCMDisplayActivity"
+            android:id="@+id/btnCheckFCM"
             />
     </LinearLayout>
 
@@ -235,6 +235,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.3"
-        android:id="@+id/textViewImageStatusDisplayActivity"
+        android:id="@+id/textViewImageStatus"
         android:text="Not yet set"/>
 </LinearLayout>

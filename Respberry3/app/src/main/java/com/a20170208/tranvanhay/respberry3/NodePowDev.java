@@ -42,33 +42,34 @@ public class NodePowDev {
         sim1 = arrayBytes[5];
     }
     private void initNodeInFirebase(){
-        mData.child("SocketServer").child(this.ID).child("MACAddress").setValue(MACAddr);
-        mData.child("SocketServer").child(this.ID).child("strengthWifi").setValue(strengthWifi);
-        mData.child("SocketServer").child(this.ID).child("dev0").setValue(dev0);
-        mData.child("SocketServer").child(this.ID).child("dev1").setValue(dev1);
-        mData.child("SocketServer").child(this.ID).child("buzzer").setValue(buzzer);
-        mData.child("SocketServer").child(this.ID).child("sim0").setValue(sim0);
-        mData.child("SocketServer").child(this.ID).child("sim1").setValue(sim1);
+        mData.child("SocketServer").child("NodeDetails").child("NodePowDev").child(this.ID).child("MACAddress").setValue(MACAddr);
+        mData.child("SocketServer").child("NodeDetails").child("NodePowDev").child(this.ID).child("strengthWifi").setValue(strengthWifi);
+        mData.child("SocketServer").child("NodeDetails").child("NodePowDev").child(this.ID).child("dev0").setValue(dev0);
+        mData.child("SocketServer").child("NodeDetails").child("NodePowDev").child(this.ID).child("dev1").setValue(dev1);
+        mData.child("SocketServer").child("NodeDetails").child("NodePowDev").child(this.ID).child("buzzer").setValue(buzzer);
+        mData.child("SocketServer").child("NodeDetails").child("NodePowDev").child(this.ID).child("sim0").setValue(sim0);
+        mData.child("SocketServer").child("NodeDetails").child("NodePowDev").child(this.ID).child("sim1").setValue(sim1);
+        mData.child("SocketServer").child("NodeDetails").child("NodePowDev").child(this.ID).child("timeOperation").setValue(TimeAndDate.currentTime);
     }
 
-    private void triggerFirebase(){
-        mData.child("SocketServer").child(this.ID).addValueEventListener(new ValueEventListener() {
+    private void triggerFirebase() {
+        mData.child("SocketServer").child("NodeDetails").child("NodePowDev").child(this.ID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                     if (dataSnapshot1.getKey().equals("dev0")) {
                         dev0 = Integer.valueOf(dataSnapshot1.getValue().toString());
                     } else if (dataSnapshot1.getKey().equals("dev1")) {
-                        dev1 =  Integer.valueOf(dataSnapshot1.getValue().toString());
-                    } else if (dataSnapshot1.getKey().equals("buzzer")){
-                        buzzer =  Integer.valueOf(dataSnapshot1.getValue().toString());
-                    } else if (dataSnapshot1.getKey().equals("sim0")){
-                        sim0 =  Integer.valueOf(dataSnapshot1.getValue().toString());
-                    } else if (dataSnapshot1.getKey().equals("sim1")){
-                        sim1 =  Integer.valueOf(dataSnapshot1.getValue().toString());
+                        dev1 = Integer.valueOf(dataSnapshot1.getValue().toString());
+                    } else if (dataSnapshot1.getKey().equals("buzzer")) {
+                        buzzer = Integer.valueOf(dataSnapshot1.getValue().toString());
+                    } else if (dataSnapshot1.getKey().equals("sim0")) {
+                        sim0 = Integer.valueOf(dataSnapshot1.getValue().toString());
+                    } else if (dataSnapshot1.getKey().equals("sim1")) {
+                        sim1 = Integer.valueOf(dataSnapshot1.getValue().toString());
                     }
                 }
-                Log.d(TAG,"Node has already change!");
+                Log.d(TAG, "Node has already change!");
             }
 
             @Override
@@ -76,6 +77,10 @@ public class NodePowDev {
 
             }
         });
+    }
+    public void notifyLastestTimeOperation(){
+        mData.child("SocketServer").child("NodeList").child("NodePowDev").child(this.ID).setValue(TimeAndDate.currentTime);
+        mData.child("SocketServer").child("NodeDetails").child("NodePowDev").child(this.ID).child("timeOperation").setValue(TimeAndDate.currentTime);
     }
 
     public String getMACAddr() {
@@ -116,9 +121,8 @@ public class NodePowDev {
 
     public void setStrengthWifi(int strengthWifi) {
         this.strengthWifi = strengthWifi;
-        mData.child("SocketServer").child(this.ID).child("strengthWifi").setValue(strengthWifi);
+        mData.child("SocketServer").child("NodeDetails").child("NodePowDev").child(this.ID).child("strengthWifi").setValue(strengthWifi);
     }
-
     public int getDev0() {
         return dev0;
     }

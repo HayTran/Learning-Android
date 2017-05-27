@@ -2,8 +2,11 @@ package com.a20170208.tranvanhay.respberry3;
 
 import android.util.Log;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -54,14 +57,31 @@ public class SocketServerThread extends Thread {
             }
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            mData.child("Server Socket Accept Error").push().setValue(e.toString() + " " + TimeAndDate.currentTimeOffline);
+            mData.child("Server Socket Accept Error").push().setValue(e.toString() + " " + TimeAndDate.currentTime);
             Log.d(TAG, "Exception Catched: " + e.toString());
             e.printStackTrace();
         }
     }
     private void mappingMACAddrAndID() {
-        MACAddrAndIDHashMap.put("5c:cf:7f:ab:ac:81","NodeSensor0");
-        MACAddrAndIDHashMap.put("a0:20:a6:02:10:57","NodePowDev0");
+        /**
+         *          When debug
+         */
+//        MACAddrAndIDHashMap.put("5c:cf:7f:ab:ac:81","NodeSensor0");
+//        MACAddrAndIDHashMap.put("a0:20:a6:02:10:57","NodePowDev0");
+      mData.child("SocketServer").child("MACAddrAndIDMapping").addValueEventListener(new ValueEventListener() {
+          @Override
+          public void onDataChange(DataSnapshot dataSnapshot) {
+              MACAddrAndIDHashMap.clear();
+              for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                  MACAddrAndIDHashMap.put(dataSnapshot1.getKey(),dataSnapshot1.getValue().toString());
+              }
+          }
+
+          @Override
+          public void onCancelled(DatabaseError databaseError) {
+
+          }
+      });
     }
         // ReplyThreadFromServer Class
     class SocketServerReplyThread extends Thread {
@@ -113,7 +133,9 @@ public class SocketServerThread extends Thread {
                             }
                                 // Check to create a new object. If it's existing, just update arrayByte and isConfirmed
                             String MACAddr = ARPNetwork.findMAC(hostThreadSocket.getInetAddress().getHostAddress());
-                            if (isNodeSensorObjectExisting(MACAddr) == false) {
+                            if (isNodeSensorObjectExisting(MACAddr) == false
+                                    &&  MACAddrAndIDHashMap.get(MACAddr) != null ) {
+                                    // MACAddrAndIDHashMap.get(MACAddr) != null to wait for Firebase got data
                                 String ID = MACAddrAndIDHashMap.get(MACAddr);
                                 NodeSensor nodeSensor = new NodeSensor(MACAddr,ID,arrayBytes);
                                 nodeSensorHashMap.put(MACAddr,nodeSensor);
@@ -137,10 +159,13 @@ public class SocketServerThread extends Thread {
                             }
                                 // Check to create a new object. If it's existing, just update strengthWifi
                             String MACAddr = ARPNetwork.findMAC(hostThreadSocket.getInetAddress().getHostAddress());
-                            if (isNodePowDevObjectExisting(MACAddr) == false) {
+                            if (isNodePowDevObjectExisting(MACAddr) == false
+                                     &&  MACAddrAndIDHashMap.get(MACAddr) != null ) {
+                                    // MACAddrAndIDHashMap.get(MACAddr) != null to wait for Firebase got data
                                 String ID = MACAddrAndIDHashMap.get(MACAddr);
                                 NodePowDev nodePowDev = new NodePowDev(MACAddr,ID,arrayBytes,true);
                                 nodePowDevHashMap.put(MACAddr,nodePowDev);
+                                Log.d("Nhung","Size: " + MACAddrAndIDHashMap.size());
                             } else {
                                 nodePowDevHashMap.get(MACAddr).setStrengthWifi(arrayBytes[0]);
                             }
@@ -161,10 +186,10 @@ public class SocketServerThread extends Thread {
                             int resultCode = dIn.readUnsignedByte();
                             if (resultCode == SUCCESS_SESSION_FLAG) {
                                 String MACAddr = ARPNetwork.findMAC(hostThreadSocket.getInetAddress().getHostAddress());;
-                                nodeSensorHashMap.get(MACAddr).setTimeSend(TimeAndDate.currentTimeOffline);
+                                nodeSensorHashMap.get(MACAddr).setTimeSend(TimeAndDate.currentTime);
                                 nodeSensorHashMap.get(MACAddr).sendToFirebase();
                             } else if (resultCode == FAILED_SESSION_FLAG) {
-                                Log.d(TAG,"Node Sensor session failed at " + TimeAndDate.currentTimeOffline);
+                                Log.d(TAG,"Node Sensor session failed at " + TimeAndDate.currentTime);
                             }
                         }
                         /**
@@ -188,17 +213,18 @@ public class SocketServerThread extends Thread {
                             if (client0==server0&&client1==server1&&client2==server2&&client3==server3&&client4==server4){
                                 dOut.writeByte(END_CONFIRM_SESSION_FLAG);
                                 dOut.writeByte(SUCCESS_SESSION_FLAG);
+                                nodePowDevHashMap.get(MACAddr).notifyLastestTimeOperation();
                             } else {
                                 dOut.writeByte(END_CONFIRM_SESSION_FLAG);
                                 dOut.writeByte(FAILED_SESSION_FLAG);
-                                Log.d(TAG,"Node PowDev session failed at " + TimeAndDate.currentTimeOffline);
+                                Log.d(TAG,"Node PowDev session failed at " + TimeAndDate.currentTime);
                             }
                         }
                     }
 
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
-                    mData.child("Server Socket Read and Reply Error").push().setValue(e.toString() + " " + TimeAndDate.currentTimeOffline);
+//                    mData.child("Server Socket Read and Reply Error").push().setValue(e.toString() + " " + TimeAndDate.currentTime);
                     e.printStackTrace();
                     Log.d(TAG, "Exception Catched: " + e.toString());
                 } catch (NullPointerException e) {

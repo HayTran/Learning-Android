@@ -21,7 +21,7 @@
             android:background="#967171"
             android:textColor="#fff"
             android:textSize="15sp"
-            android:id="@+id/btnChangeToDisplayActivityPingActivity"
+            android:id="@+id/btnChangeToDisplayActivity"
             android:text="Display Activity"/>
         <Space
             android:layout_width="0dp"
@@ -35,7 +35,7 @@
             android:background="#967171"
             android:textColor="#fff"
             android:textSize="15sp"
-            android:id="@+id/btnSignOutPingActivity"
+            android:id="@+id/btnSignOut"
             android:text="Sign Out"/>
     </LinearLayout>
 
@@ -48,7 +48,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:id="@+id/editTextIPAddressPingActivity"
+            android:id="@+id/editTextIPAddress"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
             android:hint="IP Address"/>
@@ -86,14 +86,14 @@
             android:layout_weight="8"
             android:scrollbars="vertical"
             android:fillViewport="true"
-            android:id="@+id/scrollViewPingActivity">
+            android:id="@+id/scrollView">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="7dp"
                 android:textColor="#fff"
-                android:id="@+id/textViewPingResultPingActivity"/>
+                android:id="@+id/textViewPingResult"/>
         </ScrollView>
 
     </LinearLayout>
@@ -106,5 +106,5 @@
         android:textSize="20sp"
         android:textColor="#da633e"
         android:clickable="true"
-        android:id="@+id/textViewClearPingResultActivity"/>
+        android:id="@+id/textViewClearPingResult"/>
 </LinearLayout>

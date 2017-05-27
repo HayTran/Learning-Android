@@ -16,7 +16,7 @@ import java.util.TimeZone;
 public class TimeAndDate {
     private static final String TAG = TimeAndDate.class.getSimpleName();
     DatabaseReference mData = FirebaseDatabase.getInstance().getReference();
-    public static String currentTimeOffline = "";
+    public static String currentTime = "";
     // Instance for a handler
     private Handler mHandler = new Handler();
     private Runnable fetchCurrentTime = new Runnable() {
@@ -26,7 +26,7 @@ public class TimeAndDate {
             SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss --- dd/MM/yyyy");
             format.setTimeZone(TimeZone.getTimeZone("Asia/Bangkok"));
             mData.child("At Current").setValue(format.format(date));
-            currentTimeOffline = format.format(date) + "";
+            currentTime = format.format(date) + "";
             mHandler.postDelayed(fetchCurrentTime,1000);
         }
     };
