@@ -110,12 +110,14 @@ public class SignInActivity extends AppCompatActivity {
     private void signUp(){
         String email = editTextUsername.getText().toString();
         String password = editTextPassword.getText().toString();
+        final DialogExecution dialogExecution = new DialogExecution(this,"Đăng đăng ký tài khoản, vui lòng chờ");
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
                             Toast.makeText(SignInActivity.this,"Sign Up successfully",Toast.LENGTH_SHORT).show();
+                            dialogExecution.dismissProgressDialog();
                         }else{
                             Toast.makeText(SignInActivity.this,"Sign Up failed",Toast.LENGTH_SHORT).show();
                         }
@@ -125,6 +127,7 @@ public class SignInActivity extends AppCompatActivity {
     private void logIn(){
         String email = editTextUsername.getText().toString();
         String password = editTextPassword.getText().toString();
+        final DialogExecution dialogExecution = new DialogExecution(this,"Đăng đăng nhập tài khoản, vui lòng chờ");
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -132,6 +135,7 @@ public class SignInActivity extends AppCompatActivity {
                         if(task.isSuccessful()){
                             Toast.makeText(SignInActivity.this, "Sign in successfull", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(SignInActivity.this,DisplayActivity.class);
+                            dialogExecution.dismissProgressDialog();
                             startActivity(intent);
                         }else{
                             Toast.makeText(SignInActivity.this,"Sign in failed",Toast.LENGTH_SHORT).show();

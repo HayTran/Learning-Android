@@ -1,6 +1,5 @@
 package com.a20170208.tranvanhay.appat;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -34,7 +33,6 @@ public class DisplayActivity extends AppCompatActivity {
     Button btnChangeToPingActivity, btnSignOut,btnCheckFCM;
     String pathImage = "";
     String atCurrent = "";
-    ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -130,13 +128,7 @@ public class DisplayActivity extends AppCompatActivity {
             }
         });
     }
-    private void showProgressDialog(){
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Đang lấy dữ liệu, vui lòng chờ");
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.setIndeterminate(false);
-        progressDialog.show();
-    }
+
     private void checkImageStorage() {
         mData.child("Storage Image").addValueEventListener(new ValueEventListener() {
             @Override
