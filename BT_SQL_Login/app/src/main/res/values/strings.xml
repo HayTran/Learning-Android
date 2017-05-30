@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">BT_SQL_Login</string>
+    <string name="login">Login</string>
+    <string name="yourAccount">Your Account</string>
+    <string name="to">To</string>
+    <string name="email">Enter User Email</string>
+    <string name="password">Enter User Password</string>
+    <string name="signin">Sign in</string>
+    <string name="signup">Are you new?</string>
+    <string name="footer">Android | Lollipop | Material | Yasir | Ameen | Login | Design | Activity | Blog | Facebook | Google | Kitkat | Marshmallow | Google</string>
+    <string name="loginSuccess">Login successful</string>
+    <string name="incorrect">Incorrect Email/Password or Sign Up</string>
+    <string name="insert">New Account</string>
+    <string name="signUp">Sign Up</string>
+</resources>

@@ -29,7 +29,7 @@ public class DisplayActivity extends AppCompatActivity {
     TextView textViewTime,textViewFlame0,textViewFlame1,textViewHumidity,textViewTemperature;
     TextView textViewLightIntensity,textViewMQ2,textViewMQ7, textViewImageStatus;
     ImageView imageView;
-//    Bitmap bitmap;
+        //    Bitmap bitmap;
     Button btnChangeToPingActivity, btnSignOut,btnCheckFCM;
     String pathImage = "";
     String atCurrent = "";

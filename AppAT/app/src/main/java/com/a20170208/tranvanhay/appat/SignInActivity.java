@@ -166,7 +166,7 @@ public class SignInActivity extends AppCompatActivity {
         if (user != null) {
             Log.d(TAG,"CheckStep: User = " + user.getUid());
             Log.d(TAG,"Đã check account");
-            Intent intent = new Intent(SignInActivity.this,DisplayActivity.class);
+            Intent intent = new Intent(SignInActivity.this,DashboardActivity.class);
             startActivity(intent);
             finish();
         } else {
