@@ -1,5 +1,6 @@
 package com.a20170208.tranvanhay.appat.Fragment;
 
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -9,9 +10,8 @@ import android.support.v4.app.FragmentStatePagerAdapter;
  */
 
 public class FragmentAdapter extends FragmentStatePagerAdapter {
-
     String  arrTitle [] = new String[] {"Sensor","PowDev","Menu"};
-    public FragmentAdapter(FragmentManager fm) {
+    public FragmentAdapter(FragmentManager fm, TabLayout tabLayout) {
         super(fm);
     }
 
@@ -37,8 +37,8 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         return arrTitle.length;
     }
 
-    @Override
-    public CharSequence getPageTitle(int position) {
-        return arrTitle[position];
-    }
+//    @Override
+//    public CharSequence getPageTitle(int position) {
+//        return arrTitle[position];
+//    }
 }

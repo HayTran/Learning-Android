@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <!-- This is ID section-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#cfb1d2"
+        android:id="@+id/linearLayoutTitle">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="80dp"
+            android:src="@drawable/euro_price_tag1600"
+            android:scaleType="fitCenter" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:id="@+id/textViewID"
+            android:text="Not yet get"
+            android:gravity="center"/>
+    </LinearLayout>
+
+    <!-- This is detailed content section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="70dp"
+        android:id="@+id/linearLayoutContent"
+        android:orientation="vertical">
+
+        <!-- This is strengthWifi section-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#acd1af"
+            android:weightSum="1">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="59dp"
+                android:src="@drawable/online1600"
+                android:scaleType="fitCenter" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Not yet set"
+                android:id="@+id/textViewStrengthWifi"/>
+        </LinearLayout>
+
+        <!-- This is dev0 section-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#acd1af"
+            android:weightSum="1">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="59dp"
+                android:src="@drawable/smartphone_ram1600"
+                android:scaleType="fitCenter" />
+            <Switch
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/swDev0"
+                android:layout_gravity="center"
+                android:paddingRight="70dp"
+                android:textOn="ON"
+                android:thumb="@drawable/customswitchselector"
+                android:track="@drawable/custom_track"
+                android:textOff="OFF"
+                android:showText="true" />
+        </LinearLayout>
+
+        <!-- This is dev1 section-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#acd1af"
+            android:weightSum="1">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="59dp"
+                android:src="@drawable/smartphone_ram1600"
+                android:scaleType="fitCenter" />
+            <Switch
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/swDev1"
+                android:layout_gravity="center"
+                android:paddingRight="70dp"
+                android:textOn="ON"
+                android:thumb="@drawable/customswitchselector"
+                android:track="@drawable/custom_track"
+                android:textOff="OFF"
+                android:showText="true" />
+        </LinearLayout>
+
+        <!-- This is buzzer section-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#acd1af"
+            android:weightSum="1">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="59dp"
+                android:src="@drawable/smartphone_ram1600"
+                android:scaleType="fitCenter" />
+            <Switch
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/swBuzzer"
+                android:layout_gravity="center"
+                android:paddingRight="70dp"
+                android:textOn="ON"
+                android:thumb="@drawable/customswitchselector"
+                android:track="@drawable/custom_track"
+                android:textOff="OFF"
+                android:showText="true" />
+        </LinearLayout>
+
+        <!-- This is sim0 section-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#acd1af"
+            android:weightSum="1">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="59dp"
+                android:src="@drawable/smartphone_ram1600"
+                android:scaleType="fitCenter" />
+            <Switch
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/swSim0"
+                android:layout_gravity="center"
+                android:paddingRight="70dp"
+                android:textOn="ON"
+                android:thumb="@drawable/customswitchselector"
+                android:track="@drawable/custom_track"
+                android:textOff="OFF"
+                android:showText="true" />
+        </LinearLayout>
+
+        <!-- This is sim1 section-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#acd1af"
+            android:weightSum="1">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="59dp"
+                android:src="@drawable/smartphone_ram1600"
+                android:scaleType="fitCenter" />
+            <Switch
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/swSim1"
+                android:layout_gravity="center"
+                android:paddingRight="70dp"
+                android:textOn="ON"
+                android:thumb="@drawable/customswitchselector"
+                android:track="@drawable/custom_track"
+                android:textOff="OFF"
+                android:showText="true" />
+        </LinearLayout>
+
+        <!-- This is send time section-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#bdd498">
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="59dp"
+                android:src="@drawable/time_machine_icon"
+                android:scaleType="fitCenter"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:id="@+id/textViewTimeOperation"
+                android:text="Not yet get"
+                android:gravity="center"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

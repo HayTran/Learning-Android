@@ -13,4 +13,7 @@ Intial version 24/04/2017
 
 http://khoapham.vn/KhoaPhamTraining/nodejs/snippet/
 
+- Get icon free: http://www.iconsdb.com/soylent-red-icons/flammable-icon.html
+- Get name at: (https://icons8.com/icon/set/smoke/all) ---> After that, search in google to get image free of charge.
+
 

@@ -134,12 +134,12 @@ public class SignInActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
                             Toast.makeText(SignInActivity.this, "Sign in successfull", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(SignInActivity.this,DisplayActivity.class);
-                            dialogExecution.dismissProgressDialog();
+                            Intent intent = new Intent(SignInActivity.this,DashboardActivity.class);
                             startActivity(intent);
                         }else{
                             Toast.makeText(SignInActivity.this,"Sign in failed",Toast.LENGTH_SHORT).show();
                         }
+                        dialogExecution.dismissProgressDialog();
                     }
                 });
     }

@@ -44,14 +44,15 @@ public class NodeSensor {
     }
     public void sendToFirebase(){
         mData.child("SocketServer").child("NodeList").child("NodeSensor").child(this.ID).setValue(TimeAndDate.currentTime);
-        mData.child("SocketServer").child("NodeDetails").child("NodeSensor").child(this.ID).child("MACAddress").setValue(MACAddr);
+        mData.child("SocketServer").child("NodeDetails").child("NodeSensor").child(this.ID).child("MACAddr").setValue(MACAddr);
+        mData.child("SocketServer").child("NodeDetails").child("NodeSensor").child(this.ID).child("ID").setValue(this.ID);
         mData.child("SocketServer").child("NodeDetails").child("NodeSensor").child(this.ID).child("strengthWifi").setValue(strengthWifi);
         mData.child("SocketServer").child("NodeDetails").child("NodeSensor").child(this.ID).child("temperature").setValue(temperature);
         mData.child("SocketServer").child("NodeDetails").child("NodeSensor").child(this.ID).child("humidity").setValue(humidity);
-        mData.child("SocketServer").child("NodeDetails").child("NodeSensor").child(this.ID).child("flame0").setValue(flameValue0);
-        mData.child("SocketServer").child("NodeDetails").child("NodeSensor").child(this.ID).child("flame1").setValue(flameValue1);
-        mData.child("SocketServer").child("NodeDetails").child("NodeSensor").child(this.ID).child("flame2").setValue(flameValue2);
-        mData.child("SocketServer").child("NodeDetails").child("NodeSensor").child(this.ID).child("flame3").setValue(flameValue3);
+        mData.child("SocketServer").child("NodeDetails").child("NodeSensor").child(this.ID).child("flameValue0").setValue(flameValue0);
+        mData.child("SocketServer").child("NodeDetails").child("NodeSensor").child(this.ID).child("flameValue1").setValue(flameValue1);
+        mData.child("SocketServer").child("NodeDetails").child("NodeSensor").child(this.ID).child("flameValue2").setValue(flameValue2);
+        mData.child("SocketServer").child("NodeDetails").child("NodeSensor").child(this.ID).child("flameValue3").setValue(flameValue3);
         mData.child("SocketServer").child("NodeDetails").child("NodeSensor").child(this.ID).child("lightIntensity").setValue(lightIntensity);
         mData.child("SocketServer").child("NodeDetails").child("NodeSensor").child(this.ID).child("MQ2").setValue(MQ2);
         mData.child("SocketServer").child("NodeDetails").child("NodeSensor").child(this.ID).child("MQ7").setValue(MQ7);

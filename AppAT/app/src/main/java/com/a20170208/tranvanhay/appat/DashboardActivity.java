@@ -25,12 +25,48 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     private void init() {
-        getSupportActionBar().hide();
         FragmentManager fm = getSupportFragmentManager();
-        FragmentAdapter fa = new FragmentAdapter(fm);
+        FragmentAdapter fa = new FragmentAdapter(fm, tabLayout);
         viewPager.setAdapter(fa);
         tabLayout.setupWithViewPager(viewPager);
+        tabLayout.getTabAt(0).setIcon(R.drawable.ic_sensor_blue_24dp);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_fans_white_24dp);
+        tabLayout.getTabAt(2).setIcon(R.drawable.ic_menu_white_24dp);
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                switch (tab.getPosition()){
+                    case 0:
+                        tabLayout.getTabAt(0).setIcon(R.drawable.ic_sensor_blue_24dp);
+                        break;
+                    case 1:
+                        tabLayout.getTabAt(1).setIcon(R.drawable.ic_fans_blue_24dp);
+                        break;
+                    case 2:
+                        tabLayout.getTabAt(2).setIcon(R.drawable.ic_menu_blue_24dp);
+                        break;
+                }
+            }
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                switch (tab.getPosition()){
+                    case 0:
+                        tabLayout.getTabAt(0).setIcon(R.drawable.ic_sensor_white_24dp);
+                        break;
+                    case 1:
+                        tabLayout.getTabAt(1).setIcon(R.drawable.ic_fans_white_24dp);
+                        break;
+                    case 2:
+                        tabLayout.getTabAt(2).setIcon(R.drawable.ic_menu_white_24dp);
+                        break;
+                }
+            }
 
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
     }
 
     private void addControl() {
