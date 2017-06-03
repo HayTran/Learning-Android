@@ -1,17 +1,18 @@
 package com.a20170208.tranvanhay.appat.Fragment;
 
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+
+import com.a20170208.tranvanhay.appat.Activity.PingActivity;
 
 /**
  * Created by Van Hay on 30-May-17.
  */
 
 public class FragmentAdapter extends FragmentStatePagerAdapter {
-    String  arrTitle [] = new String[] {"Sensor","PowDev","Menu"};
-    public FragmentAdapter(FragmentManager fm, TabLayout tabLayout) {
+    String  arrTitle [] = new String[] {"Sensor","PowDev","Alert","CustomMenu"};
+    public FragmentAdapter(FragmentManager fm) {
         super(fm);
     }
 
@@ -26,6 +27,9 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
                 fragment = new PowDevFragment();
                 break;
             case 2:
+                fragment = new AlertFragment();
+                break;
+            case 3:
                 fragment = new MenuFragment();
                 break;
         }

@@ -11,7 +11,7 @@
     <application android:label="@string/app_name">
         <uses-library android:name="com.google.android.things" />
 
-        <activity android:name=".StartUpActivity">
+        <activity android:name=".Activity.StartUpActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,7 +34,7 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".OperatingActivity"></activity>
+        <activity android:name=".Activity.OperatingActivity"></activity>
     </application>
 
 </manifest>

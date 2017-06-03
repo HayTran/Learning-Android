@@ -1,4 +1,4 @@
-package com.a20170208.tranvanhay.respberry3;
+package com.a20170208.tranvanhay.respberry3.UtilitiesClass;
 
 import android.util.Log;
 
@@ -12,26 +12,34 @@ import com.google.firebase.database.ValueEventListener;
  * Created by Van Hay on 15-May-17.
  */
 
-public class NodePowDev {
-    private static final String TAG = NodePowDev.class.getSimpleName();
+public class PowDevNode {
+    private static final String TAG = PowDevNode.class.getSimpleName();
     private DatabaseReference mData = FirebaseDatabase.getInstance().getReference();
     private String MACAddr; // help server recognize
     private String ID;      // help user recognize
+    private int zone;       // group sensors  and powdev nodes into zones
     private boolean isImplemented;
     private int [] arrayBytes;
     private int strengthWifi, dev0, dev1, buzzer, sim0, sim1;
 
-    public NodePowDev() {
+    private String listPath;
+    private String detailsPath;
+    private String zonePath;
+
+    public PowDevNode() {
     }
 
-    public NodePowDev(String MACAddr, String ID, int [] arrayBytes, boolean isImplemented) {
+    public PowDevNode(String MACAddr, String ID, int [] arrayBytes, boolean isImplemented) {
         this.MACAddr = MACAddr;
         this.ID = ID;
         this.arrayBytes = arrayBytes;
         this.isImplemented = isImplemented;
+        this.listPath = FirebasePath.POWDEV_LIST_PATH + this.ID;
+        this.detailsPath = FirebasePath.POWDEV_DETAILS_PATH + this.ID;
+        this.zonePath = FirebasePath.ZONE_POWDEV_NODE_CONFIG_PATH + this.ID;
         this.convertValue();
         this.initNodeInFirebase();
-        this.triggerFirebase();
+        this.triggerValue();
     }
     private void convertValue(){
         strengthWifi = arrayBytes[0];
@@ -42,18 +50,18 @@ public class NodePowDev {
         sim1 = arrayBytes[5];
     }
     private void initNodeInFirebase(){
-        mData.child("SocketServer").child("NodeDetails").child("NodePowDev").child(this.ID).child("MACAddress").setValue(MACAddr);
-        mData.child("SocketServer").child("NodeDetails").child("NodePowDev").child(this.ID).child("strengthWifi").setValue(strengthWifi);
-        mData.child("SocketServer").child("NodeDetails").child("NodePowDev").child(this.ID).child("dev0").setValue(dev0);
-        mData.child("SocketServer").child("NodeDetails").child("NodePowDev").child(this.ID).child("dev1").setValue(dev1);
-        mData.child("SocketServer").child("NodeDetails").child("NodePowDev").child(this.ID).child("buzzer").setValue(buzzer);
-        mData.child("SocketServer").child("NodeDetails").child("NodePowDev").child(this.ID).child("sim0").setValue(sim0);
-        mData.child("SocketServer").child("NodeDetails").child("NodePowDev").child(this.ID).child("sim1").setValue(sim1);
-        mData.child("SocketServer").child("NodeDetails").child("NodePowDev").child(this.ID).child("timeOperation").setValue(TimeAndDate.currentTime);
+        mData.child(detailsPath).child("MACAddress").setValue(MACAddr);
+        mData.child(detailsPath).child("strengthWifi").setValue(strengthWifi);
+        mData.child(detailsPath).child("dev0").setValue(dev0);
+        mData.child(detailsPath).child("dev1").setValue(dev1);
+        mData.child(detailsPath).child("buzzer").setValue(buzzer);
+        mData.child(detailsPath).child("sim0").setValue(sim0);
+        mData.child(detailsPath).child("sim1").setValue(sim1);
+        mData.child(detailsPath).child("timeOperation").setValue(TimeAndDate.currentTime);
     }
 
-    private void triggerFirebase() {
-        mData.child("SocketServer").child("NodeDetails").child("NodePowDev").child(this.ID).addValueEventListener(new ValueEventListener() {
+    private void triggerValue() {
+        mData.child(detailsPath).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
@@ -77,10 +85,23 @@ public class NodePowDev {
 
             }
         });
+        mData.child(zonePath).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d(TAG,"path  = " + zonePath);
+                zone = Integer.valueOf(dataSnapshot.getValue().toString()) ;
+                Log.d(TAG,"Zone: " + zone);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
     public void notifyLastestTimeOperation(){
-        mData.child("SocketServer").child("NodeList").child("NodePowDev").child(this.ID).setValue(TimeAndDate.currentTime);
-        mData.child("SocketServer").child("NodeDetails").child("NodePowDev").child(this.ID).child("timeOperation").setValue(TimeAndDate.currentTime);
+        mData.child(listPath).setValue(TimeAndDate.currentTime);
+        mData.child(detailsPath).child("timeOperation").setValue(TimeAndDate.currentTime);
     }
 
     public String getMACAddr() {
@@ -121,7 +142,7 @@ public class NodePowDev {
 
     public void setStrengthWifi(int strengthWifi) {
         this.strengthWifi = strengthWifi;
-        mData.child("SocketServer").child("NodeDetails").child("NodePowDev").child(this.ID).child("strengthWifi").setValue(strengthWifi);
+        mData.child(detailsPath).child("strengthWifi").setValue(strengthWifi);
     }
     public int getDev0() {
         return dev0;

@@ -1,4 +1,4 @@
-package com.a20170208.tranvanhay.respberry3;
+package com.a20170208.tranvanhay.respberry3.UtilitiesClass;
 
 /**
  * Created by Van Hay on 23-May-17.
@@ -70,7 +70,7 @@ public class DBHelper {
     public String getPathDatabaseSystem() {
         return context.getApplicationInfo().dataDir + DB_PATH_SUFFIX + DATABASE_NAME;
     }
-    ArrayList <String> getAllEmployee(){
+    public ArrayList <String> getAllEmployee(){
         ArrayList <String> arrayList = new ArrayList<>();
         db = context.openOrCreateDatabase(DATABASE_NAME,context.MODE_PRIVATE,null);
         String sql = "SELECT * FROM Relatives";
@@ -82,7 +82,7 @@ public class DBHelper {
         }
         return arrayList;
     }
-    void insertEmployee(){
+    public void insertEmployee(){
         db = context.openOrCreateDatabase(DATABASE_NAME,context.MODE_PRIVATE,null);
         ContentValues contentValues = new ContentValues();
         contentValues.put("id",0);

@@ -1,4 +1,4 @@
-package com.a20170208.tranvanhay.appat;
+package com.a20170208.tranvanhay.appat.Activity;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.a20170208.tranvanhay.appat.Fragment.FragmentAdapter;
+import com.a20170208.tranvanhay.appat.R;
 
 public class DashboardActivity extends AppCompatActivity {
     TabLayout tabLayout;
@@ -25,13 +26,15 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     private void init() {
+        getSupportActionBar().hide();
         FragmentManager fm = getSupportFragmentManager();
-        FragmentAdapter fa = new FragmentAdapter(fm, tabLayout);
+        FragmentAdapter fa = new FragmentAdapter(fm);
         viewPager.setAdapter(fa);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_sensor_blue_24dp);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_fans_white_24dp);
-        tabLayout.getTabAt(2).setIcon(R.drawable.ic_menu_white_24dp);
+        tabLayout.getTabAt(2).setIcon(R.drawable.ic_notifications_white_24dp);
+        tabLayout.getTabAt(3).setIcon(R.drawable.ic_menu_white_24dp);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -43,7 +46,10 @@ public class DashboardActivity extends AppCompatActivity {
                         tabLayout.getTabAt(1).setIcon(R.drawable.ic_fans_blue_24dp);
                         break;
                     case 2:
-                        tabLayout.getTabAt(2).setIcon(R.drawable.ic_menu_blue_24dp);
+                        tabLayout.getTabAt(2).setIcon(R.drawable.ic_notifications_blue_24dp);
+                        break;
+                    case 3:
+                        tabLayout.getTabAt(3).setIcon(R.drawable.ic_menu_blue_24dp);
                         break;
                 }
             }
@@ -57,7 +63,10 @@ public class DashboardActivity extends AppCompatActivity {
                         tabLayout.getTabAt(1).setIcon(R.drawable.ic_fans_white_24dp);
                         break;
                     case 2:
-                        tabLayout.getTabAt(2).setIcon(R.drawable.ic_menu_white_24dp);
+                        tabLayout.getTabAt(2).setIcon(R.drawable.ic_notifications_white_24dp);
+                        break;
+                    case 3:
+                        tabLayout.getTabAt(3).setIcon(R.drawable.ic_menu_white_24dp);
                         break;
                 }
             }

@@ -1,4 +1,4 @@
-package com.a20170208.tranvanhay.respberry3;
+package com.a20170208.tranvanhay.respberry3.Activity;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
@@ -12,6 +12,12 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.a20170208.tranvanhay.respberry3.R;
+import com.a20170208.tranvanhay.respberry3.UtilitiesClass.CameraRaspi;
+import com.a20170208.tranvanhay.respberry3.UtilitiesClass.DBHelper;
+import com.a20170208.tranvanhay.respberry3.UtilitiesClass.FCMServerThread;
+import com.a20170208.tranvanhay.respberry3.UtilitiesClass.SocketServerThread;
+import com.a20170208.tranvanhay.respberry3.UtilitiesClass.TimeAndDate;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -107,7 +113,7 @@ public class OperatingActivity extends Activity {
 //        mCamera = CameraRaspi.getInstance();
 //        mCamera.initializeCamera(this, mCameraHandler, mOnImageAvailableListener);
 //        mTakePicture.post(runnableTakePicture);
-//        // Take time to take picture in NodeSensor
+//        // Take time to take picture in SensorNode
 //        mData.child("TIME_TAKE_PICTURE").addValueEventListener(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(DataSnapshot dataSnapshot) {
@@ -150,7 +156,7 @@ public class OperatingActivity extends Activity {
 //    };
     private void captureImage(){
         imageProcess.post(runnableImageProcess);
-        // Take time to take picture in NodeSensor
+        // Take time to take picture in SensorNode
         mData.child("TIME_TAKE_PICTURE").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -165,7 +171,7 @@ public class OperatingActivity extends Activity {
     }
     /**
      *
-     * This is zone for get image from IP Webcam and send to NodeSensor
+     * This is zone for get image from IP Webcam and send to SensorNode
      */
     private  Handler imageProcess = new Handler();
         private Runnable runnableImageProcess = new Runnable() {

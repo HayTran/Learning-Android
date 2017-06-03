@@ -1,4 +1,4 @@
-package com.a20170208.tranvanhay.appat;
+package com.a20170208.tranvanhay.appat.Activity;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -12,6 +12,9 @@ import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.a20170208.tranvanhay.appat.R;
+import com.a20170208.tranvanhay.appat.UtilitiesClass.NetworkPing;
 
 import java.io.IOException;
 
@@ -156,4 +159,5 @@ public class PingActivity extends AppCompatActivity {
             messageError = 0;
         }
     }
+
 }

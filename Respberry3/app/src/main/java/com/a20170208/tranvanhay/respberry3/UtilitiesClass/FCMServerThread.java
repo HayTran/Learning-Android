@@ -1,4 +1,4 @@
-package com.a20170208.tranvanhay.respberry3;
+package com.a20170208.tranvanhay.respberry3.UtilitiesClass;
 import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;

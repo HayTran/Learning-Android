@@ -1,4 +1,4 @@
-package com.a20170208.tranvanhay.appat;
+package com.a20170208.tranvanhay.appat.UtilitiesClass;
 
 
 import android.content.Context;

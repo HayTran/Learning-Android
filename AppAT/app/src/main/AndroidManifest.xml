@@ -10,7 +10,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SignInActivity">
+        <activity android:name=".Activity.SignInActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,13 +34,13 @@
             android:resource="@color/colorAccent" />
         <!-- [END fcm_default_icon] -->
 
-        <service android:name=".MyFirebaseMessagingService">
+        <service android:name=".UtilitiesClass.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
         <service
-            android:name=".MyFirebaseInstanceIDService"
+            android:name=".UtilitiesClass.MyFirebaseInstanceIDService"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -48,9 +48,10 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".DisplayActivity" />
-        <activity android:name=".PingActivity" />
-        <activity android:name=".DashboardActivity"></activity>
+        <activity android:name=".Activity.DisplayActivity" />
+        <activity android:name=".Activity.PingActivity" />
+        <activity android:name=".Activity.DashboardActivity" />
+        <activity android:name=".Activity.SettingActivity"></activity>
     </application>
 
 </manifest>

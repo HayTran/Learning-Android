@@ -59,7 +59,7 @@ public class PowDevFragment extends Fragment {
 
     private void init() {
         nodePowDevArrayList = new ArrayList<>();
-        powDevArrayAdapter = new PowDevArrayAdapter(getContext(),R.layout.powdev_row_adapter,nodePowDevArrayList);
+        powDevArrayAdapter = new PowDevArrayAdapter(getContext(),R.layout.powdev_row,nodePowDevArrayList);
         listView.setAdapter(powDevArrayAdapter);
     }
     private void addEvent() {

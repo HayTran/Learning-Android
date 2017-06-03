@@ -63,7 +63,7 @@ public class SensorFragment extends Fragment {
 
     private void init() {
         nodeSensorArrayList = new ArrayList<>();
-        arrayAdapter = new SensorArrayAdapter(getContext(),R.layout.sensor_row_adapter,nodeSensorArrayList);
+        arrayAdapter = new SensorArrayAdapter(getContext(),R.layout.sensor_row,nodeSensorArrayList);
         listView.setAdapter(arrayAdapter);
         arrayAdapter.notifyDataSetChanged();
     }
