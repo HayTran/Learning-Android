@@ -136,7 +136,7 @@ public class SocketServerThread extends Thread {
                             String MACAddr = ARPNetwork.findMAC(hostThreadSocket.getInetAddress().getHostAddress());
                             if (isSensorNodeObjectExisting(MACAddr) == false
                                     &&  MACAddrAndIDHashMap.get(MACAddr) != null ) {
-                                    // MACAddrAndIDHashMap.get(MACAddr) != null to wait for Firebase got data
+                                    // MACAddrAndIDHashMap.get(MACAddr) != null to wait for Firebase got data about MAC and ID Mapping
                                 String ID = MACAddrAndIDHashMap.get(MACAddr);
                                 SensorNode sensorNode = new SensorNode(MACAddr,ID,arrayBytes);
                                 sensorNodeHashMap.put(MACAddr, sensorNode);
@@ -162,7 +162,7 @@ public class SocketServerThread extends Thread {
                             String MACAddr = ARPNetwork.findMAC(hostThreadSocket.getInetAddress().getHostAddress());
                             if (isPowDevNodeObjectExisting(MACAddr) == false
                                      &&  MACAddrAndIDHashMap.get(MACAddr) != null ) {
-                                    // MACAddrAndIDHashMap.get(MACAddr) != null to wait for Firebase got data
+                                    // MACAddrAndIDHashMap.get(MACAddr) != null to wait for Firebase got data about MAC and ID Mapping
                                 String ID = MACAddrAndIDHashMap.get(MACAddr);
                                 PowDevNode powDevNode = new PowDevNode(MACAddr,ID,arrayBytes,true);
                                 powdevNodeHashMap.put(MACAddr, powDevNode);

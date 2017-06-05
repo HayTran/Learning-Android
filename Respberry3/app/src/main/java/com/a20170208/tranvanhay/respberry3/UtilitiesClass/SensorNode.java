@@ -67,6 +67,7 @@ public class SensorNode {
     public void sendToFirebase(){
         mData.child(this.listPath).setValue(TimeAndDate.currentTime);
         mData.child(this.currentValuePath).child("MACAddr").setValue(MACAddr);
+        mData.child(this.currentValuePath).child("zone").setValue(zone);
         mData.child(this.currentValuePath).child("strengthWifi").setValue(strengthWifi);
         mData.child(this.currentValuePath).child("temperature").setValue(temperature);
         mData.child(this.currentValuePath).child("humidity").setValue(humidity);

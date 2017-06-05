@@ -19,7 +19,7 @@ public class SystemManagement {
     DatabaseReference mData = FirebaseDatabase.getInstance().getReference();
     HashMap <String,SensorNode> sensorNodeHashMap;
     HashMap <String,PowDevNode> powDevNodeHashMap;
-    private boolean alcondMQ2, alcondMQ7, alcondTemperature, alcondHumidity, alcondMeanFlameValue, alcondLightIntensity;
+    HashMap <String, Integer > conditionHashMap = new HashMap<>();
     private int selectionNumber;
 
     public SystemManagement() {
@@ -27,31 +27,31 @@ public class SystemManagement {
     }
 
     private void getAlertCondition(){
-        mData.child(FirebasePath.ALERT_CONDITION_CONFIG_PATH).addValueEventListener(new ValueEventListener() {
+        mData.child(FirebasePath.CONTROLLER_CONDITION_CONFIG_PATH).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                selectionNumber = 0;
                 for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
-                    boolean value = Boolean.valueOf(dataSnapshot1.getValue().toString());
+                    conditionHashMap.clear();
+                    selectionNumber = 0;
+                    int value = Integer.valueOf(dataSnapshot1.getValue().toString());
                     if (dataSnapshot1.getKey().equals("MQ2")) {
-                        alcondMQ2 = value;
+                        conditionHashMap.put("MQ2",value);
                     }   else if (dataSnapshot1.getKey().equals("MQ7")) {
-                        alcondMQ7 = value;
+                        conditionHashMap.put("MQ7",value);
                     }   else if (dataSnapshot1.getKey().equals("temperature")) {
-                        alcondTemperature = value;
+                        conditionHashMap.put("temperature",value);
                     }   else if (dataSnapshot1.getKey().equals("humidity")) {
-                        alcondHumidity = value;
+                        conditionHashMap.put("humidity",value);
                     }   else if (dataSnapshot1.getKey().equals("meanFlameValue")) {
-                        alcondMeanFlameValue = value;
+                        conditionHashMap.put("meanFlameValue",value);
                     }   else if (dataSnapshot1.getKey().equals("lightIntensity")) {
-                        alcondLightIntensity = value;
+                        conditionHashMap.put("lightIntensity",value);
                     }
-                        // Increase selectionNumber when boolean is true
-                    if (value == true){
+                    if (value > 0) {
                         selectionNumber++;
                     }
                 }
-                Log.d(TAG,"Get value config for sensor with selectionNumber: " + selectionNumber);
+                Log.d(TAG,"Get value config for sensor with selectionNumber: ");
             }
 
             @Override
@@ -60,37 +60,54 @@ public class SystemManagement {
             }
         });
     }
-    private void checkSensorValue(){
+    private void check(){
+//        if (check(100)){
+//            // 100 corresponding to alert through Internet or GSM
+//            Log.d(TAG,"OK Alert");
+//        } else if (checkCondition(200)){
+//            // 200 corresponding to implement controller PowDev
+//            Log.d(TAG,"OK Implement Controller");
+//        }
+        checkAllSensorNode();
+    }
+    private void checkAllSensorNode(){
         for (SensorNode sensorNode : sensorNodeHashMap.values()) {
-            int count = 0;
-            if (sensorNode.getTemperature() > sensorNode.getConfigTemperature()) {
-                count++;
+            if (checkEachSensorNode(sensorNode,100)){
+                Log.d(TAG,"OK Alert");
             }
-            if (sensorNode.getHumidity() > sensorNode.getConfigHumidity()) {
-                count++;
-            }
-            if (sensorNode.getLightIntensity() > sensorNode.getConfigLightIntensity()) {
-                count++;
-            }
-            if (sensorNode.getMeanFlameValue() > sensorNode.getConfigMeanFlameValue()) {
-                count++;
-            }
-            if (sensorNode.getMQ2() > sensorNode.getConfigMQ2()) {
-                count++;
-            }
-            if (sensorNode.getMQ7() > sensorNode.getConfigMQ7()) {
-                count++;
-            }
-            if (count >= selectionNumber) {
-                Log.d(TAG,"Exceed selection number at " + sensorNode.getID());
-            }
-            Log.d(TAG,"Count = " + count);
         }
     }
+    private boolean checkEachSensorNode(SensorNode sensorNode, int typeOperation){
+        int count = 0;
+        if (sensorNode.getTemperature() >= sensorNode.getConfigTemperature() && conditionHashMap.get("temperature") == typeOperation){
+            count++;
+        }
+        if (sensorNode.getHumidity() >= sensorNode.getConfigHumidity() && conditionHashMap.get("humidity") == typeOperation){
+            count++;
+        }
+        if (sensorNode.getMeanFlameValue() >= sensorNode.getConfigMeanFlameValue() && conditionHashMap.get("meanFlameValue") == typeOperation){
+            count++;
+        }
+        if (sensorNode.getLightIntensity() >= sensorNode.getConfigLightIntensity() && conditionHashMap.get("lightIntensity") == typeOperation){
+            count++;
+        }
+        if (sensorNode.getMQ2() >= sensorNode.getConfigMQ2() && conditionHashMap.get("MQ2") == typeOperation){
+            count++;
+        }
+        if (sensorNode.getMQ7() >= sensorNode.getConfigMQ7() && conditionHashMap.get("MQ7") == typeOperation){
+            count++;
+        }
+        if (count == selectionNumber && count > 0){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public void checkSystem(HashMap<String, SensorNode> sensorNodeHashMap, HashMap<String, PowDevNode> powDevNodeHashMap ){
         this.sensorNodeHashMap = sensorNodeHashMap;
         this.powDevNodeHashMap = powDevNodeHashMap;
-        this.checkSensorValue();
+        this.check();
         Log.d(TAG,"Checked System");
     }
 

@@ -1,6 +1,7 @@
 package com.a20170208.tranvanhay.respberry3.UtilitiesClass;
 
 import android.os.Handler;
+import android.util.Log;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -26,6 +27,7 @@ public class TimeAndDate {
             SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss --- dd/MM/yyyy");
             format.setTimeZone(TimeZone.getTimeZone("Asia/Bangkok"));
             mData.child("At Current").setValue(format.format(date));
+            Log.d(TAG,"Send time and date to firebase");
             currentTime = format.format(date) + "";
             mHandler.postDelayed(fetchCurrentTime,1000);
         }

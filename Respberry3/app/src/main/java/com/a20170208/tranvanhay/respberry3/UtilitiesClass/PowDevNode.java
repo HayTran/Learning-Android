@@ -51,6 +51,7 @@ public class PowDevNode {
     }
     private void initNodeInFirebase(){
         mData.child(detailsPath).child("MACAddress").setValue(MACAddr);
+        mData.child(detailsPath).child("zone").setValue(zone);
         mData.child(detailsPath).child("strengthWifi").setValue(strengthWifi);
         mData.child(detailsPath).child("dev0").setValue(dev0);
         mData.child(detailsPath).child("dev1").setValue(dev1);
@@ -101,6 +102,7 @@ public class PowDevNode {
     }
     public void notifyLastestTimeOperation(){
         mData.child(listPath).setValue(TimeAndDate.currentTime);
+        mData.child(detailsPath).child("zone").setValue(zone);
         mData.child(detailsPath).child("timeOperation").setValue(TimeAndDate.currentTime);
     }
 
