@@ -185,4 +185,12 @@ public class PowDevNode {
     public void setSim1(int sim1) {
         this.sim1 = sim1;
     }
+
+    public int getZone() {
+        return zone;
+    }
+
+    public void setZone(int zone) {
+        this.zone = zone;
+    }
 }

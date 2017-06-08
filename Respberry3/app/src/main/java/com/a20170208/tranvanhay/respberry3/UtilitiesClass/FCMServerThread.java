@@ -14,15 +14,16 @@ import java.net.URL;
  */
 
 public class FCMServerThread extends Thread {
-    String name;
-    public FCMServerThread(String name) {
-        this.name = name;
+    String bodyMessage;
+    String titleMessage;
+    public FCMServerThread(String titleMessage, String bodyMessage) {
+        this.titleMessage = titleMessage;
+        this.bodyMessage = bodyMessage;
     }
     private static final String TAG = FCMServerThread.class.getSimpleName();
     @Override
     public void run() {
-        Log.d(TAG,"Starting send to FCM Server with message: " + this.name);
-        // Declaration of Message Parameters
+            // Declaration of Message Parameters
         String message_url = "https://fcm.googleapis.com/fcm/send";
         String message_sender_id = "/topics/news";
         String message_key = "key=AAAARWpK7RI:APA91bF4y6jbEOKk_8Doh9hu2pq6GFmpTZ4_PFnRkcPyH3v30uEhcgn-IUZGsE7aHbo1vuFYuamzJEjm14Mc3SrlrVGszVueyQiI0AZTdvYB5DSiWNtMH1zBu2_OfxDVqwZW7jauehvg";
@@ -31,16 +32,16 @@ public class FCMServerThread extends Thread {
             HttpURLConnection con = (HttpURLConnection) object.openConnection();
             con.setDoOutput(true);
             con.setDoInput(true);
-            // Generating a Header for HTTP post
+                // Generating a Header for HTTP post
             con.setRequestProperty("Content-Type", "application/json");
             con.setRequestProperty("Authorization", message_key);
             con.setRequestMethod("POST");
-            // Generating a JSONObject for the content of the message
+                // Generating a JSONObject for the content of the message
             JSONObject message = new JSONObject();
             JSONObject protocol = new JSONObject();
             try {
-                message.put("title","From My Raspberry 3");
-                message.put("body",this.name);
+                message.put("title",this.titleMessage);
+                message.put("body",this.bodyMessage);
                 message.put("sound","default");
                 protocol.put("to", message_sender_id);
                 protocol.put("notification", message);
@@ -53,7 +54,7 @@ public class FCMServerThread extends Thread {
             wr.flush();
             wr.close();
             Log.d(TAG,"Writing output stream finished! Starting get data from InputStream");
-            // Display what returns the POST request
+                // Display what returns the POST request
             StringBuilder sb = new StringBuilder();
             int HttpResult = con.getResponseCode();
             if (HttpResult == HttpURLConnection.HTTP_OK) {

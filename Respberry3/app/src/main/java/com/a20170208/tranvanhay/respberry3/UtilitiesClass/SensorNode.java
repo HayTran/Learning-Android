@@ -296,6 +296,14 @@ public class SensorNode {
         this.convertValue();
     }
 
+    public int getZone() {
+        return zone;
+    }
+
+    public void setZone(int zone) {
+        this.zone = zone;
+    }
+
     @Override
     public String toString() {
         return "SensorNode{" +

@@ -10,6 +10,8 @@ import com.a20170208.tranvanhay.appat.Fragment.FragmentAdapter;
 import com.a20170208.tranvanhay.appat.R;
 
 public class DashboardActivity extends AppCompatActivity {
+    FragmentManager fm;
+    FragmentAdapter fa;
     TabLayout tabLayout;
     ViewPager viewPager;
     @Override
@@ -27,8 +29,8 @@ public class DashboardActivity extends AppCompatActivity {
 
     private void init() {
         getSupportActionBar().hide();
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentAdapter fa = new FragmentAdapter(fm);
+        fm = getSupportFragmentManager();
+        fa = new FragmentAdapter(fm);
         viewPager.setAdapter(fa);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_sensor_blue_24dp);

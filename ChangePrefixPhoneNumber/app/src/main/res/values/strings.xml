@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">ChangePrefixPhoneNumber</string>
+    <string name="intro_policy">"Bắt đầu vào ngày xx/xx/2017, Bộ Thông Tin và Truyền Thông (TTTT) ban hành chính sách quy hoạch lại kho số viễn thông.\nBộ TTTT sẽ chuyển đổi các thuê bao di động 11 số hiện nay thành 10 số, cụ thể sẽ thay đổi 4 số đầu và giữ lại 7 số cuối. Các thuê bao 10 số sẽ không bị ảnh hưởng"</string>
+    <string name="intro_app" >"Chúng tôi sẽ giúp các bạn tự động chuyển đổi các số thuê bao 11 số có trong danh bạ của bạn thành 10 số một cách dễ dàng"</string>
+
+    </resources>

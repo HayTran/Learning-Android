@@ -225,7 +225,6 @@ public class SocketServerThread extends Thread {
 
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
-//                    mData.child("Server Socket Read and Reply Error").push().setValue(e.toString() + " " + TimeAndDate.currentTime);
                     e.printStackTrace();
                     Log.d(TAG, "Exception Catched: " + e.toString());
                 } catch (NullPointerException e) {
@@ -261,7 +260,7 @@ public class SocketServerThread extends Thread {
                 return false;
             }
         }
-    // Get Server's IP waiting socket coming
+        // Get Server's IP waiting socket coming
     private String getIpAddress() {
         String ip = "";
         try {
