@@ -164,7 +164,7 @@ public class SocketServerThread extends Thread {
                                      &&  MACAddrAndIDHashMap.get(MACAddr) != null ) {
                                     // MACAddrAndIDHashMap.get(MACAddr) != null to wait for Firebase got data about MAC and ID Mapping
                                 String ID = MACAddrAndIDHashMap.get(MACAddr);
-                                PowDevNode powDevNode = new PowDevNode(MACAddr,ID,arrayBytes,true);
+                                PowDevNode powDevNode = new PowDevNode(MACAddr,ID,arrayBytes);
                                 powdevNodeHashMap.put(MACAddr, powDevNode);
                             } else {
                                 powdevNodeHashMap.get(MACAddr).setStrengthWifi(arrayBytes[0]);

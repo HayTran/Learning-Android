@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.a20170208.tranvanhay.appat.R;
+import com.a20170208.tranvanhay.appat.UtilitiesClass.FirebasePath;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -50,7 +51,7 @@ public class PowDevFragment extends Fragment {
         super.onStop();
         Log.d(TAG,"onStop");
             // Delete event listener when fragment stop
-        mData.child("SocketServer").child("NodeDetails").child("NodePowDev").removeEventListener(detailsNodePowDevListener);
+        mData.child(FirebasePath.POWDEV_DETAILS_PATH).removeEventListener(detailsNodePowDevListener);
     }
 
     private void addControl(View view ) {
@@ -63,7 +64,7 @@ public class PowDevFragment extends Fragment {
         listView.setAdapter(powDevArrayAdapter);
     }
     private void addEvent() {
-        mData.child("SocketServer").child("NodeList").child("NodePowDev").addListenerForSingleValueEvent(listNodePowDevListener);
+        mData.child(FirebasePath.POWDEV_LIST_PATH).addListenerForSingleValueEvent(listNodePowDevListener);
     }
 
     private ValueEventListener listNodePowDevListener = new ValueEventListener() {
@@ -75,7 +76,7 @@ public class PowDevFragment extends Fragment {
                 nodePowDevArrayList.add(nodePowDev);
                     // Wait until get all list of node powdev
                 nodePowDevArrayList.add(new NodePowDev("0f:d3","NodePowDevxxx",5,false,false,false,false,false,"11:40",false));
-                mData.child("SocketServer").child("NodeDetails").child("NodePowDev").addValueEventListener(detailsNodePowDevListener);
+                mData.child(FirebasePath.POWDEV_DETAILS_PATH).addValueEventListener(detailsNodePowDevListener);
             }
         }
 

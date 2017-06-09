@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.a20170208.tranvanhay.appat.R;
+import com.a20170208.tranvanhay.appat.UtilitiesClass.FirebasePath;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -54,7 +55,7 @@ public class SensorFragment extends Fragment {
         super.onStop();
         Log.d(TAG,"onStop");
             // Delete event listener when fragment stop
-        mData.child("SocketServer").child("NodeDetails").child("NodeSensor").removeEventListener(detailsNodeSensorListener);
+        mData.child(FirebasePath.SENSOR_CURRENT_VALUE_PATH).removeEventListener(detailsNodeSensorListener);
     }
 
     private void addControl(View view ) {
@@ -69,7 +70,7 @@ public class SensorFragment extends Fragment {
     }
 
     private void addEvent() {
-        mData.child("SocketServer").child("NodeList").child("NodeSensor").addListenerForSingleValueEvent(listNodeSensorListener);
+        mData.child(FirebasePath.SENSOR_LIST_PATH).addListenerForSingleValueEvent(listNodeSensorListener);
     }
     private ValueEventListener listNodeSensorListener = new ValueEventListener() {
         @Override
@@ -80,7 +81,7 @@ public class SensorFragment extends Fragment {
                 nodeSensorArrayList.add(nodeSensor);
                     // Wait until get all list of node sensor
                 nodeSensorArrayList.add(new NodeSensor("9f:0k","NodeSensorxxx",1,2,3,4,5,6,7,8,9,10,"11:32:00"));
-                mData.child("SocketServer").child("NodeDetails").child("NodeSensor").addValueEventListener(detailsNodeSensorListener);
+                mData.child(FirebasePath.SENSOR_CURRENT_VALUE_PATH).addValueEventListener(detailsNodeSensorListener);
             }
         }
 

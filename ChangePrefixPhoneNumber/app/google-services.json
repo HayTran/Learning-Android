@@ -1,0 +1,104 @@
+{
+  "project_info": {
+    "project_number": "149926254059",
+    "firebase_url": "https://new-raspberry-3-final.firebaseio.com",
+    "project_id": "new-raspberry-3-final",
+    "storage_bucket": "new-raspberry-3-final.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:149926254059:android:ea7582b1a7de8577",
+        "android_client_info": {
+          "package_name": "com.a20170208.tranvanhay.test"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "149926254059-o3a1uu26qnkk4mt22rvk53jdiqcmggqd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3YaEL3mGT3x2KCkt5XxJagObQ4jpv4Io"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:149926254059:android:95584af8dbb1dfa6",
+        "android_client_info": {
+          "package_name": "com.a20170208.tranvanhay.newraspberry3"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "149926254059-o3a1uu26qnkk4mt22rvk53jdiqcmggqd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3YaEL3mGT3x2KCkt5XxJagObQ4jpv4Io"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:149926254059:android:ce7e78c0b845853a",
+        "android_client_info": {
+          "package_name": "com.example.vanhay.changeprefixphonenumber"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "149926254059-o3a1uu26qnkk4mt22rvk53jdiqcmggqd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3YaEL3mGT3x2KCkt5XxJagObQ4jpv4Io"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

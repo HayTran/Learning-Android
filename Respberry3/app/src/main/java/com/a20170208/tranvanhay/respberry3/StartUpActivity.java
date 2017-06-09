@@ -1,4 +1,4 @@
-package com.a20170208.tranvanhay.respberry3.Activity;
+package com.a20170208.tranvanhay.respberry3;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.a20170208.tranvanhay.respberry3.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;

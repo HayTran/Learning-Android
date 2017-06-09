@@ -16,7 +16,8 @@ public class NodePowDev {
     public NodePowDev() {
     }
 
-    public NodePowDev(String MACAddr, String ID, int strengthWifi, boolean dev0, boolean dev1, boolean buzzer, boolean sim0, boolean sim1, String timeOperation, boolean isImplemented) {
+    public NodePowDev(String MACAddr, String ID, int strengthWifi, boolean dev0, boolean dev1,
+                      boolean buzzer, boolean sim0, boolean sim1, String timeOperation, boolean isImplemented) {
         this.MACAddr = MACAddr;
         this.ID = ID;
         this.strengthWifi = strengthWifi;

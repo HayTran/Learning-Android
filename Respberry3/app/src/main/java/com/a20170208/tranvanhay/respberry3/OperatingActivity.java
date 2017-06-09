@@ -1,4 +1,4 @@
-package com.a20170208.tranvanhay.respberry3.Activity;
+package com.a20170208.tranvanhay.respberry3;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
@@ -12,7 +12,6 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.TextView;
 
-import com.a20170208.tranvanhay.respberry3.R;
 import com.a20170208.tranvanhay.respberry3.UtilitiesClass.CameraRaspi;
 import com.a20170208.tranvanhay.respberry3.UtilitiesClass.DBHelper;
 import com.a20170208.tranvanhay.respberry3.UtilitiesClass.FCMServerThread;

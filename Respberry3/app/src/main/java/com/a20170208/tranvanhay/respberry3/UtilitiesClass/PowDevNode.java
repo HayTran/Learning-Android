@@ -18,7 +18,7 @@ public class PowDevNode {
     private String MACAddr; // help server recognize
     private String ID;      // help user recognize
     private int zone;       // group sensors  and powdev nodes into zones
-    private boolean isImplemented;
+    private boolean isEnable;
     private int [] arrayBytes;
     private int strengthWifi, dev0, dev1, buzzer, sim0, sim1;
 
@@ -29,11 +29,10 @@ public class PowDevNode {
     public PowDevNode() {
     }
 
-    public PowDevNode(String MACAddr, String ID, int [] arrayBytes, boolean isImplemented) {
+    public PowDevNode(String MACAddr, String ID, int [] arrayBytes) {
         this.MACAddr = MACAddr;
         this.ID = ID;
         this.arrayBytes = arrayBytes;
-        this.isImplemented = isImplemented;
         this.listPath = FirebasePath.POWDEV_LIST_PATH + this.ID;
         this.detailsPath = FirebasePath.POWDEV_DETAILS_PATH + this.ID;
         this.zonePath = FirebasePath.ZONE_POWDEV_NODE_CONFIG_PATH + this.ID;
@@ -49,9 +48,12 @@ public class PowDevNode {
         sim0 = arrayBytes[4];
         sim1 = arrayBytes[5];
     }
-    private void initNodeInFirebase(){
+    protected void initNodeInFirebase(){
+            // enable powdev when system start. NOTE: Must update by save in sqlite
+        this.isEnable = true;
         mData.child(detailsPath).child("MACAddress").setValue(MACAddr);
         mData.child(detailsPath).child("zone").setValue(zone);
+        mData.child(detailsPath).child("isEnable").setValue(isEnable);
         mData.child(detailsPath).child("strengthWifi").setValue(strengthWifi);
         mData.child(detailsPath).child("dev0").setValue(dev0);
         mData.child(detailsPath).child("dev1").setValue(dev1);
@@ -59,6 +61,7 @@ public class PowDevNode {
         mData.child(detailsPath).child("sim0").setValue(sim0);
         mData.child(detailsPath).child("sim1").setValue(sim1);
         mData.child(detailsPath).child("timeOperation").setValue(TimeAndDate.currentTime);
+        Log.d(TAG,"initNodeInFirebase");
     }
 
     private void triggerValue() {
@@ -66,15 +69,17 @@ public class PowDevNode {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                    if (dataSnapshot1.getKey().equals("dev0")) {
+                    if (dataSnapshot1.getKey().equals("isEnable")) {
+                        isEnable = Boolean.valueOf(dataSnapshot1.getValue().toString());
+                    }   else if (dataSnapshot1.getKey().equals("dev0")) {
                         dev0 = Integer.valueOf(dataSnapshot1.getValue().toString());
-                    } else if (dataSnapshot1.getKey().equals("dev1")) {
+                    }   else if (dataSnapshot1.getKey().equals("dev1")) {
                         dev1 = Integer.valueOf(dataSnapshot1.getValue().toString());
-                    } else if (dataSnapshot1.getKey().equals("buzzer")) {
+                    }   else if (dataSnapshot1.getKey().equals("buzzer")) {
                         buzzer = Integer.valueOf(dataSnapshot1.getValue().toString());
-                    } else if (dataSnapshot1.getKey().equals("sim0")) {
+                    }   else if (dataSnapshot1.getKey().equals("sim0")) {
                         sim0 = Integer.valueOf(dataSnapshot1.getValue().toString());
-                    } else if (dataSnapshot1.getKey().equals("sim1")) {
+                    }   else if (dataSnapshot1.getKey().equals("sim1")) {
                         sim1 = Integer.valueOf(dataSnapshot1.getValue().toString());
                     }
                 }
@@ -89,7 +94,6 @@ public class PowDevNode {
         mData.child(zonePath).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d(TAG,"path  = " + zonePath);
                 zone = Integer.valueOf(dataSnapshot.getValue().toString()) ;
                 Log.d(TAG,"Zone: " + zone);
             }
@@ -120,14 +124,6 @@ public class PowDevNode {
 
     public void setID(String ID) {
         this.ID = ID;
-    }
-
-    public boolean isImplemented() {
-        return isImplemented;
-    }
-
-    public void setImplemented(boolean implemented) {
-        isImplemented = implemented;
     }
 
     public int[] getArrayBytes() {
@@ -176,6 +172,7 @@ public class PowDevNode {
 
     public void setSim0(int sim0) {
         this.sim0 = sim0;
+        mData.child(detailsPath).child("sim0").setValue(sim0);
     }
 
     public int getSim1() {
@@ -184,6 +181,7 @@ public class PowDevNode {
 
     public void setSim1(int sim1) {
         this.sim1 = sim1;
+        mData.child(detailsPath).child("sim0").setValue(sim1);
     }
 
     public int getZone() {

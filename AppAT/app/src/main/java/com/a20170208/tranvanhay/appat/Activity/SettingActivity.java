@@ -16,8 +16,6 @@ public class SettingActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Setting");
         getSupportActionBar().setIcon(R.drawable.time_machine_icon);
-
-
     }
 
     @Override

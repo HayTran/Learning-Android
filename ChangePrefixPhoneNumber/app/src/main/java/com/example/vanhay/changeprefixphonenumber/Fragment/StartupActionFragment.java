@@ -14,6 +14,9 @@ import com.example.vanhay.changeprefixphonenumber.R;
  */
 
 public class StartupActionFragment extends Fragment {
+    public StartupActionFragment() {
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

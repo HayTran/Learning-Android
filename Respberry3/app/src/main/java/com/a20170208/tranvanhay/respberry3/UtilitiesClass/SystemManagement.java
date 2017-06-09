@@ -20,14 +20,13 @@ public class SystemManagement {
     HashMap <String,SensorNode> sensorNodeHashMap;
     HashMap <String,PowDevNode> powDevNodeHashMap;
     HashMap <String, Integer > conditionHashMap;
-    HashMap <String, Boolean > alertTypeHashMap;
+    private boolean callAlert, SMSAlert, internetAlert;
     String MACAddrGSMNode;
-    private int selectionNumber;
+    private int selectionAlertNumber, selectionControlNumber, selectionBothNumber;
 
     public SystemManagement() {
         this.getControllerConfig();
         this.conditionHashMap = new HashMap<>();
-        this.alertTypeHashMap = new HashMap<>();
     }
 
     private void getControllerConfig(){
@@ -36,8 +35,10 @@ public class SystemManagement {
             public void onDataChange(DataSnapshot dataSnapshot) {
                     // Clear hashmap before put new value into hashmap
                 conditionHashMap.clear();
+                selectionAlertNumber = 0;
+                selectionControlNumber  = 0;
+                selectionBothNumber = 0;
                 for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
-                    selectionNumber = 0;
                     int value = Integer.valueOf(dataSnapshot1.getValue().toString());
                     if (dataSnapshot1.getKey().equals("MQ2")) {
                         conditionHashMap.put("MQ2",value);
@@ -52,12 +53,18 @@ public class SystemManagement {
                     }   else if (dataSnapshot1.getKey().equals("lightIntensity")) {
                         conditionHashMap.put("lightIntensity",value);
                     }
-                    if (value > 0) {
-                        selectionNumber++;
+                    if (value ==  100) {
+                        selectionAlertNumber++;
+                    } else if (value == 200) {
+                        selectionControlNumber++;
+                    } else if (value == 300) {
+                        selectionBothNumber++;
                     }
                 }
-                Log.d(TAG,"Get value config for sensor with selectionNumber: \n" +
-                        "with hashmap's size: " +conditionHashMap.size());
+                Log.d(TAG,"Get value config for sensor with:"
+                        +"\nselectionAlertNumber=" +selectionAlertNumber
+                        +"\nselectionControlNumber=" +selectionControlNumber
+                        +"\nselectionBothNumber=" +selectionBothNumber);
             }
 
             @Override
@@ -69,18 +76,20 @@ public class SystemManagement {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                     // Clear hashmap before put new value into hashmap
-                alertTypeHashMap.clear();
                 for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
                     boolean value = Boolean.valueOf(dataSnapshot1.getValue().toString());
                     if (dataSnapshot1.getKey().equals("SMSAlert")) {
-                        alertTypeHashMap.put("SMSAlert",value);
+                        SMSAlert = value;
                     }   else if (dataSnapshot1.getKey().equals("CallAlert")) {
-                        alertTypeHashMap.put("CallAlert",value);
+                        callAlert  = value;
                     }   else if (dataSnapshot1.getKey().equals("InternetAlert")) {
-                        alertTypeHashMap.put("InternetAlert",value);
+                        internetAlert = value;
                     }
                 }
-                Log.d(TAG,"Gotten alert type config with hashmap's size: " + alertTypeHashMap.size());
+                Log.d(TAG,"Got alert type config with: " +
+                        "\nSMSAlert = " + SMSAlert +
+                        "\nCallAlert = " + callAlert +
+                        "\nInternetAlert = " + internetAlert);
             }
 
             @Override
@@ -105,19 +114,19 @@ public class SystemManagement {
         for (SensorNode sensorNode : sensorNodeHashMap.values()) {
                 // Check alert
             if (checkEachSensorNode(sensorNode,100)){
-                alert(sensorNode,true);
+                alert(sensorNode, true);
             } else {
-                alert(sensorNode,false);
+                alert(sensorNode, false);
             }
                 // Check control powdev
-            if (checkEachSensorNode(sensorNode,200)){
-                controlPowDev(sensorNode,true);
-            } else {
-                controlPowDev(sensorNode,false);
-            }
+//            if (checkEachSensorNode(sensorNode,200)){
+//                controlPowDev(sensorNode,true);
+//            } else {
+//                controlPowDev(sensorNode,false);
+//            }
         }
     }
-        // Check each sensor node in the system
+        // Check each sensor node in the system corressponding with typeOperation
     private boolean checkEachSensorNode(SensorNode sensorNode, int typeOperation){
         int count = 0;
         if (sensorNode.getTemperature() >= sensorNode.getConfigTemperature() &&
@@ -144,11 +153,22 @@ public class SystemManagement {
                 conditionHashMap.get("MQ7") == typeOperation){
             count++;
         }
-        if (count == selectionNumber && count > 0){
+        Log.d(TAG,"Count = " + count
+                +"\nselectionAlertNumber = " + selectionAlertNumber
+                +"\nselectionControlNumber = " +selectionControlNumber
+                +"\nselectionBothNumber = " + selectionBothNumber
+                +"\ntypeOperation = " + typeOperation);
+        if (typeOperation == 100 && count == selectionAlertNumber && count > 0) {
+            Log.d(TAG,"checkEachSensorNode is: true with Alert" );
             return true;
-        } else {
-            return false;
-        }
+        }   else if (typeOperation == 200 && count == selectionControlNumber && count > 0){
+            Log.d(TAG,"checkEachSensorNode is: true with Control" );
+            return true;
+        }   else if (typeOperation == 300 && count == selectionControlNumber && count > 0){
+            Log.d(TAG,"checkEachSensorNode is: true with Alert and Control" );
+            return true;
+        } else return false;
+
     }
         // Control PowDev when sensor node exceed configured value
     private void controlPowDev(SensorNode sensorNode, boolean isActive ){
@@ -170,24 +190,30 @@ public class SystemManagement {
                 }
             }
         }
+        Log.d(TAG,"Control PowDev is actived?: " + isActive +", at sensor node: " + sensorNode.getID());
     }
         // Alert when sensor node exceed configured value with ways below
     private void alert(SensorNode sensorNode, boolean isActive){
-        if (alertTypeHashMap.get("InternetAlert")== true && isActive == true) {
-            new FCMServerThread("Sensor Node","Exceed your setting, at node: " + sensorNode.getID()+", at zone: " + sensorNode.getZone());
+        if (internetAlert == true && isActive == true) {
+            new FCMServerThread("Sensor Node","Exceed your setting, at node: "
+                    + sensorNode.getID()+", at zone: " + sensorNode.getZone()).start();
+            Log.d(TAG,"Sent message to FCM");
         }
-        // Access PowDev Node has GSM Module
-        if (alertTypeHashMap.get("SMSAlert") == true && isActive == true){
+            // Access PowDev Node has GSM Module
+        if (SMSAlert == true && isActive == true){
             powDevNodeHashMap.get(MACAddrGSMNode).setSim0(1);
-        } else {
+        }   else if (powDevNodeHashMap.get(MACAddrGSMNode).getSim0() == 1) {
+                // Just invert it's state when it's 1
             powDevNodeHashMap.get(MACAddrGSMNode).setSim0(0);
         }
-        // Access PowDev Node has GSM Module
-        if (alertTypeHashMap.get("CallAlert")== true && isActive == true){
+            // Access PowDev Node has GSM Module
+        if (callAlert == true && isActive == true){
             powDevNodeHashMap.get(MACAddrGSMNode).setSim1(1);
-        } else {
+        }   else if (powDevNodeHashMap.get(MACAddrGSMNode).getSim1() == 1) {
+                // Just invert it's state when it's 1
             powDevNodeHashMap.get(MACAddrGSMNode).setSim1(0);
         }
+        Log.d(TAG,"Alert is active?: " +isActive + ", at sensor node: " + sensorNode.getID());
     }
         // The public method is called in SocketServerThread
     public void checkSystem(HashMap<String, SensorNode> sensorNodeHashMap,

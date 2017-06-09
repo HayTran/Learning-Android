@@ -14,6 +14,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.a20170208.tranvanhay.appat.R;
+import com.a20170208.tranvanhay.appat.UtilitiesClass.FirebasePath;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -113,7 +114,7 @@ public class PowDevArrayAdapter extends ArrayAdapter {
             convertedValue = 0;
         }
             // if value == false then convertedValue = 1 because 0 is active
-        mData.child("SocketServer").child("NodeDetails").child("NodePowDev").child(ID).child(device).setValue(convertedValue);
+        mData.child(FirebasePath.POWDEV_DETAILS_PATH).child(ID).child(device).setValue(convertedValue);
         Log.d(TAG,"send to Firebase");
     }
     private void checkShow(String ID, LinearLayout linearLayout){

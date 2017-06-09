@@ -8,6 +8,6 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.a20170208.tranvanhay.respberry3.Activity.StartUpActivity">
+    tools:context="com.a20170208.tranvanhay.respberry3.StartUpActivity">
 
 </RelativeLayout>

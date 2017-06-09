@@ -1,9 +1,7 @@
-package com.example.vanhay.changeprefixphonenumber.Activity;
+package com.example.vanhay.changeprefixphonenumber;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-
-import com.example.vanhay.changeprefixphonenumber.R;
 
 public class SettingsActivity extends AppCompatActivity {
 
