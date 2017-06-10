@@ -1,4 +1,4 @@
-package com.a20170208.tranvanhay.appat.Activity;
+package com.a20170208.tranvanhay.appat;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -7,7 +7,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.a20170208.tranvanhay.appat.Fragment.FragmentAdapter;
-import com.a20170208.tranvanhay.appat.R;
 
 public class DashboardActivity extends AppCompatActivity {
     FragmentManager fm;

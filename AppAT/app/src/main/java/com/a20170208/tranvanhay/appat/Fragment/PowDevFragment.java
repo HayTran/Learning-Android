@@ -27,7 +27,7 @@ public class PowDevFragment extends Fragment {
     DatabaseReference mData = FirebaseDatabase.getInstance().getReference();
     private static final String TAG = PowDevFragment.class.getSimpleName();
     PowDevArrayAdapter powDevArrayAdapter;
-    ArrayList <NodePowDev> nodePowDevArrayList;
+    ArrayList <PowDevNode> powDevNodeArrayList;
     ListView listView;
     public PowDevFragment() {
     }
@@ -59,8 +59,8 @@ public class PowDevFragment extends Fragment {
     }
 
     private void init() {
-        nodePowDevArrayList = new ArrayList<>();
-        powDevArrayAdapter = new PowDevArrayAdapter(getContext(),R.layout.powdev_row,nodePowDevArrayList);
+        powDevNodeArrayList = new ArrayList<>();
+        powDevArrayAdapter = new PowDevArrayAdapter(getContext(),R.layout.powdev_row, powDevNodeArrayList);
         listView.setAdapter(powDevArrayAdapter);
     }
     private void addEvent() {
@@ -71,11 +71,11 @@ public class PowDevFragment extends Fragment {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                NodePowDev nodePowDev = new NodePowDev();
-                nodePowDev.setID(dataSnapshot1.getKey());
-                nodePowDevArrayList.add(nodePowDev);
+                PowDevNode powDevNode = new PowDevNode();
+                powDevNode.setID(dataSnapshot1.getKey());
+                powDevNodeArrayList.add(powDevNode);
                     // Wait until get all list of node powdev
-                nodePowDevArrayList.add(new NodePowDev("0f:d3","NodePowDevxxx",5,false,false,false,false,false,"11:40",false));
+                powDevNodeArrayList.add(new PowDevNode("0f:d3","NodePowDevxxx",5,false,false,false,false,false,"11:40",true));
                 mData.child(FirebasePath.POWDEV_DETAILS_PATH).addValueEventListener(detailsNodePowDevListener);
             }
         }
@@ -89,26 +89,30 @@ public class PowDevFragment extends Fragment {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                for (NodePowDev nodePowDev : nodePowDevArrayList) {
-                    String ID = nodePowDev.getID();
+                for (PowDevNode powDevNode : powDevNodeArrayList) {
+                    String ID = powDevNode.getID();
                     if (dataSnapshot1.getKey().equals(ID)) {
                         for (DataSnapshot dataSnapshot2 : dataSnapshot1.getChildren()) {
                             if (dataSnapshot2.getKey().equals("MACAddr")) {
-                                nodePowDev.setMACAddr(dataSnapshot2.getValue().toString());
+                                powDevNode.setMACAddr(dataSnapshot2.getValue().toString());
+                            }   else if (dataSnapshot2.getKey().equals("zone")){
+                                powDevNode.setZone(Integer.valueOf(dataSnapshot2.getValue().toString()));
                             }   else if (dataSnapshot2.getKey().equals("strengthWifi")) {
-                                nodePowDev.setStrengthWifi(Integer.valueOf(dataSnapshot2.getValue().toString()));
+                                powDevNode.setStrengthWifi(Integer.valueOf(dataSnapshot2.getValue().toString()));
                             }   else if (dataSnapshot2.getKey().equals("dev0")) {
-                                nodePowDev.setDev0(stringToBoolean(dataSnapshot2.getValue().toString()));
+                                powDevNode.setDev0(stringToBoolean(dataSnapshot2.getValue().toString()));
                             }   else if (dataSnapshot2.getKey().equals("dev1")) {
-                                nodePowDev.setDev1(stringToBoolean(dataSnapshot2.getValue().toString()));
+                                powDevNode.setDev1(stringToBoolean(dataSnapshot2.getValue().toString()));
                             }   else if (dataSnapshot2.getKey().equals("buzzer")) {
-                                nodePowDev.setBuzzer(stringToBoolean(dataSnapshot2.getValue().toString()));
+                                powDevNode.setBuzzer(stringToBoolean(dataSnapshot2.getValue().toString()));
                             }   else if (dataSnapshot2.getKey().equals("sim0")) {
-                                nodePowDev.setSim0(stringToBoolean(dataSnapshot2.getValue().toString()));
+                                powDevNode.setSim0(stringToBoolean(dataSnapshot2.getValue().toString()));
                             }   else if (dataSnapshot2.getKey().equals("sim1")) {
-                                nodePowDev.setSim1(stringToBoolean(dataSnapshot2.getValue().toString()));
+                                powDevNode.setSim1(stringToBoolean(dataSnapshot2.getValue().toString()));
                             }   else if (dataSnapshot2.getKey().equals("timeOperation")) {
-                                nodePowDev.setTimeOperation(dataSnapshot2.getValue().toString());
+                                powDevNode.setTimeOperation(dataSnapshot2.getValue().toString());
+                            }   else if (dataSnapshot2.getKey().equals("isEnable")) {
+                                powDevNode.setEnable(Boolean.valueOf(dataSnapshot2.getValue().toString()));
                             }
 
                         }

@@ -18,7 +18,7 @@ public class PowDevNode {
     private String MACAddr; // help server recognize
     private String ID;      // help user recognize
     private int zone;       // group sensors  and powdev nodes into zones
-    private boolean isEnable;
+    private boolean isEnable, isAlreadyImplemented;
     private int [] arrayBytes;
     private int strengthWifi, dev0, dev1, buzzer, sim0, sim1;
 
@@ -49,8 +49,11 @@ public class PowDevNode {
         sim1 = arrayBytes[5];
     }
     protected void initNodeInFirebase(){
-            // enable powdev when system start. NOTE: Must update by save in sqlite
+            // enable powdev when system start.
         this.isEnable = true;
+            // alreadyImplement to specify that the node'has already implemented
+        this.isAlreadyImplemented = false;
+            //  NOTE: Must update isEnable and alreadyImplement by save in sqlite
         mData.child(detailsPath).child("MACAddress").setValue(MACAddr);
         mData.child(detailsPath).child("zone").setValue(zone);
         mData.child(detailsPath).child("isEnable").setValue(isEnable);
@@ -82,6 +85,10 @@ public class PowDevNode {
                     }   else if (dataSnapshot1.getKey().equals("sim1")) {
                         sim1 = Integer.valueOf(dataSnapshot1.getValue().toString());
                     }
+                        // Disable implement when user choose isEnable = false
+                    if (isEnable == false) {
+                        implementTask(1);
+                    }
                 }
                 Log.d(TAG, "Node has already change!");
             }
@@ -109,7 +116,14 @@ public class PowDevNode {
         mData.child(detailsPath).child("zone").setValue(zone);
         mData.child(detailsPath).child("timeOperation").setValue(TimeAndDate.currentTime);
     }
-
+    protected void implementTask(int isRun){
+        this.dev0 = isRun;
+        this.dev1 = isRun;
+        this.buzzer = isRun;
+        mData.child(detailsPath).child("dev0").setValue(dev0);
+        mData.child(detailsPath).child("dev1").setValue(dev1);
+        mData.child(detailsPath).child("buzzer").setValue(buzzer);
+    }
     public String getMACAddr() {
         return MACAddr;
     }
@@ -181,7 +195,7 @@ public class PowDevNode {
 
     public void setSim1(int sim1) {
         this.sim1 = sim1;
-        mData.child(detailsPath).child("sim0").setValue(sim1);
+        mData.child(detailsPath).child("sim1").setValue(sim1);
     }
 
     public int getZone() {
@@ -190,5 +204,21 @@ public class PowDevNode {
 
     public void setZone(int zone) {
         this.zone = zone;
+    }
+
+    public boolean isAlreadyImplemented() {
+        return isAlreadyImplemented;
+    }
+
+    public void setAlreadyImplement(boolean isAlreadyImplemented) {
+        this.isAlreadyImplemented = isAlreadyImplemented;
+    }
+
+    public boolean isEnable() {
+        return isEnable;
+    }
+
+    public void setEnable(boolean enable) {
+        isEnable = enable;
     }
 }

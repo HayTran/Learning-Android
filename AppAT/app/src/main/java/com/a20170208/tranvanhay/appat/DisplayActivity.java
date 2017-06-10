@@ -1,4 +1,4 @@
-package com.a20170208.tranvanhay.appat.Activity;
+package com.a20170208.tranvanhay.appat;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -62,7 +62,7 @@ public class DisplayActivity extends AppCompatActivity {
 //        });
 //    }
 //    private void showInfoFromFirebase() {
-//        mData.child("SocketServer").child("NodeDetails").child("NodeSensor").child("NodeSensor0").addValueEventListener(new ValueEventListener() {
+//        mData.child("SocketServer").child("NodeDetails").child("SensorNode").child("NodeSensor0").addValueEventListener(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(DataSnapshot dataSnapshot) {
 //                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {

@@ -20,8 +20,22 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="2"
+            android:layout_weight="1"
             android:id="@+id/textViewID"
+            android:text="Not yet get"
+            android:gravity="center"/>
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="80dp"
+            android:src="@drawable/marker1600"
+            android:scaleType="fitCenter" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:id="@+id/textViewZone"
             android:text="Not yet get"
             android:gravity="center"/>
     </LinearLayout>
@@ -55,6 +69,29 @@
                 android:id="@+id/textViewStrengthWifi"/>
         </LinearLayout>
 
+        <!-- This is Enable switch section-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#acd1af"
+            android:weightSum="1">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="59dp"
+                android:src="@drawable/tick"
+                android:scaleType="fitCenter" />
+            <Switch
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/swEnable"
+                android:layout_gravity="center"
+                android:paddingRight="90dp"
+                android:textOn="ON"
+                />
+        </LinearLayout>
+
         <!-- This is dev0 section-->
         <LinearLayout
             android:layout_width="match_parent"
@@ -66,7 +103,7 @@
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="59dp"
-                android:src="@drawable/smartphone_ram1600"
+                android:src="@drawable/fire_sprinkler_system"
                 android:scaleType="fitCenter" />
             <Switch
                 android:layout_width="match_parent"
@@ -92,7 +129,7 @@
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="59dp"
-                android:src="@drawable/smartphone_ram1600"
+                android:src="@drawable/door_opened_filled"
                 android:scaleType="fitCenter" />
             <Switch
                 android:layout_width="match_parent"
@@ -118,64 +155,12 @@
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="59dp"
-                android:src="@drawable/smartphone_ram1600"
+                android:src="@drawable/fire_alarm_512"
                 android:scaleType="fitCenter" />
             <Switch
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/swBuzzer"
-                android:layout_gravity="center"
-                android:paddingRight="70dp"
-                android:textOn="ON"
-                android:thumb="@drawable/customswitchselector"
-                android:track="@drawable/custom_track"
-                android:textOff="OFF"
-                android:showText="true" />
-        </LinearLayout>
-
-        <!-- This is sim0 section-->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="#acd1af"
-            android:weightSum="1">
-
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="59dp"
-                android:src="@drawable/smartphone_ram1600"
-                android:scaleType="fitCenter" />
-            <Switch
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/swSim0"
-                android:layout_gravity="center"
-                android:paddingRight="70dp"
-                android:textOn="ON"
-                android:thumb="@drawable/customswitchselector"
-                android:track="@drawable/custom_track"
-                android:textOff="OFF"
-                android:showText="true" />
-        </LinearLayout>
-
-        <!-- This is sim1 section-->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="#acd1af"
-            android:weightSum="1">
-
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="59dp"
-                android:src="@drawable/smartphone_ram1600"
-                android:scaleType="fitCenter" />
-            <Switch
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/swSim1"
                 android:layout_gravity="center"
                 android:paddingRight="70dp"
                 android:textOn="ON"

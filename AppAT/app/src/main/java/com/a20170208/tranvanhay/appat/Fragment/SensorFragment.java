@@ -28,7 +28,7 @@ public class SensorFragment extends Fragment {
     private static final String TAG = SensorFragment.class.getSimpleName();
     SensorArrayAdapter arrayAdapter;
     ListView listView;
-    ArrayList <NodeSensor> nodeSensorArrayList;
+    ArrayList <SensorNode> sensorNodeArrayList;
 
     public SensorFragment() {
         super();
@@ -63,8 +63,8 @@ public class SensorFragment extends Fragment {
     }
 
     private void init() {
-        nodeSensorArrayList = new ArrayList<>();
-        arrayAdapter = new SensorArrayAdapter(getContext(),R.layout.sensor_row,nodeSensorArrayList);
+        sensorNodeArrayList = new ArrayList<>();
+        arrayAdapter = new SensorArrayAdapter(getContext(),R.layout.sensor_row, sensorNodeArrayList);
         listView.setAdapter(arrayAdapter);
         arrayAdapter.notifyDataSetChanged();
     }
@@ -76,11 +76,11 @@ public class SensorFragment extends Fragment {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                NodeSensor nodeSensor = new NodeSensor();
-                nodeSensor.setID(dataSnapshot1.getKey());
-                nodeSensorArrayList.add(nodeSensor);
+                SensorNode sensorNode = new SensorNode();
+                sensorNode.setID(dataSnapshot1.getKey());
+                sensorNodeArrayList.add(sensorNode);
                     // Wait until get all list of node sensor
-                nodeSensorArrayList.add(new NodeSensor("9f:0k","NodeSensorxxx",1,2,3,4,5,6,7,8,9,10,"11:32:00"));
+                sensorNodeArrayList.add(new SensorNode("9f:0k","NodeSensorxxx",1,2,3,4,5,6,7,8,9,10,"11:32:00"));
                 mData.child(FirebasePath.SENSOR_CURRENT_VALUE_PATH).addValueEventListener(detailsNodeSensorListener);
             }
         }
@@ -94,34 +94,36 @@ public class SensorFragment extends Fragment {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                for (NodeSensor nodeSensor : nodeSensorArrayList) {
-                    String ID = nodeSensor.getID();
+                for (SensorNode sensorNode : sensorNodeArrayList) {
+                    String ID = sensorNode.getID();
                     if (dataSnapshot1.getKey().equals(ID)) {
                         for (DataSnapshot dataSnapshot2 : dataSnapshot1.getChildren()){
                             if (dataSnapshot2.getKey().equals("MACAddr")){
-                                nodeSensor.setMACAddr(dataSnapshot2.getValue().toString());
-                            } else if (dataSnapshot2.getKey().equals("temperature")){
-                                nodeSensor.setTemperature(Double.valueOf(dataSnapshot2.getValue().toString()));
-                            } else if (dataSnapshot2.getKey().equals("humidity")){
-                                nodeSensor.setHumidity(Double.valueOf(dataSnapshot2.getValue().toString()));
-                            } else if (dataSnapshot2.getKey().equals("flameValue0")){
-                                nodeSensor.setFlameValue0(Double.valueOf(dataSnapshot2.getValue().toString()));
-                            } else if (dataSnapshot2.getKey().equals("flameValue1")){
-                                nodeSensor.setFlameValue1(Double.valueOf(dataSnapshot2.getValue().toString()));
-                            } else if (dataSnapshot2.getKey().equals("flameValue2")){
-                                nodeSensor.setFlameValue2(Double.valueOf(dataSnapshot2.getValue().toString()));
-                            } else if (dataSnapshot2.getKey().equals("flameValue3")){
-                                nodeSensor.setFlameValue3(Double.valueOf(dataSnapshot2.getValue().toString()));
-                            } else if (dataSnapshot2.getKey().equals("lightIntensity")){
-                                nodeSensor.setLightIntensity(Double.valueOf(dataSnapshot2.getValue().toString()));
-                            } else if (dataSnapshot2.getKey().equals("MQ2")){
-                                nodeSensor.setMQ2(Double.valueOf(dataSnapshot2.getValue().toString()));
-                            } else if (dataSnapshot2.getKey().equals("MQ7")){
-                                nodeSensor.setMQ7(Double.valueOf(dataSnapshot2.getValue().toString()));
-                            } else if (dataSnapshot2.getKey().equals("strengthWifi")){
-                                nodeSensor.setStrengthWifi(Double.valueOf(dataSnapshot2.getValue().toString()));
-                            } else if (dataSnapshot2.getKey().equals("timeSend")){
-                                nodeSensor.setTimeSend(dataSnapshot2.getValue().toString());
+                                sensorNode.setMACAddr(dataSnapshot2.getValue().toString());
+                            }   else if (dataSnapshot2.getKey().equals("zone")){
+                                sensorNode.setZone(Integer.valueOf(dataSnapshot2.getValue().toString()));
+                            }   else if (dataSnapshot2.getKey().equals("temperature")){
+                                sensorNode.setTemperature(Double.valueOf(dataSnapshot2.getValue().toString()));
+                            }   else if (dataSnapshot2.getKey().equals("humidity")){
+                                sensorNode.setHumidity(Double.valueOf(dataSnapshot2.getValue().toString()));
+                            }   else if (dataSnapshot2.getKey().equals("flameValue0")){
+                                sensorNode.setFlameValue0(Double.valueOf(dataSnapshot2.getValue().toString()));
+                            }   else if (dataSnapshot2.getKey().equals("flameValue1")){
+                                sensorNode.setFlameValue1(Double.valueOf(dataSnapshot2.getValue().toString()));
+                            }   else if (dataSnapshot2.getKey().equals("flameValue2")){
+                                sensorNode.setFlameValue2(Double.valueOf(dataSnapshot2.getValue().toString()));
+                            }    else if (dataSnapshot2.getKey().equals("flameValue3")){
+                                sensorNode.setFlameValue3(Double.valueOf(dataSnapshot2.getValue().toString()));
+                            }    else if (dataSnapshot2.getKey().equals("lightIntensity")){
+                                sensorNode.setLightIntensity(Double.valueOf(dataSnapshot2.getValue().toString()));
+                            }   else if (dataSnapshot2.getKey().equals("MQ2")){
+                                sensorNode.setMQ2(Double.valueOf(dataSnapshot2.getValue().toString()));
+                            }   else if (dataSnapshot2.getKey().equals("MQ7")){
+                                sensorNode.setMQ7(Double.valueOf(dataSnapshot2.getValue().toString()));
+                            }   else if (dataSnapshot2.getKey().equals("strengthWifi")){
+                                sensorNode.setStrengthWifi(Double.valueOf(dataSnapshot2.getValue().toString()));
+                            }   else if (dataSnapshot2.getKey().equals("timeSend")){
+                                sensorNode.setTimeSend(dataSnapshot2.getValue().toString());
                             }
                         }
                         arrayAdapter.notifyDataSetChanged();

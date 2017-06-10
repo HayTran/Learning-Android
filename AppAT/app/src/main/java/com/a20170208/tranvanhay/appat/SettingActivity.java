@@ -1,4 +1,4 @@
-package com.a20170208.tranvanhay.appat.Activity;
+package com.a20170208.tranvanhay.appat;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

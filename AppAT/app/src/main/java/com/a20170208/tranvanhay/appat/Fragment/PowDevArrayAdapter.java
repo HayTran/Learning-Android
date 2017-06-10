@@ -29,12 +29,12 @@ public class PowDevArrayAdapter extends ArrayAdapter {
     private DatabaseReference mData = FirebaseDatabase.getInstance().getReference();
     Context context;
     int layoutResource;
-    ArrayList <NodePowDev> nodePowDevArrayList;
-    public PowDevArrayAdapter(Context context, int resource, ArrayList <NodePowDev> objects) {
+    ArrayList <PowDevNode> powDevNodeArrayList;
+    public PowDevArrayAdapter(Context context, int resource, ArrayList <PowDevNode> objects) {
         super(context, resource, objects);
         this.context = context;
         this.layoutResource = resource;
-        this.nodePowDevArrayList = objects;
+        this.powDevNodeArrayList = objects;
     }
 
     @NonNull
@@ -46,62 +46,65 @@ public class PowDevArrayAdapter extends ArrayAdapter {
         LinearLayout linearLayoutTitle = (LinearLayout)view.findViewById(R.id.linearLayoutTitle);
         final LinearLayout linearLayoutContent = (LinearLayout)view.findViewById(R.id.linearLayoutContent);
         TextView textViewID = (TextView)view.findViewById(R.id.textViewID);
+        Switch swEnable = (Switch)view.findViewById(R.id.swEnable);
         TextView textViewStrengthWifi = (TextView)view.findViewById(R.id.textViewStrengthWifi);
         final Switch swDev0 = (Switch)view.findViewById(R.id.swDev0);
         final Switch swDev1 = (Switch)view.findViewById(R.id.swDev1);
         final Switch swBuzzer = (Switch)view.findViewById(R.id.swBuzzer);
-        final Switch swSim0 = (Switch)view.findViewById(R.id.swSim0);
-        final Switch swSim1 = (Switch)view.findViewById(R.id.swSim1);
+        TextView textViewZone = (TextView)view.findViewById(R.id.textViewZone);
         TextView textViewTimeOperation = (TextView)view.findViewById(R.id.textViewTimeOperation);
 
             // Check Show when Layout row re-create
-        checkShow(nodePowDevArrayList.get(position).getID(),linearLayoutContent);
-        textViewID.setText(nodePowDevArrayList.get(position).getID());
-        textViewStrengthWifi.setText(nodePowDevArrayList.get(position).getStrengthWifi() + "");
-        swDev0.setChecked(nodePowDevArrayList.get(position).isDev0());
-        swDev1.setChecked(nodePowDevArrayList.get(position).isDev1());
-        swBuzzer.setChecked(nodePowDevArrayList.get(position).isBuzzer());
-        swSim0.setChecked(nodePowDevArrayList.get(position).isSim0());
-        swSim1.setChecked(nodePowDevArrayList.get(position).isSim1());
-        textViewTimeOperation.setText(nodePowDevArrayList.get(position).getTimeOperation());
+        checkShow(powDevNodeArrayList.get(position).getID(),linearLayoutContent);
+        textViewID.setText(powDevNodeArrayList.get(position).getID());
+        swEnable.setChecked(powDevNodeArrayList.get(position).isEnable());
+        textViewStrengthWifi.setText(powDevNodeArrayList.get(position).getStrengthWifi() + "");
+        swDev0.setChecked(powDevNodeArrayList.get(position).isDev0());
+        swDev1.setChecked(powDevNodeArrayList.get(position).isDev1());
+        swBuzzer.setChecked(powDevNodeArrayList.get(position).isBuzzer());
+        textViewZone.setText(powDevNodeArrayList.get(position).getZone()+"");
+        textViewTimeOperation.setText(powDevNodeArrayList.get(position).getTimeOperation());
             // Event listener for switches
+        swEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                powDevNodeArrayList.get(position).setEnable(isChecked);
+            }
+        });
+        if (swEnable.isChecked()) {
+            swDev0.setEnabled(true);
+            swDev1.setEnabled(true);
+            swBuzzer.setEnabled(true);
+        } else {
+            swDev0.setEnabled(false);
+            swDev1.setEnabled(false);
+            swBuzzer.setEnabled(false);
+        }
         swDev0.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                sendRequestToFirebase(nodePowDevArrayList.get(position).getID(),"dev0",swDev0.isChecked());
+                sendRequestToFirebase(powDevNodeArrayList.get(position).getID(),"dev0",swDev0.isChecked());
             }
         });
         swDev1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                sendRequestToFirebase(nodePowDevArrayList.get(position).getID(),"dev1",swDev1.isChecked());
+                sendRequestToFirebase(powDevNodeArrayList.get(position).getID(),"dev1",swDev1.isChecked());
             }
         });
         swBuzzer.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                sendRequestToFirebase(nodePowDevArrayList.get(position).getID(),"buzzer",swBuzzer.isChecked());
-            }
-        });
-        swSim0.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                sendRequestToFirebase(nodePowDevArrayList.get(position).getID(),"sim0",swSim0.isChecked());
-            }
-        });
-        swSim1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                sendRequestToFirebase(nodePowDevArrayList.get(position).getID(),"sim1",swSim1.isChecked());
+                sendRequestToFirebase(powDevNodeArrayList.get(position).getID(),"buzzer",swBuzzer.isChecked());
             }
         });
             // Toggle to show or hide detailed node
         linearLayoutTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String ID = nodePowDevArrayList.get(position).getID();
+                String ID = powDevNodeArrayList.get(position).getID();
                 saveStateInSharePreference(ID, ! getStateInSharePreference(ID));
-                checkShow(nodePowDevArrayList.get(position).getID(),linearLayoutContent);
+                checkShow(powDevNodeArrayList.get(position).getID(),linearLayoutContent);
             }
         });
         return view;

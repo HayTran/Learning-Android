@@ -23,12 +23,12 @@ public class SensorArrayAdapter extends ArrayAdapter {
     private static final String TAG = SensorArrayAdapter.class.getSimpleName();
     Context context;
     int layoutResource;
-    ArrayList <NodeSensor> nodeSensorsArrayList;
-    public SensorArrayAdapter(Context context, int resource, ArrayList <NodeSensor> objects) {
+    ArrayList <SensorNode> sensorsArrayListNode;
+    public SensorArrayAdapter(Context context, int resource, ArrayList <SensorNode> objects) {
         super(context, resource, objects);
         this.context = context;
         this.layoutResource = resource;
-        this.nodeSensorsArrayList = objects;
+        this.sensorsArrayListNode = objects;
     }
 
     @NonNull
@@ -50,29 +50,31 @@ public class SensorArrayAdapter extends ArrayAdapter {
         TextView textViewLightIntensity = (TextView)view.findViewById(R.id.textViewLightIntensity);
         TextView textViewMQ2 = (TextView)view.findViewById(R.id.textViewMQ2);
         TextView textViewMQ7 = (TextView)view.findViewById(R.id.textViewMQ7);
+        TextView textViewZone = (TextView)view.findViewById(R.id.textViewZone);
         TextView textViewTimeSend = (TextView)view.findViewById(R.id.textViewTimeSend);
 
             // Check Show when Layout row re-create
-        checkShow(nodeSensorsArrayList.get(position).getID(),linearLayoutContent);
-        textViewID.setText(nodeSensorsArrayList.get(position).getID());
-        textViewStrengthWifi.setText(nodeSensorsArrayList.get(position).getStrengthWifi()+ "");
-        textViewTemperature.setText(nodeSensorsArrayList.get(position).getTemperature() + "");
-        textViewHumidity.setText(nodeSensorsArrayList.get(position).getHumidity() + "");
-        textViewFlame0.setText(nodeSensorsArrayList.get(position).getFlameValue0() + "");
-        textViewFlame1.setText(nodeSensorsArrayList.get(position).getFlameValue1() + "");
-        textViewFlame2.setText(nodeSensorsArrayList.get(position).getFlameValue2() + "");
-        textViewFlame3.setText(nodeSensorsArrayList.get(position).getFlameValue3() + "");
-        textViewLightIntensity.setText(nodeSensorsArrayList.get(position).getLightIntensity() + "");
-        textViewMQ2.setText(nodeSensorsArrayList.get(position).getMQ2() + "");
-        textViewMQ7.setText(nodeSensorsArrayList.get(position).getMQ7() + "");
-        textViewTimeSend.setText(nodeSensorsArrayList.get(position).getTimeSend());
+        checkShow(sensorsArrayListNode.get(position).getID(),linearLayoutContent);
+        textViewID.setText(sensorsArrayListNode.get(position).getID());
+        textViewStrengthWifi.setText(sensorsArrayListNode.get(position).getStrengthWifi()+ "");
+        textViewTemperature.setText(sensorsArrayListNode.get(position).getTemperature() + "");
+        textViewHumidity.setText(sensorsArrayListNode.get(position).getHumidity() + "");
+        textViewFlame0.setText(sensorsArrayListNode.get(position).getFlameValue0() + "");
+        textViewFlame1.setText(sensorsArrayListNode.get(position).getFlameValue1() + "");
+        textViewFlame2.setText(sensorsArrayListNode.get(position).getFlameValue2() + "");
+        textViewFlame3.setText(sensorsArrayListNode.get(position).getFlameValue3() + "");
+        textViewLightIntensity.setText(sensorsArrayListNode.get(position).getLightIntensity() + "");
+        textViewMQ2.setText(sensorsArrayListNode.get(position).getMQ2() + "");
+        textViewMQ7.setText(sensorsArrayListNode.get(position).getMQ7() + "");
+        textViewZone.setText(sensorsArrayListNode.get(position).getZone()+"");
+        textViewTimeSend.setText(sensorsArrayListNode.get(position).getTimeSend());
         // Toggle to show or hide detailed node
         linearLayoutTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String ID = nodeSensorsArrayList.get(position).getID();
+                String ID = sensorsArrayListNode.get(position).getID();
                 saveStateInSharePreference(ID, ! getStateInSharePreference(ID));
-                checkShow(nodeSensorsArrayList.get(position).getID(),linearLayoutContent);
+                checkShow(sensorsArrayListNode.get(position).getID(),linearLayoutContent);
             }
         });
         return view;

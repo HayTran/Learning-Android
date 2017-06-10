@@ -4,16 +4,17 @@ package com.a20170208.tranvanhay.appat.Fragment;
  * Created by Van Hay on 31-May-17.
  */
 
-public class NodeSensor {
+public class SensorNode {
     private String MACAddr;
     private String ID;
+    private int zone;       // group sensors  and powdev nodes into zones
     private double strengthWifi, temperature, humidity;
     private  double flameValue0, flameValue1, flameValue2,flameValue3, lightIntensity, MQ2,MQ7;
     private String timeSend;
-    public NodeSensor() {
+    public SensorNode() {
     }
 
-    public NodeSensor(String MACAddr, String ID, double strengthWifi, double temperature, double humidity, double flameValue0, double flameValue1, double flameValue2, double flameValue3, double lightIntensity, double MQ2, double MQ7, String timeSend) {
+    public SensorNode(String MACAddr, String ID, double strengthWifi, double temperature, double humidity, double flameValue0, double flameValue1, double flameValue2, double flameValue3, double lightIntensity, double MQ2, double MQ7, String timeSend) {
         this.MACAddr = MACAddr;
         this.ID = ID;
         this.strengthWifi = strengthWifi;
@@ -133,9 +134,17 @@ public class NodeSensor {
         this.timeSend = timeSend;
     }
 
+    public int getZone() {
+        return zone;
+    }
+
+    public void setZone(int zone) {
+        this.zone = zone;
+    }
+
     @Override
     public String toString() {
-        return "NodeSensor{" +
+        return "SensorNode{" +
                 "MACAddr='" + MACAddr + '\'' +
                 ", ID=" + ID +
                 ", strengthWifi=" + strengthWifi +

@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.a20170208.tranvanhay.appat.Activity.SettingActivity;
-import com.a20170208.tranvanhay.appat.Activity.SignInActivity;
+import com.a20170208.tranvanhay.appat.SettingActivity;
+import com.a20170208.tranvanhay.appat.SignInActivity;
 import com.a20170208.tranvanhay.appat.R;
 import com.google.firebase.auth.FirebaseAuth;
 

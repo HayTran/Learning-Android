@@ -1,23 +1,32 @@
 package com.a20170208.tranvanhay.appat.Fragment;
 
+import android.util.Log;
+
+import com.a20170208.tranvanhay.appat.UtilitiesClass.FirebasePath;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 /**
  * Created by Van Hay on 01-Jun-17.
  */
 
-public class NodePowDev {
+public class PowDevNode {
+    private static final String TAG = PowDevNode.class.getSimpleName();
+    DatabaseReference mData = FirebaseDatabase.getInstance().getReference();
     private String MACAddr; // help server recognize
     private String ID;      // help user recognize
     private int strengthWifi;
     private boolean dev0, dev1, buzzer, sim0, sim1;
     private String timeOperation;
-    private boolean isImplemented;
+    private int zone;       // group sensors  and powdev nodes into zones
+    private boolean isEnable;
 
 
-    public NodePowDev() {
+    public PowDevNode() {
     }
 
-    public NodePowDev(String MACAddr, String ID, int strengthWifi, boolean dev0, boolean dev1,
-                      boolean buzzer, boolean sim0, boolean sim1, String timeOperation, boolean isImplemented) {
+    public PowDevNode(String MACAddr, String ID, int strengthWifi, boolean dev0, boolean dev1,
+                      boolean buzzer, boolean sim0, boolean sim1, String timeOperation, boolean isEnable) {
         this.MACAddr = MACAddr;
         this.ID = ID;
         this.strengthWifi = strengthWifi;
@@ -27,7 +36,7 @@ public class NodePowDev {
         this.sim0 = sim0;
         this.sim1 = sim1;
         this.timeOperation = timeOperation;
-        this.isImplemented = isImplemented;
+        this.isEnable = isEnable;
     }
 
     public String getMACAddr() {
@@ -102,17 +111,27 @@ public class NodePowDev {
         this.timeOperation = timeOperation;
     }
 
-    public boolean isImplemented() {
-        return isImplemented;
+    public int getZone() {
+        return zone;
     }
 
-    public void setImplemented(boolean implemented) {
-        isImplemented = implemented;
+    public void setZone(int zone) {
+        this.zone = zone;
+    }
+
+    public boolean isEnable() {
+        return isEnable;
+    }
+
+    public void setEnable(boolean enable) {
+        isEnable = enable;
+        mData.child(FirebasePath.POWDEV_DETAILS_PATH).child(ID).child("isEnable").setValue(isEnable);
+        Log.d(TAG,"Set enable");
     }
 
     @Override
     public String toString() {
-        return "NodePowDev{" +
+        return "PowDevNode{" +
                 "MACAddr='" + MACAddr + '\'' +
                 ", ID='" + ID + '\'' +
                 ", strengthWifi=" + strengthWifi +
@@ -121,7 +140,6 @@ public class NodePowDev {
                 ", buzzer=" + buzzer +
                 ", sim0=" + sim0 +
                 ", sim1=" + sim1 +
-                ", isImplemented=" + isImplemented +
                 '}';
     }
 }

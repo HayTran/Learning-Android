@@ -4,8 +4,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.a20170208.tranvanhay.appat.Activity.PingActivity;
-
 /**
  * Created by Van Hay on 30-May-17.
  */

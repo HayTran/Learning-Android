@@ -1,4 +1,4 @@
-package com.a20170208.tranvanhay.appat.Activity;
+package com.a20170208.tranvanhay.appat;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -13,7 +13,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.a20170208.tranvanhay.appat.R;
 import com.a20170208.tranvanhay.appat.UtilitiesClass.NetworkPing;
 
 import java.io.IOException;

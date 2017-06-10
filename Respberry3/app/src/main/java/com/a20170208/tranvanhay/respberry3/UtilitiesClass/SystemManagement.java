@@ -21,6 +21,8 @@ public class SystemManagement {
     HashMap <String,PowDevNode> powDevNodeHashMap;
     HashMap <String, Integer > conditionHashMap;
     private boolean callAlert, SMSAlert, internetAlert;
+        // Flag to separate with user's affect
+    private boolean alreadySim0Alert = false, alreadySim1Alert = false, alreadyImplement = false;
     String MACAddrGSMNode;
     private int selectionAlertNumber, selectionControlNumber, selectionBothNumber;
 
@@ -62,9 +64,9 @@ public class SystemManagement {
                     }
                 }
                 Log.d(TAG,"Get value config for sensor with:"
-                        +"\nselectionAlertNumber=" +selectionAlertNumber
-                        +"\nselectionControlNumber=" +selectionControlNumber
-                        +"\nselectionBothNumber=" +selectionBothNumber);
+                        +"\nselectionAlertNumber=" + selectionAlertNumber
+                        +"\nselectionControlNumber=" + selectionControlNumber
+                        +"\nselectionBothNumber=" + selectionBothNumber);
             }
 
             @Override
@@ -112,18 +114,18 @@ public class SystemManagement {
         // Check all sensor node in the system
     private void checkAllSensorNode(){
         for (SensorNode sensorNode : sensorNodeHashMap.values()) {
-                // Check alert
-            if (checkEachSensorNode(sensorNode,100)){
+                // Check alert and both type
+            if (checkEachSensorNode(sensorNode,100) || checkEachSensorNode(sensorNode,300)){
                 alert(sensorNode, true);
             } else {
                 alert(sensorNode, false);
             }
-                // Check control powdev
-//            if (checkEachSensorNode(sensorNode,200)){
-//                controlPowDev(sensorNode,true);
-//            } else {
-//                controlPowDev(sensorNode,false);
-//            }
+                // Check control powdev and both type
+            if (checkEachSensorNode(sensorNode,200) || checkEachSensorNode(sensorNode,300)){
+                controlPowDev(sensorNode,true);
+            } else {
+                controlPowDev(sensorNode,false);
+            }
         }
     }
         // Check each sensor node in the system corressponding with typeOperation
@@ -164,7 +166,7 @@ public class SystemManagement {
         }   else if (typeOperation == 200 && count == selectionControlNumber && count > 0){
             Log.d(TAG,"checkEachSensorNode is: true with Control" );
             return true;
-        }   else if (typeOperation == 300 && count == selectionControlNumber && count > 0){
+        }   else if (typeOperation == 300 && count == selectionBothNumber && count > 0){
             Log.d(TAG,"checkEachSensorNode is: true with Alert and Control" );
             return true;
         } else return false;
@@ -175,18 +177,16 @@ public class SystemManagement {
         int zone = sensorNode.getZone();
         if (isActive) {
             for (PowDevNode powDevNode : powDevNodeHashMap.values()) {
-                if (powDevNode.getZone() == zone) {
-                    powDevNode.setDev0(0);
-                    powDevNode.setDev1(0);
-                    powDevNode.setBuzzer(0);
+                if (powDevNode.getZone() == zone && powDevNode.isEnable()) {
+                    powDevNode.implementTask(0);
+                    powDevNode.setAlreadyImplement(true);
                 }
             }
         } else {
             for (PowDevNode powDevNode : powDevNodeHashMap.values()) {
-                if (powDevNode.getZone() == zone) {
-                    powDevNode.setDev0(1);
-                    powDevNode.setDev1(1);
-                    powDevNode.setBuzzer(1);
+                if (powDevNode.getZone() == zone && powDevNode.isAlreadyImplemented() && powDevNode.isEnable()) {
+                    powDevNode.implementTask(1);
+                    powDevNode.setAlreadyImplement(false);
                 }
             }
         }
@@ -196,22 +196,27 @@ public class SystemManagement {
     private void alert(SensorNode sensorNode, boolean isActive){
         if (internetAlert == true && isActive == true) {
             new FCMServerThread("Sensor Node","Exceed your setting, at node: "
-                    + sensorNode.getID()+", at zone: " + sensorNode.getZone()).start();
+                    + sensorNode.getID()+", at zone: " + sensorNode.getZone()
+                    + "\nDetail: " + sensorNode.toString()).start();
             Log.d(TAG,"Sent message to FCM");
         }
             // Access PowDev Node has GSM Module
         if (SMSAlert == true && isActive == true){
             powDevNodeHashMap.get(MACAddrGSMNode).setSim0(1);
-        }   else if (powDevNodeHashMap.get(MACAddrGSMNode).getSim0() == 1) {
+            alreadySim0Alert = true;
+        }   else if (alreadySim0Alert == true) {
                 // Just invert it's state when it's 1
             powDevNodeHashMap.get(MACAddrGSMNode).setSim0(0);
+            alreadySim0Alert = false;
         }
             // Access PowDev Node has GSM Module
         if (callAlert == true && isActive == true){
             powDevNodeHashMap.get(MACAddrGSMNode).setSim1(1);
-        }   else if (powDevNodeHashMap.get(MACAddrGSMNode).getSim1() == 1) {
+            alreadySim1Alert = true;
+        }   else if (alreadySim1Alert == true) {
                 // Just invert it's state when it's 1
             powDevNodeHashMap.get(MACAddrGSMNode).setSim1(0);
+            alreadySim1Alert = false;
         }
         Log.d(TAG,"Alert is active?: " +isActive + ", at sensor node: " + sensorNode.getID());
     }

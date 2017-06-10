@@ -10,7 +10,7 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.a20170208.tranvanhay.appat.Activity.SignInActivity;
+import com.a20170208.tranvanhay.appat.DashboardActivity;
 import com.a20170208.tranvanhay.appat.R;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -96,7 +96,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      * @param messageBody FCM message body received.
      */
     private void sendNotification(String messageTitle, String messageBody) {
-        Intent intent = new Intent(this, SignInActivity.class);
+        Intent intent = new Intent(this, DashboardActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
@@ -105,8 +105,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_camera)
                 .setContentTitle(messageTitle)
-                .setContentText(messageBody)
                 .setAutoCancel(true)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody))
                 .setSound(defaultSoundUri)
                 .setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000,1000,1000,1000,1000 })
                 .setLights(Color.RED, 3000, 3000)
