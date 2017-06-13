@@ -1,6 +1,7 @@
 package com.a20170208.tranvanhay.appat.Fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -12,7 +13,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.a20170208.tranvanhay.appat.R;
+import com.a20170208.tranvanhay.appat.SensorNodeConfigActivity;
+import com.a20170208.tranvanhay.appat.UtilitiesClass.SensorNode;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 /**
@@ -42,14 +46,17 @@ public class SensorArrayAdapter extends ArrayAdapter {
         TextView textViewID = (TextView)view.findViewById(R.id.textViewID);
         TextView textViewStrengthWifi = (TextView)view.findViewById(R.id.textViewStrengthWifi);
         TextView textViewTemperature = (TextView)view.findViewById(R.id.textViewTemperature);
+        TextView textViewConfigTemperature = (TextView)view.findViewById(R.id.textViewConfigTemperature);
         TextView textViewHumidity = (TextView)view.findViewById(R.id.textViewHumidity);
-        TextView textViewFlame0 = (TextView)view.findViewById(R.id.textViewFlame0);
-        TextView textViewFlame1 = (TextView)view.findViewById(R.id.textViewFlame1);
-        TextView textViewFlame2 = (TextView)view.findViewById(R.id.textViewFlame2);
-        TextView textViewFlame3 = (TextView)view.findViewById(R.id.textViewFlame3);
+        TextView textViewConfigHumidity = (TextView)view.findViewById(R.id.textViewConfigHumidity);
+        TextView textViewMeanFlameValue = (TextView)view.findViewById(R.id.textViewMeanFlameValue);
+        TextView textViewConfigMeanFlameValue = (TextView)view.findViewById(R.id.textViewConfigMeanFlameValue);
         TextView textViewLightIntensity = (TextView)view.findViewById(R.id.textViewLightIntensity);
+        TextView textViewConfigLightIntensity = (TextView)view.findViewById(R.id.textViewConfigLightIntensity);
         TextView textViewMQ2 = (TextView)view.findViewById(R.id.textViewMQ2);
+        TextView textViewConfigMQ2 = (TextView)view.findViewById(R.id.textViewConfigMQ2);
         TextView textViewMQ7 = (TextView)view.findViewById(R.id.textViewMQ7);
+        TextView textViewConfigMQ7 = (TextView)view.findViewById(R.id.textViewConfigMQ7);
         TextView textViewZone = (TextView)view.findViewById(R.id.textViewZone);
         TextView textViewTimeSend = (TextView)view.findViewById(R.id.textViewTimeSend);
 
@@ -57,15 +64,18 @@ public class SensorArrayAdapter extends ArrayAdapter {
         checkShow(sensorsArrayListNode.get(position).getID(),linearLayoutContent);
         textViewID.setText(sensorsArrayListNode.get(position).getID());
         textViewStrengthWifi.setText(sensorsArrayListNode.get(position).getStrengthWifi()+ "");
-        textViewTemperature.setText(sensorsArrayListNode.get(position).getTemperature() + "");
-        textViewHumidity.setText(sensorsArrayListNode.get(position).getHumidity() + "");
-        textViewFlame0.setText(sensorsArrayListNode.get(position).getFlameValue0() + "");
-        textViewFlame1.setText(sensorsArrayListNode.get(position).getFlameValue1() + "");
-        textViewFlame2.setText(sensorsArrayListNode.get(position).getFlameValue2() + "");
-        textViewFlame3.setText(sensorsArrayListNode.get(position).getFlameValue3() + "");
-        textViewLightIntensity.setText(sensorsArrayListNode.get(position).getLightIntensity() + "");
-        textViewMQ2.setText(sensorsArrayListNode.get(position).getMQ2() + "");
-        textViewMQ7.setText(sensorsArrayListNode.get(position).getMQ7() + "");
+        textViewTemperature.setText("Current: " + sensorsArrayListNode.get(position).getTemperature());
+        textViewConfigTemperature.setText("Config: " + sensorsArrayListNode.get(position).getConfigTemperature() + "");
+        textViewHumidity.setText("Current: " +sensorsArrayListNode.get(position).getHumidity() + "");
+        textViewConfigHumidity.setText("Config: " +sensorsArrayListNode.get(position).getConfigHumidity()+ "");
+        textViewMeanFlameValue.setText("Current: " +new DecimalFormat("##.##").format(sensorsArrayListNode.get(position).getMeanFlameValue()));
+        textViewConfigMeanFlameValue.setText("Config: " +new DecimalFormat("##.##").format(sensorsArrayListNode.get(position).getConfigMeanFlameValue()));
+        textViewLightIntensity.setText("Current: " +sensorsArrayListNode.get(position).getLightIntensity() + "");
+        textViewConfigLightIntensity.setText("Config: " +sensorsArrayListNode.get(position).getConfigLightIntensity() +"");
+        textViewMQ2.setText("Current: " +sensorsArrayListNode.get(position).getMQ2() + "");
+        textViewConfigMQ2.setText("Config: " +sensorsArrayListNode.get(position).getConfigMQ2() +"");
+        textViewMQ7.setText("Current: " +sensorsArrayListNode.get(position).getMQ7() + "");
+        textViewConfigMQ7.setText("Config: " +sensorsArrayListNode.get(position).getConfigMQ7()+"");
         textViewZone.setText(sensorsArrayListNode.get(position).getZone()+"");
         textViewTimeSend.setText(sensorsArrayListNode.get(position).getTimeSend());
         // Toggle to show or hide detailed node
@@ -75,6 +85,15 @@ public class SensorArrayAdapter extends ArrayAdapter {
                 String ID = sensorsArrayListNode.get(position).getID();
                 saveStateInSharePreference(ID, ! getStateInSharePreference(ID));
                 checkShow(sensorsArrayListNode.get(position).getID(),linearLayoutContent);
+            }
+        });
+        linearLayoutTitle.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Intent intent = new Intent(context, SensorNodeConfigActivity.class);
+                intent.putExtra("SensorNodeObject",sensorsArrayListNode.get(position));
+                context.startActivity(intent);
+                return false;
             }
         });
         return view;

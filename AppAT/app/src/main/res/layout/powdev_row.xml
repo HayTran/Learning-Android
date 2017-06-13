@@ -12,8 +12,8 @@
         android:id="@+id/linearLayoutTitle">
 
         <ImageView
-            android:layout_width="50dp"
-            android:layout_height="80dp"
+            android:layout_width="@dimen/sensor_node_config_image_width"
+            android:layout_height="@dimen/sensor_node_config_image_height"
             android:src="@drawable/euro_price_tag1600"
             android:scaleType="fitCenter" />
 
@@ -26,8 +26,8 @@
             android:gravity="center"/>
 
         <ImageView
-            android:layout_width="50dp"
-            android:layout_height="80dp"
+            android:layout_width="@dimen/sensor_node_config_image_width"
+            android:layout_height="@dimen/sensor_node_config_image_height"
             android:src="@drawable/marker1600"
             android:scaleType="fitCenter" />
 
@@ -57,8 +57,8 @@
             android:weightSum="1">
 
             <ImageView
-                android:layout_width="50dp"
-                android:layout_height="59dp"
+                android:layout_width="@dimen/sensor_node_config_image_width"
+                android:layout_height="@dimen/sensor_node_config_image_height"
                 android:src="@drawable/online1600"
                 android:scaleType="fitCenter" />
             <TextView
@@ -78,8 +78,8 @@
             android:weightSum="1">
 
             <ImageView
-                android:layout_width="50dp"
-                android:layout_height="59dp"
+                android:layout_width="@dimen/sensor_node_config_image_width"
+                android:layout_height="@dimen/sensor_node_config_image_height"
                 android:src="@drawable/tick"
                 android:scaleType="fitCenter" />
             <Switch
@@ -101,8 +101,8 @@
             android:weightSum="1">
 
             <ImageView
-                android:layout_width="50dp"
-                android:layout_height="59dp"
+                android:layout_width="@dimen/sensor_node_config_image_width"
+                android:layout_height="@dimen/sensor_node_config_image_height"
                 android:src="@drawable/fire_sprinkler_system"
                 android:scaleType="fitCenter" />
             <Switch
@@ -127,8 +127,8 @@
             android:weightSum="1">
 
             <ImageView
-                android:layout_width="50dp"
-                android:layout_height="59dp"
+                android:layout_width="@dimen/sensor_node_config_image_width"
+                android:layout_height="@dimen/sensor_node_config_image_height"
                 android:src="@drawable/door_opened_filled"
                 android:scaleType="fitCenter" />
             <Switch
@@ -153,8 +153,8 @@
             android:weightSum="1">
 
             <ImageView
-                android:layout_width="50dp"
-                android:layout_height="59dp"
+                android:layout_width="@dimen/sensor_node_config_image_width"
+                android:layout_height="@dimen/sensor_node_config_image_height"
                 android:src="@drawable/fire_alarm_512"
                 android:scaleType="fitCenter" />
             <Switch
@@ -177,8 +177,8 @@
             android:orientation="horizontal"
             android:background="#bdd498">
             <ImageView
-                android:layout_width="50dp"
-                android:layout_height="59dp"
+                android:layout_width="@dimen/sensor_node_config_image_width"
+                android:layout_height="@dimen/sensor_node_config_image_height"
                 android:src="@drawable/time_machine_icon"
                 android:scaleType="fitCenter"/>
             <TextView

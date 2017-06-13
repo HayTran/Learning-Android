@@ -126,6 +126,12 @@ public class SystemManagement {
             } else {
                 controlPowDev(sensorNode,false);
             }
+                // Check alert for each condition
+            if (checkEachSensorNode(sensorNode,400)) {
+                alert(sensorNode,true);
+            } else {
+                alert(sensorNode,false);
+            }
         }
     }
         // Check each sensor node in the system corressponding with typeOperation
@@ -168,9 +174,11 @@ public class SystemManagement {
             return true;
         }   else if (typeOperation == 300 && count == selectionBothNumber && count > 0){
             Log.d(TAG,"checkEachSensorNode is: true with Alert and Control" );
+            return true;                                    // wait get hashmap in firebase
+        }   else if (typeOperation == 400 && count  > 0  && !sensorNode.getTimeSend().equals("")){
+            Log.d(TAG,"checkEachSensorNode is: true with Alert each condition" );
             return true;
         } else return false;
-
     }
         // Control PowDev when sensor node exceed configured value
     private void controlPowDev(SensorNode sensorNode, boolean isActive ){

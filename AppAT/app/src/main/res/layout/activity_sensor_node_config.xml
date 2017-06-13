@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_config_sensor_node"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:orientation="vertical"
+    tools:context="com.a20170208.tranvanhay.appat.SensorNodeConfigActivity">
 
-        <!-- This is ID section-->
+    <!-- This is ID section-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,8 +33,8 @@
             android:gravity="center"/>
 
         <ImageView
-            android:layout_width="@dimen/sensor_node_config_image_width"
-            android:layout_height="@dimen/sensor_node_config_image_height"
+            android:layout_width="65dp"
+            android:layout_height="55dp"
             android:src="@drawable/marker1600"
             android:scaleType="fitCenter" />
 
@@ -41,35 +47,12 @@
             android:gravity="center"/>
     </LinearLayout>
 
-        <!-- This is detailed content section -->
+    <!-- This is detailed content section -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="70dp"
         android:id="@+id/linearLayoutContent"
         android:orientation="vertical">
-        <!-- This is strengthWifi section-->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="#acd1af">
-
-            <ImageView
-                android:layout_width="@dimen/sensor_node_config_image_width"
-                android:layout_height="@dimen/sensor_node_config_image_height"
-                android:src="@drawable/online1600"
-                android:scaleType="fitCenter" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:id="@+id/textViewStrengthWifi"
-                android:text="Not yet get"
-                android:gravity="center"/>
-        </LinearLayout>
-
         <!-- This is temperature section-->
         <LinearLayout
             android:layout_width="match_parent"
@@ -91,13 +74,14 @@
                 android:text="Not yet get"
                 android:gravity="center"/>
 
-            <TextView
+            <EditText
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:id="@+id/textViewConfigTemperature"
-                android:text="Not yet get"
-                android:gravity="center"/>
+                android:id="@+id/editTextTemperature"
+                android:inputType="numberDecimal"
+                android:hint="0"
+                android:layout_gravity="center"/>
         </LinearLayout>
 
         <!-- This is humidity section-->
@@ -120,15 +104,17 @@
                 android:text="Not yet get"
                 android:gravity="center"/>
 
-            <TextView
+            <EditText
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:id="@+id/textViewConfigHumidity"
-                android:text="Not yet get"
-                android:gravity="center"/>
+                android:id="@+id/editTextHumidity"
+                android:inputType="numberDecimal"
+                android:hint="0"
+                android:layout_gravity="center"/>
         </LinearLayout>
-        <!-- This is Flame0 section-->
+
+        <!-- This is MeanFlameValue section-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -141,20 +127,21 @@
                 android:scaleType="fitCenter"/>
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
                 android:id="@+id/textViewMeanFlameValue"
                 android:text="Not yet get"
                 android:gravity="center"/>
 
-            <TextView
-                android:layout_width="match_parent"
+            <EditText
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:id="@+id/textViewConfigMeanFlameValue"
-                android:text="Not yet get"
-                android:gravity="center"/>
+                android:id="@+id/editTextMeanFlameValue"
+                android:inputType="numberDecimal"
+                android:hint="0"
+                android:layout_gravity="center"/>
 
         </LinearLayout>
 
@@ -178,13 +165,14 @@
                 android:text="Not yet get"
                 android:gravity="center"/>
 
-            <TextView
+            <EditText
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:id="@+id/textViewConfigMQ2"
-                android:text="Not yet get"
-                android:gravity="center"/>
+                android:id="@+id/editTextMQ2"
+                android:inputType="numberDecimal"
+                android:hint="0"
+                android:layout_gravity="center"/>
         </LinearLayout>
 
         <!-- This is MQ7 section-->
@@ -207,13 +195,14 @@
                 android:text="Not yet get"
                 android:gravity="center"/>
 
-            <TextView
+            <EditText
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:id="@+id/textViewConfigMQ7"
-                android:text="Not yet get"
-                android:gravity="center"/>
+                android:id="@+id/editTextMQ7"
+                android:inputType="numberDecimal"
+                android:hint="0"
+                android:layout_gravity="center"/>
         </LinearLayout>
 
         <!-- This is Light Intensity section-->
@@ -236,34 +225,36 @@
                 android:text="Not yet get"
                 android:gravity="center"/>
 
-            <TextView
+            <EditText
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:id="@+id/textViewConfigLightIntensity"
-                android:text="Not yet get"
-                android:gravity="center"/>
-        </LinearLayout>
-
-        <!-- This is send time section-->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="#b76a9b">
-            <ImageView
-                android:layout_width="@dimen/sensor_node_config_image_width"
-                android:layout_height="@dimen/sensor_node_config_image_height"
-                android:src="@drawable/time_machine_icon"
-                android:scaleType="fitCenter"/>
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:id="@+id/textViewTimeSend"
-                android:text="Not yet get"
-                android:gravity="center"/>
+                android:id="@+id/editTextLightIntensity"
+                android:inputType="numberDecimal"
+                android:hint="0"
+                android:layout_gravity="center"/>
         </LinearLayout>
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_margin="30dp"
+            android:id="@+id/btnOK"
+            android:text="OK"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_margin="30dp"
+            android:id="@+id/btnCancel"
+            android:text="Cancel"/>
+    </LinearLayout>
+
 
 </LinearLayout>

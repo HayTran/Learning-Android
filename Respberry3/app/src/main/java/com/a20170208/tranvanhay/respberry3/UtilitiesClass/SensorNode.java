@@ -46,6 +46,7 @@ public class SensorNode {
         this.convertValue();
         triggerConfigValue();
     }
+
     protected void convertValue(){
         temperature = arrayBytes[0];
         humidity = arrayBytes[1];
@@ -71,16 +72,13 @@ public class SensorNode {
         mData.child(this.currentValuePath).child("strengthWifi").setValue(strengthWifi);
         mData.child(this.currentValuePath).child("temperature").setValue(temperature);
         mData.child(this.currentValuePath).child("humidity").setValue(humidity);
-        mData.child(this.currentValuePath).child("flameValue0").setValue(flameValue0);
-        mData.child(this.currentValuePath).child("flameValue1").setValue(flameValue1);
-        mData.child(this.currentValuePath).child("flameValue2").setValue(flameValue2);
-        mData.child(this.currentValuePath).child("flameValue3").setValue(flameValue3);
         mData.child(this.currentValuePath).child("meanFlameValue").setValue(meanFlameValue);
         mData.child(this.currentValuePath).child("lightIntensity").setValue(lightIntensity);
         mData.child(this.currentValuePath).child("MQ2").setValue(MQ2);
         mData.child(this.currentValuePath).child("MQ7").setValue(MQ7);
         mData.child(this.currentValuePath).child("timeSend").setValue(timeSend);
     }
+
         // Get each node sensor's config value from firebase
     private void triggerConfigValue(){
         mData.child(this.valueConfigPath).addValueEventListener(new ValueEventListener() {
@@ -127,6 +125,7 @@ public class SensorNode {
             }
         });
     }
+
     public String getMACAddr() {
         return MACAddr;
     }
@@ -307,19 +306,16 @@ public class SensorNode {
     @Override
     public String toString() {
         return "SensorNode{" +
-                "strengthWifi=" + strengthWifi +
-                ", temperature=" + temperature +
+                "ID='" + ID + '\'' +
+                ", zone=" + zone +
+                ", strengthWifi=" + strengthWifi +
                 ", humidity=" + humidity +
-                ", flameValue0=" + flameValue0 +
-                ", flameValue1=" + flameValue1 +
-                ", flameValue2=" + flameValue2 +
-                ", flameValue3=" + flameValue3 +
+                ", temperature=" + temperature +
+                ", meanFlameValue=" + meanFlameValue +
                 ", lightIntensity=" + lightIntensity +
-                ", MQ2=" + MQ2 +
                 ", MQ7=" + MQ7 +
-                ", sendTime='" + timeSend + '\'' +
-                ", MACAddr='" + MACAddr + '\'' +
-                ", ID='" + ID + '\'' +
+                ", MQ2=" + MQ2 +
+                ", timeSend='" + timeSend + '\'' +
                 '}';
     }
 }

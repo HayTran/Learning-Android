@@ -188,6 +188,8 @@ public class SocketServerThread extends Thread {
                                 String MACAddr = ARPNetwork.findMAC(hostThreadSocket.getInetAddress().getHostAddress());;
                                 sensorNodeHashMap.get(MACAddr).setTimeSend(TimeAndDate.currentTime);
                                 sensorNodeHashMap.get(MACAddr).sendToFirebase();
+                                    // Call SystemManagement
+                                systemManagement.checkSystem(sensorNodeHashMap,powdevNodeHashMap);
                             } else if (resultCode == FAILED_SESSION_FLAG) {
                                 Log.d(TAG,"Node Sensor session failed at " + TimeAndDate.currentTime);
                             }
@@ -221,8 +223,6 @@ public class SocketServerThread extends Thread {
                             }
                         }
                     }
-                    systemManagement.checkSystem(sensorNodeHashMap,powdevNodeHashMap);
-
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();

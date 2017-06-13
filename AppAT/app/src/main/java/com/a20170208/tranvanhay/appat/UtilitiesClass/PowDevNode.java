@@ -1,8 +1,7 @@
-package com.a20170208.tranvanhay.appat.Fragment;
+package com.a20170208.tranvanhay.appat.UtilitiesClass;
 
 import android.util.Log;
 
-import com.a20170208.tranvanhay.appat.UtilitiesClass.FirebasePath;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -20,7 +19,6 @@ public class PowDevNode {
     private String timeOperation;
     private int zone;       // group sensors  and powdev nodes into zones
     private boolean isEnable;
-
 
     public PowDevNode() {
     }

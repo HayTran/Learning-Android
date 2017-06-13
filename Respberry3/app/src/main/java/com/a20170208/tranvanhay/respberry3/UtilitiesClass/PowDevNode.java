@@ -90,7 +90,6 @@ public class PowDevNode {
                         implementTask(1);
                     }
                 }
-                Log.d(TAG, "Node has already change!");
             }
 
             @Override
@@ -111,19 +110,24 @@ public class PowDevNode {
             }
         });
     }
+
     public void notifyLastestTimeOperation(){
         mData.child(listPath).setValue(TimeAndDate.currentTime);
         mData.child(detailsPath).child("zone").setValue(zone);
         mData.child(detailsPath).child("timeOperation").setValue(TimeAndDate.currentTime);
     }
+
     protected void implementTask(int isRun){
         this.dev0 = isRun;
         this.dev1 = isRun;
         this.buzzer = isRun;
+        Log.d(TAG,"Start implementTask");
         mData.child(detailsPath).child("dev0").setValue(dev0);
         mData.child(detailsPath).child("dev1").setValue(dev1);
         mData.child(detailsPath).child("buzzer").setValue(buzzer);
+        Log.d(TAG,"Finish implementTask");
     }
+
     public String getMACAddr() {
         return MACAddr;
     }

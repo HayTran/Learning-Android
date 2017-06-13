@@ -51,7 +51,8 @@
         <activity android:name=".DisplayActivity" />
         <activity android:name=".PingActivity" />
         <activity android:name=".DashboardActivity" />
-        <activity android:name=".SettingActivity"></activity>
+        <activity android:name=".SettingActivity" />
+        <activity android:name=".SensorNodeConfigActivity"></activity>
     </application>
 
 </manifest>
