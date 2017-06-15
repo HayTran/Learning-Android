@@ -1,9 +1,11 @@
 package com.a20170208.tranvanhay.appat.Fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +16,7 @@ import android.widget.TextView;
 
 import com.a20170208.tranvanhay.appat.R;
 import com.a20170208.tranvanhay.appat.SensorNodeConfigActivity;
+import com.a20170208.tranvanhay.appat.SensorValueDatabaseActivity;
 import com.a20170208.tranvanhay.appat.UtilitiesClass.SensorNode;
 
 import java.text.DecimalFormat;
@@ -25,6 +28,7 @@ import java.util.ArrayList;
 
 public class SensorArrayAdapter extends ArrayAdapter {
     private static final String TAG = SensorArrayAdapter.class.getSimpleName();
+    AlertDialog.Builder builder;
     Context context;
     int layoutResource;
     ArrayList <SensorNode> sensorsArrayListNode;
@@ -44,6 +48,7 @@ public class SensorArrayAdapter extends ArrayAdapter {
         final LinearLayout linearLayoutContent = (LinearLayout)view.findViewById(R.id.linearLayoutContent);
         LinearLayout linearLayoutTitle = (LinearLayout)view.findViewById(R.id.linearLayoutTitle);
         TextView textViewID = (TextView)view.findViewById(R.id.textViewID);
+        TextView textViewOption = (TextView)view.findViewById(R.id.textViewOption);
         TextView textViewStrengthWifi = (TextView)view.findViewById(R.id.textViewStrengthWifi);
         TextView textViewTemperature = (TextView)view.findViewById(R.id.textViewTemperature);
         TextView textViewConfigTemperature = (TextView)view.findViewById(R.id.textViewConfigTemperature);
@@ -87,16 +92,50 @@ public class SensorArrayAdapter extends ArrayAdapter {
                 checkShow(sensorsArrayListNode.get(position).getID(),linearLayoutContent);
             }
         });
-        linearLayoutTitle.setOnLongClickListener(new View.OnLongClickListener() {
+        textViewOption.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View v) {
-                Intent intent = new Intent(context, SensorNodeConfigActivity.class);
-                intent.putExtra("SensorNodeObject",sensorsArrayListNode.get(position));
-                context.startActivity(intent);
-                return false;
+            public void onClick(View v) {
+                checkDialog(position);
             }
         });
         return view;
+    }
+
+    private void checkDialog(final int position){
+        builder = new AlertDialog.Builder(context);
+        builder.setTitle("Option with " + sensorsArrayListNode.get(position).getID());
+        builder.setMessage("See value database or set up value configuration");
+        builder.setPositiveButton("See value database",
+                new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        Intent intent = new Intent(context, SensorValueDatabaseActivity.class);
+                        intent.putExtra("SensorNodeObject",sensorsArrayListNode.get(position));
+                        context.startActivity(intent);
+                    }
+                });
+
+        builder.setNeutralButton("Set up value configuration",
+                new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        Intent intent = new Intent(context, SensorNodeConfigActivity.class);
+                        intent.putExtra("SensorNodeObject",sensorsArrayListNode.get(position));
+                        context.startActivity(intent);
+                    }
+                });
+
+        builder.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        dialog.cancel();
+                    }
+                });
+        builder.show();
     }
     private void checkShow(String ID, LinearLayout linearLayout){
         if (getStateInSharePreference(ID)) {

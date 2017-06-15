@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_sensor_database"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-
-        <!-- This is ID section-->
+    android:orientation="vertical"
+    tools:context="com.a20170208.tranvanhay.appat.SensorValueDatabaseActivity">
+    <!-- This is ID section-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -39,45 +41,14 @@
             android:id="@+id/textViewZone"
             android:text="Not yet get"
             android:gravity="center"/>
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:id="@+id/textViewOption"
-            android:text="Option"
-            android:textStyle="bold"
-            android:textColor="#32328c"
-            android:gravity="center"/>
     </LinearLayout>
 
-        <!-- This is detailed content section -->
+    <!-- This is detailed content section -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="70dp"
         android:id="@+id/linearLayoutContent"
         android:orientation="vertical">
-        <!-- This is strengthWifi section-->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="#acd1af">
-
-            <ImageView
-                android:layout_width="@dimen/sensor_node_config_image_width"
-                android:layout_height="@dimen/sensor_node_config_image_height"
-                android:src="@drawable/online1600"
-                android:scaleType="fitCenter" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:id="@+id/textViewStrengthWifi"
-                android:text="Not yet get"
-                android:gravity="center"/>
-        </LinearLayout>
 
         <!-- This is temperature section-->
         <LinearLayout
@@ -96,7 +67,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:id="@+id/textViewTemperature"
+                android:id="@+id/textViewTemperatureMin"
                 android:text="Not yet get"
                 android:gravity="center"/>
 
@@ -104,9 +75,18 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:id="@+id/textViewConfigTemperature"
+                android:id="@+id/textViewTemperatureMean"
                 android:text="Not yet get"
                 android:gravity="center"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:id="@+id/textViewTemperatureMax"
+                android:text="Not yet get"
+                android:gravity="center"/>
+
         </LinearLayout>
 
         <!-- This is humidity section-->
@@ -125,7 +105,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:id="@+id/textViewHumidity"
+                android:id="@+id/textViewHumidityMin"
                 android:text="Not yet get"
                 android:gravity="center"/>
 
@@ -133,11 +113,19 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:id="@+id/textViewConfigHumidity"
+                android:id="@+id/textViewHumidityMean"
+                android:text="Not yet get"
+                android:gravity="center"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:id="@+id/textViewHumidityMax"
                 android:text="Not yet get"
                 android:gravity="center"/>
         </LinearLayout>
-        <!-- This is Flame0 section-->
+        <!-- This is Mean Flame section-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -150,18 +138,26 @@
                 android:scaleType="fitCenter"/>
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:id="@+id/textViewMeanFlameValue"
+                android:id="@+id/textViewMeanFlameValueMin"
                 android:text="Not yet get"
                 android:gravity="center"/>
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:id="@+id/textViewConfigMeanFlameValue"
+                android:id="@+id/textViewMeanFlameValueMean"
+                android:text="Not yet get"
+                android:gravity="center"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:id="@+id/textViewMeanFlameValueMax"
                 android:text="Not yet get"
                 android:gravity="center"/>
 
@@ -183,7 +179,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:id="@+id/textViewMQ2"
+                android:id="@+id/textViewMQ2Min"
                 android:text="Not yet get"
                 android:gravity="center"/>
 
@@ -191,7 +187,15 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:id="@+id/textViewConfigMQ2"
+                android:id="@+id/textViewMQ2Mean"
+                android:text="Not yet get"
+                android:gravity="center"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:id="@+id/textViewMQ2Max"
                 android:text="Not yet get"
                 android:gravity="center"/>
         </LinearLayout>
@@ -212,7 +216,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:id="@+id/textViewMQ7"
+                android:id="@+id/textViewMQ7Min"
                 android:text="Not yet get"
                 android:gravity="center"/>
 
@@ -220,7 +224,15 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:id="@+id/textViewConfigMQ7"
+                android:id="@+id/textViewMQ7Mean"
+                android:text="Not yet get"
+                android:gravity="center"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:id="@+id/textViewMQ7Max"
                 android:text="Not yet get"
                 android:gravity="center"/>
         </LinearLayout>
@@ -241,7 +253,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:id="@+id/textViewLightIntensity"
+                android:id="@+id/textViewLightIntensityMin"
                 android:text="Not yet get"
                 android:gravity="center"/>
 
@@ -249,30 +261,18 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:id="@+id/textViewConfigLightIntensity"
+                android:id="@+id/textViewLightIntensityMean"
                 android:text="Not yet get"
                 android:gravity="center"/>
-        </LinearLayout>
 
-        <!-- This is send time section-->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="#b76a9b">
-            <ImageView
-                android:layout_width="@dimen/sensor_node_config_image_width"
-                android:layout_height="@dimen/sensor_node_config_image_height"
-                android:src="@drawable/time_machine_icon"
-                android:scaleType="fitCenter"/>
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:id="@+id/textViewTimeSend"
+                android:id="@+id/textViewLightIntensityMax"
                 android:text="Not yet get"
                 android:gravity="center"/>
         </LinearLayout>
+
     </LinearLayout>
-
 </LinearLayout>

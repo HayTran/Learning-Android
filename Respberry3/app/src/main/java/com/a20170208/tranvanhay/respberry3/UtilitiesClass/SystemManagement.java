@@ -175,7 +175,7 @@ public class SystemManagement {
         }   else if (typeOperation == 300 && count == selectionBothNumber && count > 0){
             Log.d(TAG,"checkEachSensorNode is: true with Alert and Control" );
             return true;                                    // wait get hashmap in firebase
-        }   else if (typeOperation == 400 && count  > 0  && !sensorNode.getTimeSend().equals("")){
+        }   else if (typeOperation == 400 && count  > 0  && sensorNode.getTimeSend() > 0){
             Log.d(TAG,"checkEachSensorNode is: true with Alert each condition" );
             return true;
         } else return false;
@@ -203,9 +203,12 @@ public class SystemManagement {
         // Alert when sensor node exceed configured value with ways below
     private void alert(SensorNode sensorNode, boolean isActive){
         if (internetAlert == true && isActive == true) {
-            new FCMServerThread("Sensor Node","Exceed your setting, at node: "
+            String body_message;
+            body_message = "Exceed your setting, at node: "
                     + sensorNode.getID()+", at zone: " + sensorNode.getZone()
-                    + "\nDetail: " + sensorNode.toString()).start();
+                    + "\nDetail: " + sensorNode.toString();
+            new FCMServerThread("Sensor Node",body_message).start();
+            mData.child(FirebasePath.ALERT_DATABASE_PATH).child(TimeAndDate.currentTimeMillis+"").setValue(body_message);
             Log.d(TAG,"Sent message to FCM");
         }
             // Access PowDev Node has GSM Module

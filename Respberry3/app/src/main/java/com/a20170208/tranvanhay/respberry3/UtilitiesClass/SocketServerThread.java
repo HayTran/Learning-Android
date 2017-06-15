@@ -186,7 +186,7 @@ public class SocketServerThread extends Thread {
                             int resultCode = dIn.readUnsignedByte();
                             if (resultCode == SUCCESS_SESSION_FLAG) {
                                 String MACAddr = ARPNetwork.findMAC(hostThreadSocket.getInetAddress().getHostAddress());;
-                                sensorNodeHashMap.get(MACAddr).setTimeSend(TimeAndDate.currentTime);
+                                sensorNodeHashMap.get(MACAddr).setTimeSend(TimeAndDate.currentTimeMillis);
                                 sensorNodeHashMap.get(MACAddr).sendToFirebase();
                                     // Call SystemManagement
                                 systemManagement.checkSystem(sensorNodeHashMap,powdevNodeHashMap);

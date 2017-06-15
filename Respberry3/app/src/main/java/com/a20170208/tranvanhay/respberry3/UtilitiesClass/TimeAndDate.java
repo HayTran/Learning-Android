@@ -18,12 +18,14 @@ public class TimeAndDate {
     private static final String TAG = TimeAndDate.class.getSimpleName();
     DatabaseReference mData = FirebaseDatabase.getInstance().getReference();
     public static String currentTime = "";
+    public static long currentTimeMillis;
     // Instance for a handler
     private Handler mHandler = new Handler();
     private Runnable fetchCurrentTime = new Runnable() {
         @Override
         public void run() {
             Date date = new Date(System.currentTimeMillis());
+            currentTimeMillis = System.currentTimeMillis();
             SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss --- dd/MM/yyyy");
             format.setTimeZone(TimeZone.getTimeZone("Asia/Bangkok"));
             mData.child("At Current").setValue(format.format(date));

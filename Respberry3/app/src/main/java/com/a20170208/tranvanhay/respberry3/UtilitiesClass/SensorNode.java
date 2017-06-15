@@ -23,13 +23,14 @@ public class SensorNode {
         // Declare value variable for configuration
     private double configTemperature, configHumidity, configMeanFlameValue;
     private double configLightIntensity, configMQ2, configMQ7;
-    private String timeSend;
+    private long timeSend;
     private int [] arrayBytes;
 
         // Declare paths variable in Firebase
     private String listPath;
     private String currentValuePath;
     private String valueConfigPath;
+    private String valueDatabasePath;
     private String zonePath;
 
     public SensorNode() {
@@ -40,6 +41,7 @@ public class SensorNode {
         this.ID = ID;
         this.arrayBytes = arrayBytes;
         this.listPath  = FirebasePath.SENSOR_LIST_PATH + this.ID;
+        this.valueDatabasePath = FirebasePath.SENSOR_VALUE_DATABASE_PATH + this.ID;
         this.currentValuePath = FirebasePath.SENSOR_CURRENT_VALUE_PATH + this.ID;
         this.valueConfigPath = FirebasePath.SENSOR_VALUE_CONFIG_PATH + this.ID;
         this.zonePath = FirebasePath.ZONE_SENSOR_NODE_CONFIG_PATH + this.ID;
@@ -66,7 +68,7 @@ public class SensorNode {
     }
         // Send each node sensor's value to firebase
     public void sendToFirebase(){
-        mData.child(this.listPath).setValue(TimeAndDate.currentTime);
+        mData.child(this.listPath).setValue(TimeAndDate.currentTimeMillis);
         mData.child(this.currentValuePath).child("MACAddr").setValue(MACAddr);
         mData.child(this.currentValuePath).child("zone").setValue(zone);
         mData.child(this.currentValuePath).child("strengthWifi").setValue(strengthWifi);
@@ -76,9 +78,18 @@ public class SensorNode {
         mData.child(this.currentValuePath).child("lightIntensity").setValue(lightIntensity);
         mData.child(this.currentValuePath).child("MQ2").setValue(MQ2);
         mData.child(this.currentValuePath).child("MQ7").setValue(MQ7);
-        mData.child(this.currentValuePath).child("timeSend").setValue(timeSend);
+        mData.child(this.currentValuePath).child("timeSend").setValue(TimeAndDate.currentTime);
+        this.saveInDatabaseInFirebase();
     }
 
+    private void saveInDatabaseInFirebase(){
+        mData.child(this.valueDatabasePath).child(timeSend+"").child("temperature").setValue(temperature);
+        mData.child(this.valueDatabasePath).child(timeSend+"").child("humidity").setValue(humidity);
+        mData.child(this.valueDatabasePath).child(timeSend+"").child("meanFlameValue").setValue(meanFlameValue);
+        mData.child(this.valueDatabasePath).child(timeSend+"").child("lightIntensity").setValue(lightIntensity);
+        mData.child(this.valueDatabasePath).child(timeSend+"").child("MQ2").setValue(MQ2);
+        mData.child(this.valueDatabasePath).child(timeSend+"").child("MQ7").setValue(MQ7);
+    }
         // Get each node sensor's config value from firebase
     private void triggerConfigValue(){
         mData.child(this.valueConfigPath).addValueEventListener(new ValueEventListener() {
@@ -230,10 +241,6 @@ public class SensorNode {
         this.MQ7 = MQ7;
     }
 
-    public String getTimeSend() {
-        return timeSend;
-    }
-
     public double getConfigTemperature() {
         return configTemperature;
     }
@@ -282,9 +289,6 @@ public class SensorNode {
         this.configMQ7 = configMQ7;
     }
 
-    public void setTimeSend(String timeSend) {
-        this.timeSend = timeSend;
-    }
 
     public int[] getArrayBytes() {
         return arrayBytes;
@@ -293,6 +297,14 @@ public class SensorNode {
     public void setArrayBytes(int[] arrayBytes) {
         this.arrayBytes = arrayBytes;
         this.convertValue();
+    }
+
+    public long getTimeSend() {
+        return timeSend;
+    }
+
+    public void setTimeSend(long timeSend) {
+        this.timeSend = timeSend;
     }
 
     public int getZone() {
@@ -315,7 +327,7 @@ public class SensorNode {
                 ", lightIntensity=" + lightIntensity +
                 ", MQ7=" + MQ7 +
                 ", MQ2=" + MQ2 +
-                ", timeSend='" + timeSend + '\'' +
+                ", timeSend='" + TimeAndDate.currentTime + '\'' +
                 '}';
     }
 }

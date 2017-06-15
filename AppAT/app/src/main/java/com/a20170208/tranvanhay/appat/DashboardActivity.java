@@ -1,5 +1,9 @@
 package com.a20170208.tranvanhay.appat;
 
+/**
+ * Created by Van Hay on 14-Jun-17.
+ */
+
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;

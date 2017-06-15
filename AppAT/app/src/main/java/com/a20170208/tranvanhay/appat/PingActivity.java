@@ -68,7 +68,7 @@ public class PingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d(TAG,"Ping Activity Change To Display Activity");
-                Intent intent = new Intent(PingActivity.this,DisplayActivity.class);
+                Intent intent = new Intent(PingActivity.this,DashboardActivity.class);
                 startActivity(intent);
             }
         });
