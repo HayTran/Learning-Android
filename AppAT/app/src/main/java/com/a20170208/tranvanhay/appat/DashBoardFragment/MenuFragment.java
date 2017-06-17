@@ -1,4 +1,4 @@
-package com.a20170208.tranvanhay.appat.Fragment;
+package com.a20170208.tranvanhay.appat.DashBoardFragment;
 
 import android.content.Intent;
 import android.os.Bundle;

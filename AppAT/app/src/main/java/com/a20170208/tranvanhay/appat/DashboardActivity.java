@@ -10,11 +10,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
-import com.a20170208.tranvanhay.appat.Fragment.FragmentAdapter;
+import com.a20170208.tranvanhay.appat.DashBoardFragment.DashboardFragmentAdapter;
 
 public class DashboardActivity extends AppCompatActivity {
     FragmentManager fm;
-    FragmentAdapter fa;
+    DashboardFragmentAdapter fa;
     TabLayout tabLayout;
     ViewPager viewPager;
     @Override
@@ -33,7 +33,7 @@ public class DashboardActivity extends AppCompatActivity {
     private void init() {
         getSupportActionBar().hide();
         fm = getSupportFragmentManager();
-        fa = new FragmentAdapter(fm);
+        fa = new DashboardFragmentAdapter(fm);
         viewPager.setAdapter(fa);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_sensor_blue_24dp);

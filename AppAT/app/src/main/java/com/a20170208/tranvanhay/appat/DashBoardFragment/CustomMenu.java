@@ -1,4 +1,4 @@
-package com.a20170208.tranvanhay.appat.Fragment;
+package com.a20170208.tranvanhay.appat.DashBoardFragment;
 
 /**
  * Created by Van Hay on 02-Jun-17.

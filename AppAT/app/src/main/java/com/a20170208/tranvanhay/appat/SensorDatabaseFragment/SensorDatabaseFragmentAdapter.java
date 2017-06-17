@@ -1,0 +1,36 @@
+package com.a20170208.tranvanhay.appat.SensorDatabaseFragment;
+
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+
+/**
+ * Created by Van Hay on 17-Jun-17.
+ */
+
+public class SensorDatabaseFragmentAdapter extends FragmentStatePagerAdapter {
+    String  arrTitle [] = new String[] {"Temperature","Humidity","Flame","Light Intensity", "MQ2", "MQ7"};
+
+    public SensorDatabaseFragmentAdapter(FragmentManager fm) {
+        super(fm);
+    }
+
+    @Override
+    public Fragment getItem(int position) {
+        GraphFragment graphFragment = new GraphFragment();
+        graphFragment.setPosition(position);
+        return graphFragment;
+    }
+
+    @Override
+    public int getCount() {
+        return arrTitle.length;
+    }
+
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return arrTitle[position];
+    }
+
+
+}

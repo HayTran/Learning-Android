@@ -1,4 +1,4 @@
-package com.a20170208.tranvanhay.appat.Fragment;
+package com.a20170208.tranvanhay.appat.DashBoardFragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

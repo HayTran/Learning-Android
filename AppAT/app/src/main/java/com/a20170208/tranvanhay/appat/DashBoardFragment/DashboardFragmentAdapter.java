@@ -1,4 +1,4 @@
-package com.a20170208.tranvanhay.appat.Fragment;
+package com.a20170208.tranvanhay.appat.DashBoardFragment;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -8,9 +8,9 @@ import android.support.v4.app.FragmentStatePagerAdapter;
  * Created by Van Hay on 30-May-17.
  */
 
-public class FragmentAdapter extends FragmentStatePagerAdapter {
+public class DashboardFragmentAdapter extends FragmentStatePagerAdapter {
     String  arrTitle [] = new String[] {"Sensor","PowDev","Alert","CustomMenu"};
-    public FragmentAdapter(FragmentManager fm) {
+    public DashboardFragmentAdapter(FragmentManager fm) {
         super(fm);
     }
 
