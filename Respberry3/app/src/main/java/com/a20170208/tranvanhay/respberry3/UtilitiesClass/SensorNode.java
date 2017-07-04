@@ -25,6 +25,8 @@ public class SensorNode {
     private double configLightIntensity, configMQ2, configMQ7;
     private long timeSend;
     private int [] arrayBytes;
+    private int exceedAlertCount;
+    private int exceedImplementCount;
 
         // Declare paths variable in Firebase
     private String listPath;
@@ -47,6 +49,8 @@ public class SensorNode {
         this.zonePath = FirebasePath.ZONE_SENSOR_NODE_CONFIG_PATH + this.ID;
         this.convertValue();
         triggerConfigValue();
+        exceedImplementCount = 0;
+        exceedAlertCount = 0;
     }
 
     protected void convertValue(){
@@ -313,6 +317,22 @@ public class SensorNode {
 
     public void setZone(int zone) {
         this.zone = zone;
+    }
+
+    public int getExceedAlertCount() {
+        return exceedAlertCount;
+    }
+
+    public void setExceedAlertCount(int exceedAlertCount) {
+        this.exceedAlertCount = exceedAlertCount;
+    }
+
+    public int getExceedImplementCount() {
+        return exceedImplementCount;
+    }
+
+    public void setExceedImplementCount(int exceedImplementCount) {
+        this.exceedImplementCount = exceedImplementCount;
     }
 
     @Override

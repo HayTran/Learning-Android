@@ -9,7 +9,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
  */
 
 public class SensorDatabaseFragmentAdapter extends FragmentStatePagerAdapter {
-    String  arrTitle [] = new String[] {"Temperature","Humidity","Flame","Light Intensity", "MQ2", "MQ7"};
+    String  arrTitle [] = new String[] {"Temperature","Humidity","Flame", "MQ2", "MQ7","Light Intensity"};
 
     public SensorDatabaseFragmentAdapter(FragmentManager fm) {
         super(fm);
@@ -18,7 +18,7 @@ public class SensorDatabaseFragmentAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         GraphFragment graphFragment = new GraphFragment();
-        graphFragment.setPosition(position);
+        graphFragment.setName(arrTitle[position]);
         return graphFragment;
     }
 
@@ -29,8 +29,16 @@ public class SensorDatabaseFragmentAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
+        switch (arrTitle[position]) {
+            case "Temperature" :
+                return "Nhiệt độ";
+            case "Humidity":
+                return "Độ ẩm";
+            case "Flame":
+                return "Lửa";
+            case "Light Intensity":
+                return "Ánh sáng";
+        }
         return arrTitle[position];
     }
-
-
 }

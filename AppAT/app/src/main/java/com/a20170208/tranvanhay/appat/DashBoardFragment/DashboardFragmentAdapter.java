@@ -9,7 +9,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
  */
 
 public class DashboardFragmentAdapter extends FragmentStatePagerAdapter {
-    String  arrTitle [] = new String[] {"Sensor","PowDev","Alert","CustomMenu"};
+    String  arrTitle [] = new String[] {"Sensor","PowDev","Alert","Camera","CustomMenu"};
     public DashboardFragmentAdapter(FragmentManager fm) {
         super(fm);
     }
@@ -28,6 +28,9 @@ public class DashboardFragmentAdapter extends FragmentStatePagerAdapter {
                 fragment = new AlertFragment();
                 break;
             case 3:
+                fragment = new CameraFragment();
+                break;
+            case 4:
                 fragment = new MenuFragment();
                 break;
         }

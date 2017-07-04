@@ -58,6 +58,7 @@ public class SensorFragment extends Fragment {
             // Delete event listener when fragment stop
 //        mData.child(FirebasePath.SENSOR_CURRENT_VALUE_PATH).removeEventListener(detailsSensorNodeListener);
 //        mData.child(FirebasePath.SENSOR_VALUE_CONFIG_PATH).removeEventListener(configSensorNodeListener);
+
     }
 
     private void addControl(View view ) {
@@ -80,7 +81,6 @@ public class SensorFragment extends Fragment {
             for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                 SensorNode sensorNode = new SensorNode();
                 sensorNode.setID(dataSnapshot1.getKey());
-//                sensorNode.triggerConfigAndValue();
                 sensorNodeArrayList.add(sensorNode);
                     // Wait until get all list of node sensor
                 sensorNodeArrayList.add(new SensorNode("9f:0k","NodeSensorxxx",1,2,3,4,5,9,10,"11:32:00"));

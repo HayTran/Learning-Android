@@ -69,18 +69,18 @@ public class SensorArrayAdapter extends ArrayAdapter {
         checkShow(sensorsArrayListNode.get(position).getID(),linearLayoutContent);
         textViewID.setText(sensorsArrayListNode.get(position).getID());
         textViewStrengthWifi.setText(sensorsArrayListNode.get(position).getStrengthWifi()+ "");
-        textViewTemperature.setText("Current: " + sensorsArrayListNode.get(position).getTemperature());
-        textViewConfigTemperature.setText("Config: " + sensorsArrayListNode.get(position).getConfigTemperature() + "");
-        textViewHumidity.setText("Current: " +sensorsArrayListNode.get(position).getHumidity() + "");
-        textViewConfigHumidity.setText("Config: " +sensorsArrayListNode.get(position).getConfigHumidity()+ "");
-        textViewMeanFlameValue.setText("Current: " +new DecimalFormat("##.##").format(sensorsArrayListNode.get(position).getMeanFlameValue()));
-        textViewConfigMeanFlameValue.setText("Config: " +new DecimalFormat("##.##").format(sensorsArrayListNode.get(position).getConfigMeanFlameValue()));
-        textViewLightIntensity.setText("Current: " +sensorsArrayListNode.get(position).getLightIntensity() + "");
-        textViewConfigLightIntensity.setText("Config: " +sensorsArrayListNode.get(position).getConfigLightIntensity() +"");
-        textViewMQ2.setText("Current: " +sensorsArrayListNode.get(position).getMQ2() + "");
-        textViewConfigMQ2.setText("Config: " +sensorsArrayListNode.get(position).getConfigMQ2() +"");
-        textViewMQ7.setText("Current: " +sensorsArrayListNode.get(position).getMQ7() + "");
-        textViewConfigMQ7.setText("Config: " +sensorsArrayListNode.get(position).getConfigMQ7()+"");
+        textViewTemperature.setText("Hiện tại: " + sensorsArrayListNode.get(position).getTemperature());
+        textViewConfigTemperature.setText("Ngưỡng: " + sensorsArrayListNode.get(position).getConfigTemperature() + "");
+        textViewHumidity.setText("Hiện tại: " +sensorsArrayListNode.get(position).getHumidity() + "");
+        textViewConfigHumidity.setText("Ngưỡng: " +sensorsArrayListNode.get(position).getConfigHumidity()+ "");
+        textViewMeanFlameValue.setText("Hiện tại: " +new DecimalFormat("##.##").format(sensorsArrayListNode.get(position).getMeanFlameValue()));
+        textViewConfigMeanFlameValue.setText("Ngưỡng: " +new DecimalFormat("##.##").format(sensorsArrayListNode.get(position).getConfigMeanFlameValue()));
+        textViewLightIntensity.setText("Hiện tại: " +sensorsArrayListNode.get(position).getLightIntensity() + "");
+        textViewConfigLightIntensity.setText("Ngưỡng: " +sensorsArrayListNode.get(position).getConfigLightIntensity() +"");
+        textViewMQ2.setText("Hiện tại: " +sensorsArrayListNode.get(position).getMQ2() + "");
+        textViewConfigMQ2.setText("Ngưỡng: " +sensorsArrayListNode.get(position).getConfigMQ2() +"");
+        textViewMQ7.setText("Hiện tại: " +sensorsArrayListNode.get(position).getMQ7() + "");
+        textViewConfigMQ7.setText("Ngưỡng: " +sensorsArrayListNode.get(position).getConfigMQ7()+"");
         textViewZone.setText(sensorsArrayListNode.get(position).getZone()+"");
         textViewTimeSend.setText(sensorsArrayListNode.get(position).getTimeSend());
         // Toggle to show or hide detailed node
@@ -92,6 +92,7 @@ public class SensorArrayAdapter extends ArrayAdapter {
                 checkShow(sensorsArrayListNode.get(position).getID(),linearLayoutContent);
             }
         });
+        textViewOption.setText("Thêm");
         textViewOption.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,9 +104,9 @@ public class SensorArrayAdapter extends ArrayAdapter {
 
     private void checkDialog(final int position){
         builder = new AlertDialog.Builder(context);
-        builder.setTitle("Option with " + sensorsArrayListNode.get(position).getID());
-        builder.setMessage("See value database or set up value configuration");
-        builder.setPositiveButton("See value database",
+        builder.setTitle("Cài đặt cho nút " + sensorsArrayListNode.get(position).getID());
+        builder.setMessage("Xem thống kê hoặc cài đặt ngưỡng");
+        builder.setPositiveButton("Xem thống kê",
                 new DialogInterface.OnClickListener()
                 {
                     public void onClick(DialogInterface dialog, int id)
@@ -116,7 +117,7 @@ public class SensorArrayAdapter extends ArrayAdapter {
                     }
                 });
 
-        builder.setNeutralButton("Set up value configuration",
+        builder.setNeutralButton("Cài đặt giá trị ngưỡng",
                 new DialogInterface.OnClickListener()
                 {
                     public void onClick(DialogInterface dialog, int id)
@@ -127,7 +128,7 @@ public class SensorArrayAdapter extends ArrayAdapter {
                     }
                 });
 
-        builder.setNegativeButton("Cancel",
+        builder.setNegativeButton("Hủy",
                 new DialogInterface.OnClickListener()
                 {
                     public void onClick(DialogInterface dialog, int id)

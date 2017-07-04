@@ -44,9 +44,11 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void init() {
-        // Define instance for firebase connection
+            // Hide Action Bar
+        getSupportActionBar().hide();
+            // Define instance for firebase connection
         mData = FirebaseDatabase.getInstance().getReference();
-        // Initial mAuth for Authenication methods
+            // Initial mAuth for Authenication methods
         mAuth = FirebaseAuth.getInstance();
         configureFirebaseMessaging();
     }
@@ -79,7 +81,7 @@ public class SignInActivity extends AppCompatActivity {
                     logIn();
                 }
                 else {
-                    Toast.makeText(SignInActivity.this, "You must fulfill the form", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignInActivity.this, "Bạn phải điền đầy đủ các mục", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -90,20 +92,20 @@ public class SignInActivity extends AppCompatActivity {
                     signUp();
                 }
                 else {
-                    Toast.makeText(SignInActivity.this, "You must fulfill the form", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignInActivity.this, "Bạn phải điền đầy đủ các mục", Toast.LENGTH_SHORT).show();
                 }
             }
         });
         textViewForgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(SignInActivity.this, "This function has not yet installed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignInActivity.this, "Chức năng này chưa được cài đặt", Toast.LENGTH_SHORT).show();
             }
         });
         checkBoxRememberAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(SignInActivity.this, "This function has not yet installed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignInActivity.this, "Chức năng này chưa được cài đặt", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -117,10 +119,10 @@ public class SignInActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-                            Toast.makeText(SignInActivity.this,"Sign Up successfully",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignInActivity.this,"Đăng ký thành công",Toast.LENGTH_SHORT).show();
                             dialogExecution.dismissProgressDialog();
                         }else{
-                            Toast.makeText(SignInActivity.this,"Sign Up failed",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignInActivity.this,"Đăng ký thất bại",Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -134,11 +136,11 @@ public class SignInActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-                            Toast.makeText(SignInActivity.this, "Sign in successfull", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignInActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(SignInActivity.this,DashboardActivity.class);
                             startActivity(intent);
                         }else{
-                            Toast.makeText(SignInActivity.this,"Sign in failed",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignInActivity.this,"Đăng nhập thất bại",Toast.LENGTH_SHORT).show();
                         }
                         dialogExecution.dismissProgressDialog();
                     }

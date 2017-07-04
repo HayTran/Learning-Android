@@ -15,8 +15,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.7"
-        android:text="WELCOME TO APP AT"
+        android:layout_weight="1"
+        android:text="ỨNG DỤNG GIÁM SÁT, ĐIỀU KHIỂN HỆ THỐNG CHÁY"
         android:layout_gravity="center"
         android:gravity="center"
         android:textSize="30sp"
@@ -43,18 +43,20 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:layout_gravity="center"
+            android:drawablePadding="10dp"
             android:drawableStart="@drawable/ic_email_black_24dp"
             android:id="@+id/editTextUsername"
-            android:hint="Username"/>
+            android:hint="Email"/>
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:layout_gravity="center"
+            android:drawablePadding="10dp"
             android:drawableStart="@drawable/ic_visibility_black_24dp"
             android:id="@+id/editTextPassword"
-            android:hint="Password"/>
+            android:hint="Mật khẩu"/>
         <CheckBox
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -63,7 +65,7 @@
             android:textColor="#d9638e"
             android:textSize="15sp"
             android:id="@+id/checkBoxRemember"
-            android:text="Remember your account"/>
+            android:text="Lưu mật khẩu"/>
         <Button
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -73,7 +75,7 @@
             android:textSize="15sp"
             android:background="#3936ab"
             android:textColor="#fff"
-            android:text="Login your email" />
+            android:text="Đăng nhập" />
     </LinearLayout>
 
     <Space
@@ -92,13 +94,13 @@
         android:layout_marginRight="60dp"
         android:layout_marginLeft="60dp"
         android:id="@+id/btnSignUp"
-        android:text="Create a new account"/>
+        android:text="Tạo tài khoản mới"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.5"
-        android:text="Forgot Password?"
+        android:text="Quên mật khẩu?"
         android:layout_gravity="center"
         android:gravity="center"
         android:textSize="16sp"

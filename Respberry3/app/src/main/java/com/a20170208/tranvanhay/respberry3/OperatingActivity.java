@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.a20170208.tranvanhay.respberry3.UtilitiesClass.CameraRaspi;
 import com.a20170208.tranvanhay.respberry3.UtilitiesClass.DBHelper;
 import com.a20170208.tranvanhay.respberry3.UtilitiesClass.FCMServerThread;
+import com.a20170208.tranvanhay.respberry3.UtilitiesClass.FirebasePath;
 import com.a20170208.tranvanhay.respberry3.UtilitiesClass.SocketServerThread;
 import com.a20170208.tranvanhay.respberry3.UtilitiesClass.TimeAndDate;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -103,88 +104,23 @@ public class OperatingActivity extends Activity {
     /**
      * These below method serve for capture and send image to firebase
      */
-//    private void captureImage(){
-//        // Creates new handlers and associated threads for camera and networking operations.
-//        mCameraThread = new HandlerThread("CameraBackground");
-//        mCameraThread.start();
-//        mCameraHandler = new Handler(mCameraThread.getLooper());
-//        // Camera code is complicated, so we've shoved it all in this closet class for you.
-//        mCamera = CameraRaspi.getInstance();
-//        mCamera.initializeCamera(this, mCameraHandler, mOnImageAvailableListener);
-//        mTakePicture.post(runnableTakePicture);
-//        // Take time to take picture in SensorNode
-//        mData.child("TIME_TAKE_PICTURE").addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                TIME_TAKE_PICTURE = Integer.valueOf(dataSnapshot.getValue().toString());
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-//    }
-//    private ImageReader.OnImageAvailableListener mOnImageAvailableListener =
-//            new ImageReader.OnImageAvailableListener() {
-//                @Override
-//                public void onImageAvailable(ImageReader reader) {
-//                    Image image = reader.acquireLatestImage();
-//                    // get image bytes
-//                    ByteBuffer imageBuf = image.getPlanes()[0].getBuffer();
-//                    final byte[] imageBytes = new byte[imageBuf.remaining()];
-//                    imageBuf.get(imageBytes);
-//                    image.close();
-//                    // compress byte to byte
-//                    Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
-//                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-//                    byte[] byteArray = stream.toByteArray();
-//                    upLoadImage(byteArray);
-//                }
-//            };
-//
-//    private  Handler mTakePicture = new Handler();
-//    private Runnable runnableTakePicture = new Runnable() {
-//        @Override
-//        public void run() {
-//            mCamera.takePicture();
-//            Log.d(TAG,"Run runnableTakePicture");
-//            mTakePicture.postDelayed(runnableTakePicture,TIME_TAKE_PICTURE);
-//        }
-//    };
-    private void captureImage(){
-        imageProcess.post(runnableImageProcess);
-        // Take time to take picture in SensorNode
-        mData.child("TIME_TAKE_PICTURE").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                TIME_TAKE_PICTURE = Integer.valueOf(dataSnapshot.getValue().toString());
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+    void captureImage(){
+           mData.child(FirebasePath.CAMERA_CONTROL).addValueEventListener(new ValueEventListener() {
+               @Override
+               public void onDataChange(DataSnapshot dataSnapshot) {
+                    // IP's Webcam
+                   String link ="http://192.168.0.200:8080/shot.jpg";
+                   new GetImageTask().execute(link);
+               }
 
-            }
-        });
+               @Override
+               public void onCancelled(DatabaseError databaseError) {
+
+               }
+           }) ;
     }
-    /**
-     *
-     * This is zone for get image from IP Webcam and send to SensorNode
-     */
-    private  Handler imageProcess = new Handler();
-        private Runnable runnableImageProcess = new Runnable() {
-        @Override
-        public void run() {
-            String link ="http://192.168.1.112:8080/shot.jpg";
-            /**
-             *  Uncomment to get image from Webcam IP app and send image to firebase
-             */
-//            new GetImageTask().execute(link);
-            Log.d(TAG,"Run runnableImageProcess");
-            imageProcess.postDelayed(runnableImageProcess,TIME_TAKE_PICTURE);
-        }
-    };
+
     class GetImageTask extends AsyncTask<String,Void,Bitmap>
     {
         @Override
@@ -194,12 +130,17 @@ public class OperatingActivity extends Activity {
 
         @Override
         protected void onPostExecute(Bitmap bitmap) {
-            //kết quả sau khi tải xong thì ra cái hình
+                // After gotten the image
             super.onPostExecute(bitmap);
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-            byte[] byteArray = stream.toByteArray();
-            upLoadImage(byteArray);
+                // Avoid doInBackGround return null
+            if (bitmap != null) {
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                byte[] byteArray = stream.toByteArray();
+                upLoadImage(byteArray);
+            } else {
+                mData.child(FirebasePath.CAMERA_STATUS_PATH).setValue("Không có sẵn");
+            }
         }
         @Override
         protected Bitmap doInBackground(String... params) {
@@ -209,7 +150,7 @@ public class OperatingActivity extends Activity {
                 return  bitmap;
             }catch (Exception ex)
             {
-                Log.e("LOI",ex.toString());
+                Log.e("Has error",ex.toString());
             }
             return null;
         }
@@ -231,7 +172,9 @@ public class OperatingActivity extends Activity {
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
                 linkURL  = downloadUrl + "";
-                mData.child("Storage Image").setValue(linkURL);
+                mData.child(FirebasePath.IMAGE_LINK_PATH).setValue(linkURL);
+                mData.child(FirebasePath.IMAGE_TIME_CAPUTRE_PATH).setValue(System.currentTimeMillis());
+                mData.child(FirebasePath.CAMERA_STATUS_PATH).setValue("Đang có sẵn");
                 Log.d(TAG,"Upload Image successfully ");
             }
         });

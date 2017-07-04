@@ -39,7 +39,8 @@ public class DashboardActivity extends AppCompatActivity {
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_sensor_blue_24dp);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_fans_white_24dp);
         tabLayout.getTabAt(2).setIcon(R.drawable.ic_notifications_white_24dp);
-        tabLayout.getTabAt(3).setIcon(R.drawable.ic_menu_white_24dp);
+        tabLayout.getTabAt(3).setIcon(R.drawable.ic_camera_white_24dp);
+        tabLayout.getTabAt(4).setIcon(R.drawable.ic_menu_white_24dp);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -54,7 +55,10 @@ public class DashboardActivity extends AppCompatActivity {
                         tabLayout.getTabAt(2).setIcon(R.drawable.ic_notifications_blue_24dp);
                         break;
                     case 3:
-                        tabLayout.getTabAt(3).setIcon(R.drawable.ic_menu_blue_24dp);
+                        tabLayout.getTabAt(3).setIcon(R.drawable.ic_camera_blue_24dp);
+                        break;
+                    case 4:
+                        tabLayout.getTabAt(4).setIcon(R.drawable.ic_menu_blue_24dp);
                         break;
                 }
             }
@@ -71,7 +75,10 @@ public class DashboardActivity extends AppCompatActivity {
                         tabLayout.getTabAt(2).setIcon(R.drawable.ic_notifications_white_24dp);
                         break;
                     case 3:
-                        tabLayout.getTabAt(3).setIcon(R.drawable.ic_menu_white_24dp);
+                        tabLayout.getTabAt(3).setIcon(R.drawable.ic_camera_white_24dp);
+                        break;
+                    case 4:
+                        tabLayout.getTabAt(4).setIcon(R.drawable.ic_menu_white_24dp);
                         break;
                 }
             }

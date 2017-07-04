@@ -48,8 +48,8 @@ public class MenuFragment extends Fragment {
 
     private void init() {
         customMenuArrayList = new ArrayList<>();
-        customMenuArrayList.add(new CustomMenu("Sign out",R.drawable.ic_add_to_photos_black_24dp));
-        customMenuArrayList.add(new CustomMenu("Setting",R.drawable.ic_poll_black_24dp));
+        customMenuArrayList.add(new CustomMenu("Cài đặt",R.drawable.ic_poll_black_24dp));
+        customMenuArrayList.add(new CustomMenu("Đăng xuất",R.drawable.ic_add_to_photos_black_24dp));
         menuArrayAdapter = new MenuArrayAdapter(getContext(),R.layout.menu_row,customMenuArrayList);
         listView.setAdapter(menuArrayAdapter);
     }
@@ -59,12 +59,12 @@ public class MenuFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = null;
-                if (customMenuArrayList.get(position).getName().equals("Sign out")){
+                if (customMenuArrayList.get(position).getName().equals("Đăng xuất")){
                     intent = new Intent(getContext(), SignInActivity.class);
                     FirebaseAuth.getInstance().signOut();
                     startActivity(intent);
                     getActivity().finish();
-                } else if (customMenuArrayList.get(position).getName().equals("Setting")) {
+                } else if (customMenuArrayList.get(position).getName().equals("Cài đặt")) {
                     intent = new Intent(getContext(), SettingActivity.class);
                     startActivity(intent);
                 }

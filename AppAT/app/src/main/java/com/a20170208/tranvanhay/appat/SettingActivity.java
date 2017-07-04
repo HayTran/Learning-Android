@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
-import com.a20170208.tranvanhay.appat.R;
-
 public class SettingActivity extends AppCompatActivity {
 
     @Override
@@ -14,7 +12,7 @@ public class SettingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_setting);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Setting");
+        getSupportActionBar().setTitle("Cài đặt");
         getSupportActionBar().setIcon(R.drawable.time_machine_icon);
     }
 

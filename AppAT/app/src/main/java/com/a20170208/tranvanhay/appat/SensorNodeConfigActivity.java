@@ -54,7 +54,7 @@ public class SensorNodeConfigActivity extends AppCompatActivity {
             // Back icon
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Configure Sensor Node Value");
+        getSupportActionBar().setTitle("Cài đặt giá trị ngưỡng");
             // Get value
         Intent intent = getIntent();
         sensorNode = (SensorNode) intent.getSerializableExtra("SensorNodeObject");

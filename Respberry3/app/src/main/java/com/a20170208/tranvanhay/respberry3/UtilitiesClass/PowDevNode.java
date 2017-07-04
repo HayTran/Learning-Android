@@ -210,7 +210,7 @@ public class PowDevNode {
         this.zone = zone;
     }
 
-    public boolean isAlreadyImplemented() {
+        public boolean isAlreadyImplemented() {
         return isAlreadyImplemented;
     }
 

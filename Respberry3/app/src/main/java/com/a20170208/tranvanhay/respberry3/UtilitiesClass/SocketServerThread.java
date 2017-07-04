@@ -26,7 +26,7 @@ import java.util.HashMap;
 public class SocketServerThread extends Thread {
     private static final String TAG = SocketServerThread.class.getSimpleName();
     private DatabaseReference mData = FirebaseDatabase.getInstance().getReference();
-    static final int SocketServerPORT = 8080;
+    static final int SocketServerPORT = 4567;
     int count = 0;
     HashMap <String,String> MACAddrAndIDHashMap = new HashMap<>();  // help server recognize || help user recognize
     HashMap <String,SensorNode> sensorNodeHashMap = new HashMap<>();

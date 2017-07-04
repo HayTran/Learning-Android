@@ -20,11 +20,10 @@ public class SystemManagement {
     HashMap <String,SensorNode> sensorNodeHashMap;
     HashMap <String,PowDevNode> powDevNodeHashMap;
     HashMap <String, Integer > conditionHashMap;
-    private boolean callAlert, SMSAlert, internetAlert;
+    private boolean callAlert, SMSAlert, internetAlert, autoOperation;
         // Flag to separate with user's affect
-    private boolean alreadySim0Alert = false, alreadySim1Alert = false, alreadyImplement = false;
+    private boolean alreadySim0Alert = false, alreadySim1Alert = false;
     String MACAddrGSMNode;
-    private int selectionAlertNumber, selectionControlNumber, selectionBothNumber;
 
     public SystemManagement() {
         this.getControllerConfig();
@@ -32,48 +31,6 @@ public class SystemManagement {
     }
 
     private void getControllerConfig(){
-        mData.child(FirebasePath.CONTROLLER_CONDITION_CONFIG_PATH).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                    // Clear hashmap before put new value into hashmap
-                conditionHashMap.clear();
-                selectionAlertNumber = 0;
-                selectionControlNumber  = 0;
-                selectionBothNumber = 0;
-                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
-                    int value = Integer.valueOf(dataSnapshot1.getValue().toString());
-                    if (dataSnapshot1.getKey().equals("MQ2")) {
-                        conditionHashMap.put("MQ2",value);
-                    }   else if (dataSnapshot1.getKey().equals("MQ7")) {
-                        conditionHashMap.put("MQ7",value);
-                    }   else if (dataSnapshot1.getKey().equals("temperature")) {
-                        conditionHashMap.put("temperature",value);
-                    }   else if (dataSnapshot1.getKey().equals("humidity")) {
-                        conditionHashMap.put("humidity",value);
-                    }   else if (dataSnapshot1.getKey().equals("meanFlameValue")) {
-                        conditionHashMap.put("meanFlameValue",value);
-                    }   else if (dataSnapshot1.getKey().equals("lightIntensity")) {
-                        conditionHashMap.put("lightIntensity",value);
-                    }
-                    if (value ==  100) {
-                        selectionAlertNumber++;
-                    } else if (value == 200) {
-                        selectionControlNumber++;
-                    } else if (value == 300) {
-                        selectionBothNumber++;
-                    }
-                }
-                Log.d(TAG,"Get value config for sensor with:"
-                        +"\nselectionAlertNumber=" + selectionAlertNumber
-                        +"\nselectionControlNumber=" + selectionControlNumber
-                        +"\nselectionBothNumber=" + selectionBothNumber);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
         mData.child(FirebasePath.CONTROLLER_ALERT_TYPE_CONFIG_PATH).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -110,75 +67,73 @@ public class SystemManagement {
 
             }
         });
+        mData.child(FirebasePath.CONTROLLER_AUTO_OPERATION_PATH).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                autoOperation = Boolean.valueOf(dataSnapshot.getValue().toString());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
         // Check all sensor node in the system
     private void checkAllSensorNode(){
         for (SensorNode sensorNode : sensorNodeHashMap.values()) {
-                // Check alert and both type
-            if (checkEachSensorNode(sensorNode,100) || checkEachSensorNode(sensorNode,300)){
-                alert(sensorNode, true);
-            } else {
-                alert(sensorNode, false);
-            }
-                // Check control powdev and both type
-            if (checkEachSensorNode(sensorNode,200) || checkEachSensorNode(sensorNode,300)){
-                controlPowDev(sensorNode,true);
-            } else {
-                controlPowDev(sensorNode,false);
-            }
-                // Check alert for each condition
-            if (checkEachSensorNode(sensorNode,400)) {
-                alert(sensorNode,true);
-            } else {
-                alert(sensorNode,false);
-            }
+                checkEachSensorNode(sensorNode);
         }
     }
         // Check each sensor node in the system corressponding with typeOperation
-    private boolean checkEachSensorNode(SensorNode sensorNode, int typeOperation){
+    private void checkEachSensorNode(SensorNode sensorNode){
         int count = 0;
-        if (sensorNode.getTemperature() >= sensorNode.getConfigTemperature() &&
-                conditionHashMap.get("temperature") == typeOperation){
+        StringBuilder exceedString = new StringBuilder();
+        exceedString.append("Các cảm biến vượt quá giới hạn: ");
+        if (sensorNode.getTemperature() >= sensorNode.getConfigTemperature()){
             count++;
+            exceedString.append("\nNhiệt độ: " + sensorNode.getTemperature());
         }
-        if (sensorNode.getHumidity() >= sensorNode.getConfigHumidity() &&
-                conditionHashMap.get("humidity") == typeOperation){
+        if (sensorNode.getMeanFlameValue() >= sensorNode.getConfigMeanFlameValue()){
             count++;
+            exceedString.append("\nLửa: " + sensorNode.getMeanFlameValue());
         }
-        if (sensorNode.getMeanFlameValue() >= sensorNode.getConfigMeanFlameValue() &&
-                conditionHashMap.get("meanFlameValue") == typeOperation){
+        if (sensorNode.getLightIntensity() >= sensorNode.getConfigLightIntensity()){
             count++;
+            exceedString.append("\nÁnh sáng: " + sensorNode.getLightIntensity());
         }
-        if (sensorNode.getLightIntensity() >= sensorNode.getConfigLightIntensity() &&
-                conditionHashMap.get("lightIntensity") == typeOperation){
+        if (sensorNode.getMQ2() >= sensorNode.getConfigMQ2()){
             count++;
+            exceedString.append("\nKhí dễ cháy: " + sensorNode.getMQ2());
         }
-        if (sensorNode.getMQ2() >= sensorNode.getConfigMQ2() &&
-                conditionHashMap.get("MQ2") == typeOperation){
+        if (sensorNode.getMQ7() >= sensorNode.getConfigMQ7()){
             count++;
+            exceedString.append("\nKhí CO: " + sensorNode.getMQ7());
         }
-        if (sensorNode.getMQ7() >= sensorNode.getConfigMQ7() &&
-                conditionHashMap.get("MQ7") == typeOperation){
-            count++;
+
+            // Check threshold
+        if (count >= 2 && count < 4) {
+            sensorNode.setExceedAlertCount(sensorNode.getExceedAlertCount() + 1);
+        } else if (count >= 4) {
+            sensorNode.setExceedImplementCount(sensorNode.getExceedImplementCount() + 1);
+        } else {
+            sensorNode.setExceedImplementCount(0);
+            sensorNode.setExceedAlertCount(0);
+            alert(sensorNode,null,false);
+            controlPowDev(sensorNode,false);
         }
-        Log.d(TAG,"Count = " + count
-                +"\nselectionAlertNumber = " + selectionAlertNumber
-                +"\nselectionControlNumber = " +selectionControlNumber
-                +"\nselectionBothNumber = " + selectionBothNumber
-                +"\ntypeOperation = " + typeOperation);
-        if (typeOperation == 100 && count == selectionAlertNumber && count > 0) {
-            Log.d(TAG,"checkEachSensorNode is: true with Alert" );
-            return true;
-        }   else if (typeOperation == 200 && count == selectionControlNumber && count > 0){
-            Log.d(TAG,"checkEachSensorNode is: true with Control" );
-            return true;
-        }   else if (typeOperation == 300 && count == selectionBothNumber && count > 0){
-            Log.d(TAG,"checkEachSensorNode is: true with Alert and Control" );
-            return true;                                    // wait get hashmap in firebase
-        }   else if (typeOperation == 400 && count  > 0  && sensorNode.getTimeSend() > 0){
-            Log.d(TAG,"checkEachSensorNode is: true with Alert each condition" );
-            return true;
-        } else return false;
+            //  Implement alert
+        if (sensorNode.getExceedAlertCount() >= 5) {
+            alert(sensorNode,exceedString.toString(),true);
+        }   else {
+            alert(sensorNode,exceedString.toString(),false);
+        }
+            //  Implement control
+        if (sensorNode.getExceedImplementCount() >= 5) {
+            controlPowDev(sensorNode,true);
+        }   else {
+            controlPowDev(sensorNode,false);
+        }
     }
         // Control PowDev when sensor node exceed configured value
     private void controlPowDev(SensorNode sensorNode, boolean isActive ){
@@ -201,12 +156,12 @@ public class SystemManagement {
         Log.d(TAG,"Control PowDev is actived?: " + isActive +", at sensor node: " + sensorNode.getID());
     }
         // Alert when sensor node exceed configured value with ways below
-    private void alert(SensorNode sensorNode, boolean isActive){
+    private void alert(SensorNode sensorNode, String messageContent, boolean isActive){
         if (internetAlert == true && isActive == true) {
             String body_message;
-            body_message = "Exceed your setting, at node: "
-                    + sensorNode.getID()+", at zone: " + sensorNode.getZone()
-                    + "\nDetail: " + sensorNode.toString();
+            body_message = "Nút cảm biến vượt ngưỡng: "
+                    + sensorNode.getID()+", tại khu vực: " + sensorNode.getZone()
+                    + "\nChi tiết: " + messageContent;
             new FCMServerThread("Sensor Node",body_message).start();
             mData.child(FirebasePath.ALERT_DATABASE_PATH).child(TimeAndDate.currentTimeMillis+"").setValue(body_message);
             Log.d(TAG,"Sent message to FCM");
