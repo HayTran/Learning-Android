@@ -1,9 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_configuration_system"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <ListView
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context="com.a20170208.tranvanhay.appat.ConfigurationSystemActivity">
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/listView"/>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:text="Hệ thống hoạt động tự động" />
+
+        <Switch
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:id="@+id/swAutoOperation"
+            android:layout_gravity="center"
+            android:paddingRight="70dp"
+            android:textOn="ON"
+            android:thumb="@drawable/customswitchselector"
+            android:track="@drawable/custom_track"
+            android:textOff="OFF"
+            android:showText="true" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:text="Kiểu thông báo cảnh báo:  " />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <CheckBox
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:textSize="16sp"
+                android:text="Nhắn tin FCM"
+                android:id="@+id/chkMessageFCM"/>
+            <CheckBox
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:textSize="16sp"
+                android:text="Nhắn tin GSM"
+                android:id="@+id/chkMessageGSM"/>
+            <CheckBox
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:textSize="16sp"
+                android:text="Gọi điện"
+                android:id="@+id/chkCall"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:outlineProvider="bounds"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:text="Thời gian lưu cơ sở dữ liệu" />
+
+        <EditText
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:textSize="16sp"
+            android:hint="Đơn vị giây"
+            android:id="@+id/editTextTimeSaveInDatabase"/>
+
+    </LinearLayout>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_weight="0.7"
+        android:id="@+id/btnDeleteValueDatabase"
+        android:text="Xóa dữ liệu cảm biến"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:id="@+id/btnSave"
+            android:layout_margin="20dp"
+            android:text="Lưu"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_margin="20dp"
+            android:id="@+id/btnCancel"
+            android:text="Hủy"/>
+    </LinearLayout>
+
+<Space
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="0.5"/>
+
 </LinearLayout>

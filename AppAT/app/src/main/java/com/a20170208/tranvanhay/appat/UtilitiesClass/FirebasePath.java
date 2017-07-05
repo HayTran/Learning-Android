@@ -18,6 +18,8 @@ public final class  FirebasePath {
     public static final String ZONE_SENSOR_NODE_CONFIG_PATH = "SocketServer/Config/ZoneConfig/SensorNode/";
     public static final String ZONE_POWDEV_NODE_CONFIG_PATH = "SocketServer/Config/ZoneConfig/PowDevNode/";
     public static final String MACADDR_AND_ID_MAPPING_PATH = "SocketServer/Config/MACAddrAndIDMapping";
+    public static final String TIME_SAVE_IN_DATABASE_PATH = "SocketServer/Config/TimeSaveInDatabase";
+    public static final String CONTROLLER_AUTO_OPERATION_PATH = "SocketServer/Config/ControllerConfig/AutoOperation";
     public static final String CONTROLLER_ALERT_TYPE_CONFIG_PATH = "SocketServer/Config/ControllerConfig/AlertType";
     public static final String CONTROLLER_CONDITION_CONFIG_PATH = "SocketServer/Config/ControllerConfig/Condition";
     public static final String CONTROLLER_GSM_NODE_PATH = "SocketServer/Config/ControllerConfig/GSMNode";

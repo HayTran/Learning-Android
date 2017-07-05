@@ -50,10 +50,8 @@
 
         <activity android:name=".DashboardActivity" />
         <activity android:name=".PingActivity" />
-        <activity android:name=".MACAndIDMappingSettingActivity" />
         <activity android:name=".SensorNodeConfigActivity" />
         <activity android:name=".SensorValueDatabaseActivity" />
-        <activity android:name=".ZoneSettingActivity" />
         <activity android:name=".ConfigurationSystemActivity"></activity>
     </application>
 

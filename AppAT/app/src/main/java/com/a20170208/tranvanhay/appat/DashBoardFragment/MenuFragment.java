@@ -1,23 +1,23 @@
 package com.a20170208.tranvanhay.appat.DashBoardFragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.Switch;
 
-import com.a20170208.tranvanhay.appat.ConfigurationSystemActivity;
-import com.a20170208.tranvanhay.appat.MACAndIDMappingSettingActivity;
-import com.a20170208.tranvanhay.appat.SignInActivity;
 import com.a20170208.tranvanhay.appat.R;
-import com.a20170208.tranvanhay.appat.ZoneSettingActivity;
-import com.google.firebase.auth.FirebaseAuth;
-
-import java.util.ArrayList;
+import com.a20170208.tranvanhay.appat.UtilitiesClass.FirebasePath;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * Created by Van Hay on 30-May-17.
@@ -25,9 +25,11 @@ import java.util.ArrayList;
 
 public class MenuFragment extends Fragment {
     private static final String TAG = MenuFragment.class.getSimpleName();
-    ArrayList <CustomMenu> customMenuArrayList;
-    MenuArrayAdapter menuArrayAdapter;
-    ListView listView;
+    DatabaseReference mData = FirebaseDatabase.getInstance().getReference();
+    Switch swAutoOperation;
+    CheckBox chkMessageFCM, chkMessageGSM, chkCall;
+    EditText editTextTimeSaveInDatabase;
+    Button btnSave, btnCancel;
     public MenuFragment() {
     }
     @Nullable
@@ -45,39 +47,77 @@ public class MenuFragment extends Fragment {
     }
 
     private void addControl(View view) {
-        listView = (ListView)view.findViewById(R.id.listView);
+        swAutoOperation = (Switch)view.findViewById(R.id.swAutoOperation);
+        chkMessageFCM = (CheckBox) view.findViewById(R.id.chkMessageFCM);
+        chkMessageGSM = (CheckBox) view.findViewById(R.id.chkMessageGSM);
+        chkCall = (CheckBox)view.findViewById(R.id.chkCall);
+        editTextTimeSaveInDatabase = (EditText)view.findViewById(R.id.editTextTimeSaveInDatabase);
+        btnSave = (Button)view.findViewById(R.id.btnSave);
+        btnCancel = (Button)view.findViewById(R.id.btnCancel);
     }
 
     private void init() {
-        customMenuArrayList = new ArrayList<>();
-        customMenuArrayList.add(new CustomMenu(0,"Thiết lập định danh",R.drawable.ic_identify_black_24dp));
-        customMenuArrayList.add(new CustomMenu(1,"Thiết lập khu vực",R.drawable.ic_position_black_24dp));
-        customMenuArrayList.add(new CustomMenu(2,"Cấu hình hệ thống",R.drawable.ic_settings_black_24dp));
-        customMenuArrayList.add(new CustomMenu(3,"Đăng xuất",R.drawable.ic_sign_out_off_black_24dp));
-        menuArrayAdapter = new MenuArrayAdapter(getContext(),R.layout.menu_row,customMenuArrayList);
-        listView.setAdapter(menuArrayAdapter);
+        mData.child(FirebasePath.CONTROLLER_AUTO_OPERATION_PATH).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                swAutoOperation.setChecked(Boolean.valueOf(dataSnapshot.getValue().toString()));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        mData.child(FirebasePath.CONTROLLER_ALERT_TYPE_CONFIG_PATH).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                    boolean value = Boolean.valueOf(dataSnapshot1.getValue().toString());
+                    if (dataSnapshot1.getKey().equals("InternetAlert")) {
+                        chkMessageFCM.setChecked(value);
+                    }   else if (dataSnapshot1.getKey().equals("SMSAlert")) {
+                        chkMessageGSM.setChecked(value);
+                    }   else if (dataSnapshot1.getKey().equals("CallAlert")) {
+                        chkCall.setChecked(value);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        mData.child(FirebasePath.TIME_SAVE_IN_DATABASE_PATH).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                editTextTimeSaveInDatabase.setText(dataSnapshot.getValue().toString());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void addEvent() {
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = null;
-                if (customMenuArrayList.get(position).getId() == 0){
-                    intent = new Intent(getContext(), MACAndIDMappingSettingActivity.class);
-                    startActivity(intent);
-                }  else if (customMenuArrayList.get(position).getId() == 1) {
-                    intent = new Intent(getContext(), ZoneSettingActivity.class);
-                    startActivity(intent);
-                }   else if (customMenuArrayList.get(position).getId() == 2) {
-                    intent = new Intent(getContext(), ConfigurationSystemActivity.class);
-                    startActivity(intent);
-                }   else if (customMenuArrayList.get(position).getId() == 3) {
-                    intent = new Intent(getContext(), SignInActivity.class);
-                    FirebaseAuth.getInstance().signOut();
-                    startActivity(intent);
-                    getActivity().finish();
-                }
+            public void onClick(View v) {
+
+            }
+        });
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mData.child(FirebasePath.CONTROLLER_AUTO_OPERATION_PATH).setValue(swAutoOperation.isChecked());
+                mData.child(FirebasePath.CONTROLLER_ALERT_TYPE_CONFIG_PATH).child("CallAlert").setValue(chkCall.isChecked());
+                mData.child(FirebasePath.CONTROLLER_ALERT_TYPE_CONFIG_PATH).child("SMSAlert").setValue(chkMessageGSM.isChecked());
+                mData.child(FirebasePath.CONTROLLER_ALERT_TYPE_CONFIG_PATH).child("InternetAlert").setValue(chkMessageFCM.isChecked());
+                mData.child(FirebasePath.TIME_SAVE_IN_DATABASE_PATH).setValue(editTextTimeSaveInDatabase.getText().toString());
             }
         });
     }
