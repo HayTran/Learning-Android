@@ -47,11 +47,14 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
+
         <activity android:name=".DashboardActivity" />
         <activity android:name=".PingActivity" />
-        <activity android:name=".SettingActivity" />
+        <activity android:name=".MACAndIDMappingSettingActivity" />
         <activity android:name=".SensorNodeConfigActivity" />
-        <activity android:name=".SensorValueDatabaseActivity"></activity>
+        <activity android:name=".SensorValueDatabaseActivity" />
+        <activity android:name=".ZoneSettingActivity" />
+        <activity android:name=".ConfigurationSystemActivity"></activity>
     </application>
 
 </manifest>

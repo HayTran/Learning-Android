@@ -15,7 +15,7 @@ public class AlertMessage {
     public AlertMessage(long timeSend, String bodyMessage) {
         this.timeSend = timeSend;
         this.bodyMessage = bodyMessage;
-        TimeAndDate.convertMilisecondToTimeAndDate(this.timeSend);
+        this.convertedTimeSend = TimeAndDate.convertMilisecondToTimeAndDate(this.timeSend);
     }
 
     public long getTimeSend() {
@@ -40,5 +40,14 @@ public class AlertMessage {
 
     public void setConvertedTimeSend(String convertedTimeSend) {
         this.convertedTimeSend = convertedTimeSend;
+    }
+
+    @Override
+    public String toString() {
+        return "AlertMessage{" +
+                "timeSend=" + timeSend +
+                ", convertedTimeSend='" + convertedTimeSend + '\'' +
+                ", bodyMessage='" + bodyMessage + '\'' +
+                '}';
     }
 }

@@ -27,7 +27,9 @@ public class SocketServerThread extends Thread {
     private static final String TAG = SocketServerThread.class.getSimpleName();
     private DatabaseReference mData = FirebaseDatabase.getInstance().getReference();
     static final int SocketServerPORT = 4567;
+    private long timeSaveInDatabase = 0;
     int count = 0;
+    private boolean isGottenConfig0 = false, isGottenConfig1 = false;
     HashMap <String,String> MACAddrAndIDHashMap = new HashMap<>();  // help server recognize || help user recognize
     HashMap <String,SensorNode> sensorNodeHashMap = new HashMap<>();
     HashMap <String,PowDevNode> powdevNodeHashMap = new HashMap<>();
@@ -36,24 +38,52 @@ public class SocketServerThread extends Thread {
     public SocketServerThread (ServerSocket serverSocket){
         this.serverSocket = serverSocket;
     }
+    private void getConfig() {
+        mData.child(FirebasePath.MACADDR_AND_ID_MAPPING_PATH).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                MACAddrAndIDHashMap.clear();
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                    MACAddrAndIDHashMap.put(dataSnapshot1.getKey(),dataSnapshot1.getValue().toString());
+                }
+                isGottenConfig0 = true;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        mData.child(FirebasePath.TIME_SAVE_IN_DATABASE_PATH).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                timeSaveInDatabase = Long.valueOf(dataSnapshot.getValue().toString());
+                isGottenConfig1 = true;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
     @Override
     public void run() {
-        mappingMACAddrAndID();
+        getConfig();
         try {
             serverSocket = new ServerSocket(SocketServerPORT);
             while (true) {
-                count ++;
-                if(count >= 255){
-                    count = 0;
-                }
-                Socket socket = serverSocket.accept();
+                    // Must gotten all config then start server
+                if (isGottenConfig0 == true && isGottenConfig1 == true) {
+                    Socket socket = serverSocket.accept();
                     // Set time out for not delay
-                socket.setSoTimeout(2000);
+                    socket.setSoTimeout(2000);
                     // Initialize a SocketServerReplyThread object
-                SocketServerReplyThread socketServerReplyThread = new SocketServerReplyThread(
-                        socket, count);
+                    SocketServerReplyThread socketServerReplyThread = new SocketServerReplyThread(
+                            socket, count);
                     // Start running Server Reply Thread
-                socketServerReplyThread.start();
+                    socketServerReplyThread.start();
+                }
             }
         } catch (IOException e) {
             // TODO Auto-generated catch block
@@ -61,28 +91,6 @@ public class SocketServerThread extends Thread {
             Log.d(TAG, "Exception Catched: " + e.toString());
             e.printStackTrace();
         }
-    }
-    private void mappingMACAddrAndID() {
-        /**
-         *          When debug
-         */
-//        MACAddrAndIDHashMap.put("5c:cf:7f:ab:ac:81","NodeSensor0");
-//        MACAddrAndIDHashMap.put("a0:20:a6:02:10:57","NodePowDev0");
-
-          mData.child(FirebasePath.MACADDR_AND_ID_MAPPING_PATH).addValueEventListener(new ValueEventListener() {
-              @Override
-              public void onDataChange(DataSnapshot dataSnapshot) {
-                  MACAddrAndIDHashMap.clear();
-                  for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                      MACAddrAndIDHashMap.put(dataSnapshot1.getKey(),dataSnapshot1.getValue().toString());
-                  }
-              }
-
-              @Override
-              public void onCancelled(DatabaseError databaseError) {
-
-              }
-          });
     }
         // ReplyThreadFromServer Class
     class SocketServerReplyThread extends Thread {
@@ -118,7 +126,7 @@ public class SocketServerThread extends Thread {
                 try {
                     dIn = new DataInputStream(hostThreadSocket.getInputStream());
                     dOut = new DataOutputStream(hostThreadSocket.getOutputStream());
-                    // Read 2 flags
+                        // Read 2 flags
                     firstByteReceive = dIn.readUnsignedByte();
                     secondByteReceive = dIn.readUnsignedByte();
                         // Begin session
@@ -134,9 +142,7 @@ public class SocketServerThread extends Thread {
                             }
                                 // Check to create a new object. If it's existing, just update arrayByte and isConfirmed
                             String MACAddr = ARPNetwork.findMAC(hostThreadSocket.getInetAddress().getHostAddress());
-                            if (isSensorNodeObjectExisting(MACAddr) == false
-                                    &&  MACAddrAndIDHashMap.get(MACAddr) != null ) {
-                                    // MACAddrAndIDHashMap.get(MACAddr) != null to wait for Firebase got data about MAC and ID Mapping
+                            if (isSensorNodeObjectExisting(MACAddr) == false) {
                                 String ID = MACAddrAndIDHashMap.get(MACAddr);
                                 SensorNode sensorNode = new SensorNode(MACAddr,ID,arrayBytes);
                                 sensorNodeHashMap.put(MACAddr, sensorNode);
@@ -160,9 +166,7 @@ public class SocketServerThread extends Thread {
                             }
                                 // Check to create a new object. If it's existing, just update strengthWifi
                             String MACAddr = ARPNetwork.findMAC(hostThreadSocket.getInetAddress().getHostAddress());
-                            if (isPowDevNodeObjectExisting(MACAddr) == false
-                                     &&  MACAddrAndIDHashMap.get(MACAddr) != null ) {
-                                    // MACAddrAndIDHashMap.get(MACAddr) != null to wait for Firebase got data about MAC and ID Mapping
+                            if (isPowDevNodeObjectExisting(MACAddr) == false) {
                                 String ID = MACAddrAndIDHashMap.get(MACAddr);
                                 PowDevNode powDevNode = new PowDevNode(MACAddr,ID,arrayBytes);
                                 powdevNodeHashMap.put(MACAddr, powDevNode);
@@ -185,9 +189,17 @@ public class SocketServerThread extends Thread {
                         if (secondByteReceive == SECOND_CONFRIM_SESSION_SENSOR_BYTE) {
                             int resultCode = dIn.readUnsignedByte();
                             if (resultCode == SUCCESS_SESSION_FLAG) {
-                                String MACAddr = ARPNetwork.findMAC(hostThreadSocket.getInetAddress().getHostAddress());;
+                                String MACAddr = ARPNetwork.findMAC(hostThreadSocket.getInetAddress().getHostAddress());
+                                    // Send current value to database
                                 sensorNodeHashMap.get(MACAddr).setTimeSend(TimeAndDate.currentTimeMillis);
                                 sensorNodeHashMap.get(MACAddr).sendToFirebase();
+
+                                    // Check whether or not save in firebase database
+                                if (sensorNodeHashMap.get(MACAddr).getTimeSaveInDatabase() + timeSaveInDatabase <=
+                                        TimeAndDate.currentTimeMillis) {
+                                    sensorNodeHashMap.get(MACAddr).saveInDatabaseInFirebase();
+                                    sensorNodeHashMap.get(MACAddr).setTimeSaveInDatabase(TimeAndDate.currentTimeMillis);
+                                }
                                     // Call SystemManagement
                                 systemManagement.checkSystem(sensorNodeHashMap,powdevNodeHashMap);
                             } else if (resultCode == FAILED_SESSION_FLAG) {

@@ -122,6 +122,10 @@ public class SystemManagement {
             alert(sensorNode,null,false);
             controlPowDev(sensorNode,false);
         }
+            // Just debug
+        Log.d(TAG,"count = " + count);
+        Log.d(TAG,"ExceedAlert: " + sensorNode.getExceedAlertCount());
+        Log.d(TAG,"ExceedImplement: " + sensorNode.getExceedImplementCount());
             //  Implement alert
         if (sensorNode.getExceedAlertCount() >= 5) {
             alert(sensorNode,exceedString.toString(),true);
@@ -134,6 +138,7 @@ public class SystemManagement {
         }   else {
             controlPowDev(sensorNode,false);
         }
+
     }
         // Control PowDev when sensor node exceed configured value
     private void controlPowDev(SensorNode sensorNode, boolean isActive ){
@@ -153,7 +158,7 @@ public class SystemManagement {
                 }
             }
         }
-        Log.d(TAG,"Control PowDev is actived?: " + isActive +", at sensor node: " + sensorNode.getID());
+//        Log.d(TAG,"Control PowDev is actived?: " + isActive +", at sensor node: " + sensorNode.getID());
     }
         // Alert when sensor node exceed configured value with ways below
     private void alert(SensorNode sensorNode, String messageContent, boolean isActive){
@@ -184,7 +189,7 @@ public class SystemManagement {
             powDevNodeHashMap.get(MACAddrGSMNode).setSim1(0);
             alreadySim1Alert = false;
         }
-        Log.d(TAG,"Alert is active?: " +isActive + ", at sensor node: " + sensorNode.getID());
+//        Log.d(TAG,"Alert is active?: " +isActive + ", at sensor node: " + sensorNode.getID());
     }
         // The public method is called in SocketServerThread
     public void checkSystem(HashMap<String, SensorNode> sensorNodeHashMap,
@@ -192,6 +197,5 @@ public class SystemManagement {
         this.sensorNodeHashMap = sensorNodeHashMap;
         this.powDevNodeHashMap = powDevNodeHashMap;
         this.checkAllSensorNode();
-        Log.d(TAG,"Checked System");
     }
 }

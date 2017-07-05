@@ -24,6 +24,7 @@ public class SensorNode {
     private double configTemperature, configHumidity, configMeanFlameValue;
     private double configLightIntensity, configMQ2, configMQ7;
     private long timeSend;
+    private long timeSaveInDatabase;
     private int [] arrayBytes;
     private int exceedAlertCount;
     private int exceedImplementCount;
@@ -83,10 +84,9 @@ public class SensorNode {
         mData.child(this.currentValuePath).child("MQ2").setValue(MQ2);
         mData.child(this.currentValuePath).child("MQ7").setValue(MQ7);
         mData.child(this.currentValuePath).child("timeSend").setValue(TimeAndDate.currentTime);
-        this.saveInDatabaseInFirebase();
     }
 
-    private void saveInDatabaseInFirebase(){
+    public void saveInDatabaseInFirebase(){
         mData.child(this.valueDatabasePath).child(timeSend+"").child("temperature").setValue(temperature);
         mData.child(this.valueDatabasePath).child(timeSend+"").child("humidity").setValue(humidity);
         mData.child(this.valueDatabasePath).child(timeSend+"").child("meanFlameValue").setValue(meanFlameValue);
@@ -309,6 +309,14 @@ public class SensorNode {
 
     public void setTimeSend(long timeSend) {
         this.timeSend = timeSend;
+    }
+
+    public long getTimeSaveInDatabase() {
+        return timeSaveInDatabase;
+    }
+
+    public void setTimeSaveInDatabase(long timeSaveInDatabase) {
+        this.timeSaveInDatabase = timeSaveInDatabase;
     }
 
     public int getZone() {

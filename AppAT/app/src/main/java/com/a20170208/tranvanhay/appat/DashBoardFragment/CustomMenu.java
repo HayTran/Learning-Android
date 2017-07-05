@@ -5,12 +5,22 @@ package com.a20170208.tranvanhay.appat.DashBoardFragment;
  */
 
 public class CustomMenu {
+    int id;
     String name;
     int image;
 
-    public CustomMenu(String name, int image) {
+    public CustomMenu(int id, String name, int image) {
+        this.id = id;
         this.name = name;
         this.image = image;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -32,7 +42,8 @@ public class CustomMenu {
     @Override
     public String toString() {
         return "CustomMenu{" +
-                "name='" + name + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 ", image=" + image +
                 '}';
     }
