@@ -4,9 +4,11 @@ package com.a20170208.tranvanhay.appat.DashBoardFragment;
  * Created by Van Hay on 02-Jun-17.
  */
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,9 +33,10 @@ import java.util.ArrayList;
 public class AlertFragment extends Fragment {
     DatabaseReference mData = FirebaseDatabase.getInstance().getReference();
     ListView listView;
-    Button btnDeleteAlertDatabase, btnDeleteValueDatabase;
+    Button btnDeleteAlertDatabase;
     ArrayList <AlertMessage> alertMessageArrayList;
     AlertArrayAdapter alertArrayAdapter;
+    AlertDialog.Builder builder;
     public AlertFragment() {
     }
 
@@ -55,14 +58,7 @@ public class AlertFragment extends Fragment {
         btnDeleteAlertDatabase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mData.child(FirebasePath.ALERT_DATABASE_PATH).setValue("0");
-                getAlertDatabase();
-            }
-        });
-        btnDeleteValueDatabase.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mData.child(FirebasePath.SENSOR_VALUE_DATABASE_PATH).setValue("0");
+                showDialog();
             }
         });
     }
@@ -77,7 +73,6 @@ public class AlertFragment extends Fragment {
     private void addControls(View view) {
         listView = (ListView)view.findViewById(R.id.listView);
         btnDeleteAlertDatabase = (Button)view.findViewById(R.id.btnDeleteAlertDatabase);
-        btnDeleteValueDatabase = (Button)view.findViewById(R.id.btnDeleteValueDatabase);
     }
 
     private void getAlertDatabase(){
@@ -99,5 +94,30 @@ public class AlertFragment extends Fragment {
 
             }
         });
+    }
+    private void showDialog(){
+        builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Nhắc nhở");
+        builder.setMessage("Bạn có muốn xóa toàn bộ tin nhắn?");
+        builder.setPositiveButton("OK",
+                new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        mData.child(FirebasePath.ALERT_DATABASE_PATH).setValue("0");
+                        getAlertDatabase();
+                        dialog.dismiss();
+                    }
+                });
+
+        builder.setNegativeButton("Hủy",
+                new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        dialog.cancel();
+                    }
+                });
+        builder.show();
     }
 }

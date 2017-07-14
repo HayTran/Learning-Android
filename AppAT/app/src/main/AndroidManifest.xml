@@ -52,7 +52,6 @@
         <activity android:name=".PingActivity" />
         <activity android:name=".SensorNodeConfigActivity" />
         <activity android:name=".SensorValueDatabaseActivity" />
-        <activity android:name=".ConfigurationSystemActivity"></activity>
     </application>
 
 </manifest>

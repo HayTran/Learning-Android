@@ -8,6 +8,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
+        android:textSize="16sp"
+        android:textColor="#000"
         android:layout_gravity="center"
         android:id="@+id/textViewTimeSend"
         android:text="Not yet gotten"/>
@@ -16,6 +18,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="3"
         android:gravity="center"
+        android:textSize="16sp"
+        android:textColor="#000"
         android:id="@+id/textViewBodyMessage"
         android:text="Not yet set"/>
 </LinearLayout>

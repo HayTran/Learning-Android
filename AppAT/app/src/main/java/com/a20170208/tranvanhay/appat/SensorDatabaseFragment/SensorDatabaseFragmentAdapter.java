@@ -38,6 +38,10 @@ public class SensorDatabaseFragmentAdapter extends FragmentStatePagerAdapter {
                 return "Lửa";
             case "Light Intensity":
                 return "Ánh sáng";
+            case "MQ2":
+                return "Khí Gas";
+            case "MQ7":
+                return "Khí CO";
         }
         return arrTitle[position];
     }

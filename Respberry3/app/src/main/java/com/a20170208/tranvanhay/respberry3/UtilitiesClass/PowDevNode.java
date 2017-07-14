@@ -18,10 +18,11 @@ public class PowDevNode {
     private String MACAddr; // help server recognize
     private String ID;      // help user recognize
     private int zone;       // group sensors  and powdev nodes into zones
-    private boolean isEnable, isAlreadyImplemented;
+    private boolean isEnable;   // enable or unable node
+    private boolean isAlreadyImplemented;   // flag to notify that node implemented
     private int [] arrayBytes;
     private int strengthWifi, dev0, dev1, buzzer, sim0, sim1;
-
+    private int lastCorrectDev0, lastCorrectDev1, lastCorrectBuzzer;
     private String listPath;
     private String detailsPath;
     private String zonePath;
@@ -49,14 +50,9 @@ public class PowDevNode {
         sim1 = arrayBytes[5];
     }
     protected void initNodeInFirebase(){
-            // enable powdev when system start.
-        this.isEnable = true;
-            // alreadyImplement to specify that the node'has already implemented
-        this.isAlreadyImplemented = false;
             //  NOTE: Must update isEnable and alreadyImplement by save in sqlite
         mData.child(detailsPath).child("MACAddress").setValue(MACAddr);
         mData.child(detailsPath).child("zone").setValue(zone);
-        mData.child(detailsPath).child("isEnable").setValue(isEnable);
         mData.child(detailsPath).child("strengthWifi").setValue(strengthWifi);
         mData.child(detailsPath).child("dev0").setValue(dev0);
         mData.child(detailsPath).child("dev1").setValue(dev1);
@@ -87,8 +83,10 @@ public class PowDevNode {
                     }
                         // Disable implement when user choose isEnable = false
                     if (isEnable == false) {
-                        implementTask(1);
+                        autoImplementTask(1);
                     }
+                        // When status of node change, isAlreadyImplement change its status into false.
+                    setAlreadyImplemented(false);
                 }
             }
 
@@ -117,15 +115,17 @@ public class PowDevNode {
         mData.child(detailsPath).child("timeOperation").setValue(TimeAndDate.currentTime);
     }
 
-    protected void implementTask(int isRun){
-        this.dev0 = isRun;
-        this.dev1 = isRun;
-        this.buzzer = isRun;
-        Log.d(TAG,"Start implementTask");
+    protected void autoImplementTask(int task){
+        this.dev0 = task;
+        this.dev1 = task;
+        this.buzzer = task;
+            // When status of node change, isAlreadyImplement change its status into false.
+        this.setAlreadyImplemented(false);
+        Log.d(TAG,"Start Auto ImplementTask");
         mData.child(detailsPath).child("dev0").setValue(dev0);
         mData.child(detailsPath).child("dev1").setValue(dev1);
         mData.child(detailsPath).child("buzzer").setValue(buzzer);
-        Log.d(TAG,"Finish implementTask");
+        Log.d(TAG,"Finish Auto ImplementTask");
     }
 
     public String getMACAddr() {
@@ -202,6 +202,30 @@ public class PowDevNode {
         mData.child(detailsPath).child("sim1").setValue(sim1);
     }
 
+    public int getLastCorrectDev0() {
+        return lastCorrectDev0;
+    }
+
+    public void setLastCorrectDev0(int lastCorrectDev0) {
+        this.lastCorrectDev0 = lastCorrectDev0;
+    }
+
+    public int getLastCorrectDev1() {
+        return lastCorrectDev1;
+    }
+
+    public void setLastCorrectDev1(int lastCorrectDev1) {
+        this.lastCorrectDev1 = lastCorrectDev1;
+    }
+
+    public int getLastCorrectBuzzer() {
+        return lastCorrectBuzzer;
+    }
+
+    public void setLastCorrectBuzzer(int lastCorrectBuzzer) {
+        this.lastCorrectBuzzer = lastCorrectBuzzer;
+    }
+
     public int getZone() {
         return zone;
     }
@@ -210,13 +234,6 @@ public class PowDevNode {
         this.zone = zone;
     }
 
-        public boolean isAlreadyImplemented() {
-        return isAlreadyImplemented;
-    }
-
-    public void setAlreadyImplement(boolean isAlreadyImplemented) {
-        this.isAlreadyImplemented = isAlreadyImplemented;
-    }
 
     public boolean isEnable() {
         return isEnable;
@@ -224,5 +241,25 @@ public class PowDevNode {
 
     public void setEnable(boolean enable) {
         isEnable = enable;
+    }
+
+    public boolean isAlreadyImplemented() {
+        return isAlreadyImplemented;
+    }
+
+    public void setAlreadyImplemented(boolean alreadyImplemented) {
+        isAlreadyImplemented = alreadyImplemented;
+        if (alreadyImplemented == true) {
+            this.lastCorrectDev0 = this.dev0;
+            this.lastCorrectDev1 = this.dev1;
+            this.lastCorrectBuzzer = this.buzzer;
+            Log.d(TAG,"Start Auto ImplementTask");
+            mData.child(detailsPath).child("lastCorrectDev0").setValue(lastCorrectDev0);
+            mData.child(detailsPath).child("lastCorrectDev1").setValue(lastCorrectDev1);
+            mData.child(detailsPath).child("lastCorrectBuzzer").setValue(lastCorrectBuzzer);
+            Log.d(TAG,"Finish Auto ImplementTask");
+        } else {
+            Log.d(TAG,"Set alreadyImplemented is false");
+        }
     }
 }

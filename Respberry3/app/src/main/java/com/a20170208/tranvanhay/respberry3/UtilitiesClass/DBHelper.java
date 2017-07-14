@@ -93,4 +93,9 @@ public class DBHelper {
             Log.d(TAG,"Insert successfully!");
         }
     }
+    public void deleteAllEmployee(){
+        db = context.openOrCreateDatabase(DATABASE_NAME,context.MODE_PRIVATE,null);
+        db.delete("Relatives",null,null);
+        db.close();
+    }
 }

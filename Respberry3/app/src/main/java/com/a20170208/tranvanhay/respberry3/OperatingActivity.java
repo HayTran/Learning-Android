@@ -72,9 +72,9 @@ public class OperatingActivity extends Activity {
         triggerFCM();
         socketServerThread = new SocketServerThread(serverSocket);
         socketServerThread.start();
-        dbHelper = new DBHelper(OperatingActivity.this);
-        dbHelper.insertEmployee();
-        dbHelper.getAllEmployee();
+//        dbHelper = new DBHelper(OperatingActivity.this);
+//        dbHelper.insertEmployee();
+//        dbHelper.getAllEmployee();
     }
 
     private void mapping() {

@@ -18,6 +18,32 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:textSize="16sp"
+            android:textColor="#000"
+            android:gravity="center"
+            android:text="Thời gian Server hoạt động gần nhất:" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="16sp"
+            android:textColor="#000"
+            android:gravity="center"
+            android:id="@+id/textViewTimeServerOperation"/>
+
+        </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="16sp"
+            android:textColor="#000"
             android:gravity="center"
             android:text="Hệ thống hoạt động tự động" />
 
@@ -44,6 +70,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:textSize="16sp"
+            android:textColor="#000"
             android:gravity="center"
             android:text="Kiểu thông báo cảnh báo:  " />
         <LinearLayout
@@ -56,6 +83,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:textSize="16sp"
+                android:textColor="#000"
                 android:text="Nhắn tin FCM"
                 android:id="@+id/chkMessageFCM"/>
             <CheckBox
@@ -63,6 +91,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:textSize="16sp"
+                android:textColor="#000"
                 android:text="Nhắn tin GSM"
                 android:id="@+id/chkMessageGSM"/>
             <CheckBox
@@ -70,6 +99,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:textSize="16sp"
+                android:textColor="#000"
                 android:text="Gọi điện"
                 android:id="@+id/chkCall"/>
         </LinearLayout>
@@ -86,8 +116,9 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:textSize="16sp"
+            android:textColor="#000"
             android:gravity="center"
-            android:text="Thời gian lưu cơ sở dữ liệu" />
+            android:text="Thời gian lưu dữ liệu:" />
 
         <EditText
             android:layout_width="0dp"
@@ -95,42 +126,74 @@
             android:layout_weight="1"
             android:layout_gravity="center"
             android:textSize="16sp"
+            android:textColor="#000"
             android:hint="Đơn vị giây"
             android:id="@+id/editTextTimeSaveInDatabase"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.3"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:textColor="#000"
+            android:text="giây"/>
 
     </LinearLayout>
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_gravity="center"
         android:layout_weight="0.7"
+        android:background="#4d59e4"
+        android:textColor="#fff"
         android:id="@+id/btnDeleteValueDatabase"
         android:text="Xóa dữ liệu cảm biến"/>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="0.7"
         android:orientation="horizontal">
         <Button
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:textColor="#fff"
+            android:background="#176e15"
             android:id="@+id/btnSave"
-            android:layout_margin="20dp"
             android:text="Lưu"/>
-
+        <Space
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.5"/>
         <Button
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_margin="20dp"
             android:id="@+id/btnCancel"
+            android:background="#7d0e83"
+            android:textColor="#fff"
             android:text="Hủy"/>
     </LinearLayout>
-
 <Space
     android:layout_width="match_parent"
     android:layout_height="0dp"
     android:layout_weight="0.5"/>
+<Button
+    android:layout_width="wrap_content"
+    android:layout_height="0dp"
+    android:layout_weight="0.7"
+    android:background="#d64431"
+    android:textColor="#fff"
+    android:layout_gravity="center|end"
+    android:id="@+id/btnSignOut"
+    android:text="Đăng xuất"/>
 
 </LinearLayout>

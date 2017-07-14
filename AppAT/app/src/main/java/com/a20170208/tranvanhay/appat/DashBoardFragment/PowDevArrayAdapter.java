@@ -12,6 +12,7 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.a20170208.tranvanhay.appat.R;
 import com.a20170208.tranvanhay.appat.UtilitiesClass.FirebasePath;
@@ -54,7 +55,13 @@ public class PowDevArrayAdapter extends ArrayAdapter {
         final Switch swBuzzer = (Switch)view.findViewById(R.id.swBuzzer);
         TextView textViewZone = (TextView)view.findViewById(R.id.textViewZone);
         TextView textViewTimeOperation = (TextView)view.findViewById(R.id.textViewTimeOperation);
-
+        TextView textViewTaskDone = (TextView)view.findViewById(R.id.textViewTaskDone);
+        textViewTaskDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context, "OK Task Done", Toast.LENGTH_SHORT).show();
+            }
+        });
             // Check Show when Layout row re-create
         checkShow(powDevNodeArrayList.get(position).getID(),linearLayoutContent);
         textViewID.setText(powDevNodeArrayList.get(position).getID());

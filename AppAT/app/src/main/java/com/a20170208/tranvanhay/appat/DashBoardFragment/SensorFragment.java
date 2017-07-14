@@ -58,7 +58,6 @@ public class SensorFragment extends Fragment {
             // Delete event listener when fragment stop
 //        mData.child(FirebasePath.SENSOR_CURRENT_VALUE_PATH).removeEventListener(detailsSensorNodeListener);
 //        mData.child(FirebasePath.SENSOR_VALUE_CONFIG_PATH).removeEventListener(configSensorNodeListener);
-
     }
 
     private void addControl(View view ) {

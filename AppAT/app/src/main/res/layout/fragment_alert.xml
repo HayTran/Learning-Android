@@ -14,12 +14,16 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
+            android:textSize="16sp"
+            android:textColor="#000"
             android:text="Thời gian"/>
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="3"
             android:gravity="center"
+            android:textSize="16sp"
+            android:textColor="#000"
             android:text="Nội dung"/>
     </LinearLayout>
     <LinearLayout
@@ -42,13 +46,6 @@
             android:id="@+id/btnDeleteAlertDatabase"
             android:text="Xóa tin nhắn cảnh báo"/>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_gravity="center"
-            android:id="@+id/btnDeleteValueDatabase"
-            android:text="Delete Value Database"/>
     </LinearLayout>
 
 </LinearLayout>

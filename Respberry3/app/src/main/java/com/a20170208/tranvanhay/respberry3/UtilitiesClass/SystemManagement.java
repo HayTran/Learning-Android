@@ -145,19 +145,18 @@ public class SystemManagement {
         int zone = sensorNode.getZone();
         if (isActive) {
             for (PowDevNode powDevNode : powDevNodeHashMap.values()) {
-                if (powDevNode.getZone() == zone && powDevNode.isEnable()) {
-                    powDevNode.implementTask(0);
-                    powDevNode.setAlreadyImplement(true);
+                if (powDevNode.getZone() == zone && powDevNode.isEnable() == true && autoOperation == true) {
+                    powDevNode.autoImplementTask(0);
                 }
             }
         } else {
             for (PowDevNode powDevNode : powDevNodeHashMap.values()) {
-                if (powDevNode.getZone() == zone && powDevNode.isAlreadyImplemented() && powDevNode.isEnable()) {
-                    powDevNode.implementTask(1);
-                    powDevNode.setAlreadyImplement(false);
+                if (powDevNode.getZone() == zone && powDevNode.isEnable() == true && autoOperation == true) {
+                    powDevNode.autoImplementTask(1);
                 }
             }
         }
+
 //        Log.d(TAG,"Control PowDev is actived?: " + isActive +", at sensor node: " + sensorNode.getID());
     }
         // Alert when sensor node exceed configured value with ways below

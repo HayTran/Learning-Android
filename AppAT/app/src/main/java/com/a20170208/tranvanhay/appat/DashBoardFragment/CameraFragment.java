@@ -75,7 +75,7 @@ public class CameraFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 textViewStatus.setText(dataSnapshot.getValue().toString());
-                Log.d(TAG,"TimeCapture change");
+                Log.d(TAG,"Status change");
             }
 
             @Override

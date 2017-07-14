@@ -22,6 +22,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
+            android:textSize="16sp"
+            android:textColor="#000"
             android:id="@+id/textViewID"
             android:text="Not yet get"
             android:gravity="center"/>
@@ -36,6 +38,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:textSize="16sp"
+            android:textColor="#000"
             android:id="@+id/textViewZone"
             android:text="Not yet get"
             android:gravity="center"/>
@@ -45,6 +49,7 @@
             android:layout_weight="1"
             android:id="@+id/textViewOption"
             android:text="Option"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="#32328c"
             android:gravity="center"/>
@@ -74,6 +79,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
+                android:textSize="16sp"
+                android:textColor="#000"
                 android:id="@+id/textViewStrengthWifi"
                 android:text="Not yet get"
                 android:gravity="center"/>
@@ -96,6 +103,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
+                android:textSize="16sp"
+                android:textColor="#000"
                 android:id="@+id/textViewTemperature"
                 android:text="Not yet get"
                 android:gravity="center"/>
@@ -104,6 +113,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
+                android:textSize="16sp"
+                android:textColor="#000"
                 android:id="@+id/textViewConfigTemperature"
                 android:text="Not yet get"
                 android:gravity="center"/>
@@ -125,6 +136,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
+                android:textSize="16sp"
+                android:textColor="#000"
                 android:id="@+id/textViewHumidity"
                 android:text="Not yet get"
                 android:gravity="center"/>
@@ -133,10 +146,13 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
+                android:textSize="16sp"
+                android:textColor="#000"
                 android:id="@+id/textViewConfigHumidity"
                 android:text="Not yet get"
                 android:gravity="center"/>
         </LinearLayout>
+
         <!-- This is Flame0 section-->
         <LinearLayout
             android:layout_width="match_parent"
@@ -153,6 +169,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
+                android:textSize="16sp"
+                android:textColor="#000"
                 android:id="@+id/textViewMeanFlameValue"
                 android:text="Not yet get"
                 android:gravity="center"/>
@@ -161,6 +179,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
+                android:textSize="16sp"
+                android:textColor="#000"
                 android:id="@+id/textViewConfigMeanFlameValue"
                 android:text="Not yet get"
                 android:gravity="center"/>
@@ -183,6 +203,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
+                android:textSize="16sp"
+                android:textColor="#000"
                 android:id="@+id/textViewMQ2"
                 android:text="Not yet get"
                 android:gravity="center"/>
@@ -191,6 +213,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
+                android:textSize="16sp"
+                android:textColor="#000"
                 android:id="@+id/textViewConfigMQ2"
                 android:text="Not yet get"
                 android:gravity="center"/>
@@ -212,6 +236,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
+                android:textSize="16sp"
+                android:textColor="#000"
                 android:id="@+id/textViewMQ7"
                 android:text="Not yet get"
                 android:gravity="center"/>
@@ -220,6 +246,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
+                android:textSize="16sp"
+                android:textColor="#000"
                 android:id="@+id/textViewConfigMQ7"
                 android:text="Not yet get"
                 android:gravity="center"/>
@@ -241,6 +269,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
+                android:textSize="16sp"
+                android:textColor="#000"
                 android:id="@+id/textViewLightIntensity"
                 android:text="Not yet get"
                 android:gravity="center"/>
@@ -249,6 +279,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
+                android:textSize="16sp"
+                android:textColor="#000"
                 android:id="@+id/textViewConfigLightIntensity"
                 android:text="Not yet get"
                 android:gravity="center"/>
@@ -269,6 +301,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
+                android:textSize="16sp"
+                android:textColor="#000"
                 android:id="@+id/textViewTimeSend"
                 android:text="Not yet get"
                 android:gravity="center"/>

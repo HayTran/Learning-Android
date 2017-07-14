@@ -106,10 +106,6 @@ public class PowDevFragment extends Fragment {
                                 powDevNode.setDev1(stringToBoolean(dataSnapshot2.getValue().toString()));
                             }   else if (dataSnapshot2.getKey().equals("buzzer")) {
                                 powDevNode.setBuzzer(stringToBoolean(dataSnapshot2.getValue().toString()));
-                            }   else if (dataSnapshot2.getKey().equals("sim0")) {
-                                powDevNode.setSim0(stringToBoolean(dataSnapshot2.getValue().toString()));
-                            }   else if (dataSnapshot2.getKey().equals("sim1")) {
-                                powDevNode.setSim1(stringToBoolean(dataSnapshot2.getValue().toString()));
                             }   else if (dataSnapshot2.getKey().equals("timeOperation")) {
                                 powDevNode.setTimeOperation(dataSnapshot2.getValue().toString());
                             }   else if (dataSnapshot2.getKey().equals("isEnable")) {

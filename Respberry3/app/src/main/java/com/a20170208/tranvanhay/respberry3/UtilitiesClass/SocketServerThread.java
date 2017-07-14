@@ -228,6 +228,8 @@ public class SocketServerThread extends Thread {
                                 dOut.writeByte(END_CONFIRM_SESSION_FLAG);
                                 dOut.writeByte(SUCCESS_SESSION_FLAG);
                                 powdevNodeHashMap.get(MACAddr).notifyLastestTimeOperation();
+                                    // Confirm that powdev node implemented
+                                powdevNodeHashMap.get(MACAddr).setAlreadyImplemented(true);
                             } else {
                                 dOut.writeByte(END_CONFIRM_SESSION_FLAG);
                                 dOut.writeByte(FAILED_SESSION_FLAG);

@@ -34,7 +34,12 @@ public class SensorValueDatabaseActivity extends AppCompatActivity {
         addCotrols();
         init();
         addEvents();
+    }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        finish();
     }
 
     private void addEvents() {
