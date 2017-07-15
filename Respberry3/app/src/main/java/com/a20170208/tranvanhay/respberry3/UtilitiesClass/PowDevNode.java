@@ -26,6 +26,7 @@ public class PowDevNode {
     private String listPath;
     private String detailsPath;
     private String zonePath;
+    private long timeOperation;
 
     public PowDevNode() {
     }
@@ -110,9 +111,10 @@ public class PowDevNode {
     }
 
     public void notifyLastestTimeOperation(){
-        mData.child(listPath).setValue(TimeAndDate.currentTime);
+        this.setTimeOperation(System.currentTimeMillis());
+        mData.child(listPath).setValue(this.timeOperation);
         mData.child(detailsPath).child("zone").setValue(zone);
-        mData.child(detailsPath).child("timeOperation").setValue(TimeAndDate.currentTime);
+        mData.child(detailsPath).child("timeOperation").setValue(this.timeOperation);
     }
 
     protected void autoImplementTask(int task){
@@ -261,5 +263,13 @@ public class PowDevNode {
         } else {
             Log.d(TAG,"Set alreadyImplemented is false");
         }
+    }
+
+    public long getTimeOperation() {
+        return timeOperation;
+    }
+
+    public void setTimeOperation(long timeOperation) {
+        this.timeOperation = timeOperation;
     }
 }

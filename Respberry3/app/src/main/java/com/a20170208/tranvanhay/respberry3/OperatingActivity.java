@@ -16,6 +16,7 @@ import com.a20170208.tranvanhay.respberry3.UtilitiesClass.CameraRaspi;
 import com.a20170208.tranvanhay.respberry3.UtilitiesClass.DBHelper;
 import com.a20170208.tranvanhay.respberry3.UtilitiesClass.FCMServerThread;
 import com.a20170208.tranvanhay.respberry3.UtilitiesClass.FirebasePath;
+import com.a20170208.tranvanhay.respberry3.UtilitiesClass.NodeOperation;
 import com.a20170208.tranvanhay.respberry3.UtilitiesClass.SocketServerThread;
 import com.a20170208.tranvanhay.respberry3.UtilitiesClass.TimeAndDate;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -75,6 +76,8 @@ public class OperatingActivity extends Activity {
 //        dbHelper = new DBHelper(OperatingActivity.this);
 //        dbHelper.insertEmployee();
 //        dbHelper.getAllEmployee();
+        NodeOperation nodeOperation = new NodeOperation();
+        nodeOperation.execute();
     }
 
     private void mapping() {

@@ -31,8 +31,8 @@ public class SocketServerThread extends Thread {
     int count = 0;
     private boolean isGottenConfig0 = false, isGottenConfig1 = false;
     HashMap <String,String> MACAddrAndIDHashMap = new HashMap<>();  // help server recognize || help user recognize
-    HashMap <String,SensorNode> sensorNodeHashMap = new HashMap<>();
-    HashMap <String,PowDevNode> powdevNodeHashMap = new HashMap<>();
+    static HashMap <String,SensorNode> sensorNodeHashMap = new HashMap<>();
+    static HashMap <String,PowDevNode> powdevNodeHashMap = new HashMap<>();
     ServerSocket serverSocket;
     SystemManagement systemManagement = new SystemManagement();
     public SocketServerThread (ServerSocket serverSocket){
