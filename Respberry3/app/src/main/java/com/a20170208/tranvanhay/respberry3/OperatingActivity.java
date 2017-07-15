@@ -76,8 +76,7 @@ public class OperatingActivity extends Activity {
 //        dbHelper = new DBHelper(OperatingActivity.this);
 //        dbHelper.insertEmployee();
 //        dbHelper.getAllEmployee();
-        NodeOperation nodeOperation = new NodeOperation();
-        nodeOperation.execute();
+        new NodeOperation().execute();
     }
 
     private void mapping() {

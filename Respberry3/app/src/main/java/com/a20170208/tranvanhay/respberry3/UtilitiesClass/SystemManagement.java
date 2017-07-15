@@ -167,7 +167,7 @@ public class SystemManagement {
                     + sensorNode.getID()+", tại khu vực: " + sensorNode.getZone()
                     + "\nChi tiết: " + messageContent;
             new FCMServerThread("Sensor Node",body_message).start();
-            mData.child(FirebasePath.ALERT_DATABASE_PATH).child(TimeAndDate.currentTimeMillis+"").setValue(body_message);
+            mData.child(FirebasePath.ALERT_DATABASE_PATH).child(System.currentTimeMillis()+"").setValue(body_message);
             Log.d(TAG,"Sent message to FCM");
         }
             // Access PowDev Node has GSM Module

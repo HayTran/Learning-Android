@@ -191,14 +191,14 @@ public class SocketServerThread extends Thread {
                             if (resultCode == SUCCESS_SESSION_FLAG) {
                                 String MACAddr = ARPNetwork.findMAC(hostThreadSocket.getInetAddress().getHostAddress());
                                     // Send current value to database
-                                sensorNodeHashMap.get(MACAddr).setTimeSend(TimeAndDate.currentTimeMillis);
+                                sensorNodeHashMap.get(MACAddr).setTimeSend(System.currentTimeMillis());
                                 sensorNodeHashMap.get(MACAddr).sendToFirebase();
 
                                     // Check whether or not save in firebase database
                                 if (sensorNodeHashMap.get(MACAddr).getTimeSaveInDatabase() + timeSaveInDatabase <=
-                                        TimeAndDate.currentTimeMillis) {
+                                        System.currentTimeMillis()) {
                                     sensorNodeHashMap.get(MACAddr).saveInDatabaseInFirebase();
-                                    sensorNodeHashMap.get(MACAddr).setTimeSaveInDatabase(TimeAndDate.currentTimeMillis);
+                                    sensorNodeHashMap.get(MACAddr).setTimeSaveInDatabase(System.currentTimeMillis());
                                 }
                                     // Call SystemManagement
                                 systemManagement.checkSystem(sensorNodeHashMap,powdevNodeHashMap);

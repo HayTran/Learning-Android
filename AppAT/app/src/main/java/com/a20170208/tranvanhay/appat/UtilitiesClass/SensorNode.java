@@ -110,7 +110,8 @@ public class SensorNode implements Serializable{
     }
 
     public void setTimeSend(String timeSend) {
-        this.timeSend = timeSend;
+
+        this.timeSend = TimeAndDate.convertMilisecondToTimeAndDate(timeSend);
     }
 
     public int getZone() {

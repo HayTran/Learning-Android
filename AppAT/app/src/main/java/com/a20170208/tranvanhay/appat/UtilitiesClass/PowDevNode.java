@@ -106,7 +106,7 @@ public class PowDevNode {
     }
 
     public void setTimeOperation(String timeOperation) {
-        this.timeOperation = timeOperation;
+        this.timeOperation = TimeAndDate.convertMilisecondToTimeAndDate(timeOperation);
     }
 
     public int getZone() {

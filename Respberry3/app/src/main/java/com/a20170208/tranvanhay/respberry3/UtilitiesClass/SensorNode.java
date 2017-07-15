@@ -73,7 +73,7 @@ public class SensorNode {
     }
         // Send each node sensor's value to firebase
     public void sendToFirebase(){
-        mData.child(this.listPath).setValue(TimeAndDate.currentTimeMillis);
+        mData.child(this.listPath).setValue(System.currentTimeMillis());
         mData.child(this.currentValuePath).child("MACAddr").setValue(MACAddr);
         mData.child(this.currentValuePath).child("zone").setValue(zone);
         mData.child(this.currentValuePath).child("strengthWifi").setValue(strengthWifi);
@@ -83,7 +83,7 @@ public class SensorNode {
         mData.child(this.currentValuePath).child("lightIntensity").setValue(lightIntensity);
         mData.child(this.currentValuePath).child("MQ2").setValue(MQ2);
         mData.child(this.currentValuePath).child("MQ7").setValue(MQ7);
-        mData.child(this.currentValuePath).child("timeSend").setValue(TimeAndDate.currentTime);
+        mData.child(this.currentValuePath).child("timeSend").setValue(System.currentTimeMillis());
     }
 
     public void saveInDatabaseInFirebase(){
