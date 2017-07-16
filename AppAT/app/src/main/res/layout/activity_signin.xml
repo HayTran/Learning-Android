@@ -54,6 +54,7 @@
             android:layout_weight="1"
             android:layout_gravity="center"
             android:drawablePadding="10dp"
+            android:inputType="textPassword"
             android:drawableStart="@drawable/ic_visibility_black_24dp"
             android:id="@+id/editTextPassword"
             android:hint="Mật khẩu"/>

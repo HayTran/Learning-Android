@@ -107,10 +107,9 @@ public class SocketServerThread extends Thread {
             private static final int FIRST_CONFIRM_SESSION_SENSOR_BYTE = 18;
             private static final int SECOND_CONFRIM_SESSION_SENSOR_BYTE = 1;
                 // Flags for powdev
-            private static final int BEGIN_SESSION_POWDEV_BYTE = 8;             // 1 byte flag and its capacity and 6 byte data
-            private static final int FIRST_CONFIRM_SESSION_POWDEV_BYTE = 6;     // 5 byte data, 1 flag
-            private static final int SECOND_CONFRIM_SESSION_POWDEV_BYTE = 7;    // 5 byte data, 1 flag, 1 its capacity
-            private static final int END_CONFIRM_SESSION_POWDEV_BYTE = 140;
+            private static final int BEGIN_SESSION_POWDEV_BYTE = 9;             // 2 byte flag and its capacity and 7 byte data
+            private static final int FIRST_CONFIRM_SESSION_POWDEV_BYTE = 7;     // 6 byte data, 1 flag
+            private static final int SECOND_CONFRIM_SESSION_POWDEV_BYTE = 8;    // 6 byte data, 1 flag, 1 its capacity
             private Socket hostThreadSocket;  //this object specify whether this socket of which host
             int cnt;
             SocketServerReplyThread(Socket socket, int c) {
@@ -172,6 +171,7 @@ public class SocketServerThread extends Thread {
                                 powdevNodeHashMap.put(MACAddr, powDevNode);
                             } else {
                                 powdevNodeHashMap.get(MACAddr).setStrengthWifi(arrayBytes[0]);
+                                powdevNodeHashMap.get(MACAddr).setAlarm(arrayBytes[6]);
                             }
                                 // Reply to client
                             dOut.writeByte(FIRST_CONFIRM_SESSION_FLAG);
@@ -180,6 +180,7 @@ public class SocketServerThread extends Thread {
                             dOut.writeByte(powdevNodeHashMap.get(MACAddr).getBuzzer());
                             dOut.writeByte(powdevNodeHashMap.get(MACAddr).getSim0());
                             dOut.writeByte(powdevNodeHashMap.get(MACAddr).getSim1());
+                            dOut.writeByte(powdevNodeHashMap.get(MACAddr).getAlarm());
                         }
                     }   // Second confirm session flag
                     else if (firstByteReceive == SECOND_CONFIRM_SESSION_FLAG){
@@ -210,26 +211,31 @@ public class SocketServerThread extends Thread {
                          * if SECOND_SESSION_SENSOR_BYTE corresponding with Node PowDev
                          */
                         else if (secondByteReceive == SECOND_CONFRIM_SESSION_POWDEV_BYTE) {
-                            int client0 = 0, client1 = 0, client2 = 0, client3 = 0, client4 = 0;
-                            int server0 = 0, server1 = 0, server2 = 0, server3 = 0, server4 = 0;
+                            int client0 = 0, client1 = 0, client2 = 0, client3 = 0, client4 = 0, client5 = 0;
+                            int server0 = 0, server1 = 0, server2 = 0, server3 = 0, server4 = 0, server5 = 0;
                             client0 = dIn.readUnsignedByte();
                             client1 = dIn.readUnsignedByte();
                             client2 = dIn.readUnsignedByte();
                             client3 = dIn.readUnsignedByte();
                             client4 = dIn.readUnsignedByte();
+                            client5 = dIn.readUnsignedByte();
                             String MACAddr = ARPNetwork.findMAC(hostThreadSocket.getInetAddress().getHostAddress());
                             server0 = powdevNodeHashMap.get(MACAddr).getDev0();
                             server1 = powdevNodeHashMap.get(MACAddr).getDev1();
                             server2 = powdevNodeHashMap.get(MACAddr).getBuzzer();
                             server3 = powdevNodeHashMap.get(MACAddr).getSim0();
                             server4 = powdevNodeHashMap.get(MACAddr).getSim1();
+                            server5 = powdevNodeHashMap.get(MACAddr).getAlarm();
                                 // Check data's local and data's client, if true, reply success session to client, otherwise reply fail session
-                            if (client0==server0&&client1==server1&&client2==server2&&client3==server3&&client4==server4){
+                            if (client0==server0&&client1==server1&&client2==server2
+                                    &&client3==server3&&client4==server4&&client5==server5){
                                 dOut.writeByte(END_CONFIRM_SESSION_FLAG);
                                 dOut.writeByte(SUCCESS_SESSION_FLAG);
                                 powdevNodeHashMap.get(MACAddr).notifyLastestTimeOperation();
                                     // Confirm that powdev node implemented
                                 powdevNodeHashMap.get(MACAddr).setAlreadyImplemented(true);
+                                    // Call SystemManagement
+                                systemManagement.checkSystem(sensorNodeHashMap,powdevNodeHashMap);
                             } else {
                                 dOut.writeByte(END_CONFIRM_SESSION_FLAG);
                                 dOut.writeByte(FAILED_SESSION_FLAG);

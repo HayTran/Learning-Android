@@ -16,6 +16,7 @@ public class PowDevNode {
     private String ID;      // help user recognize
     private int strengthWifi;
     private boolean dev0, dev1, buzzer, sim0, sim1;
+    private boolean lastCorrectDev0, lastCorrectDev1, lastCorrectBuzzer;
     private String timeOperation;
     private int zone;       // group sensors  and powdev nodes into zones
     private boolean isEnable;
@@ -99,6 +100,30 @@ public class PowDevNode {
 
     public void setSim1(boolean sim1) {
         this.sim1 = sim1;
+    }
+
+    public boolean isLastCorrectDev0() {
+        return lastCorrectDev0;
+    }
+
+    public void setLastCorrectDev0(boolean lastCorrectDev0) {
+        this.lastCorrectDev0 = lastCorrectDev0;
+    }
+
+    public boolean isLastCorrectDev1() {
+        return lastCorrectDev1;
+    }
+
+    public void setLastCorrectDev1(boolean lastCorrectDev1) {
+        this.lastCorrectDev1 = lastCorrectDev1;
+    }
+
+    public boolean isLastCorrectBuzzer() {
+        return lastCorrectBuzzer;
+    }
+
+    public void setLastCorrectBuzzer(boolean lastCorrectBuzzer) {
+        this.lastCorrectBuzzer = lastCorrectBuzzer;
     }
 
     public String getTimeOperation() {

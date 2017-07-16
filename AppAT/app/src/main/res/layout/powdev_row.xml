@@ -178,7 +178,7 @@
                 android:textOff="OFF"
                 android:showText="true" />
         </LinearLayout>
-        <!-- This is Enable switch section-->
+        <!-- This is  implementation correctly section-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -197,7 +197,7 @@
                 android:textColor="#000"
                 android:gravity="center"
                 android:id="@+id/textViewTaskDone"
-                android:text="Thực hiện lệnh hoàn tất"/>
+                android:text="Not yet token"/>
         </LinearLayout>
 
         <!-- This is send time section-->

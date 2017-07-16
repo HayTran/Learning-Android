@@ -27,7 +27,7 @@ public class PowDevNode {
     private String detailsPath;
     private String zonePath;
     private long timeOperation;
-
+    private int alarm;
     public PowDevNode() {
     }
 
@@ -49,6 +49,7 @@ public class PowDevNode {
         buzzer = arrayBytes[3];
         sim0 = arrayBytes[4];
         sim1 = arrayBytes[5];
+        alarm = arrayBytes[6];
     }
     protected void initNodeInFirebase(){
             //  NOTE: Must update isEnable and alreadyImplement by save in sqlite
@@ -60,6 +61,7 @@ public class PowDevNode {
         mData.child(detailsPath).child("buzzer").setValue(buzzer);
         mData.child(detailsPath).child("sim0").setValue(sim0);
         mData.child(detailsPath).child("sim1").setValue(sim1);
+        mData.child(detailsPath).child("alarm").setValue(alarm);
         mData.child(detailsPath).child("timeOperation").setValue(TimeAndDate.currentTime);
         Log.d(TAG,"initNodeInFirebase");
     }
@@ -113,6 +115,8 @@ public class PowDevNode {
     public void notifyLastestTimeOperation(){
         this.setTimeOperation(System.currentTimeMillis());
         mData.child(listPath).setValue(this.timeOperation);
+        mData.child(detailsPath).child("strengthWifi").setValue(strengthWifi);
+        mData.child(detailsPath).child("alarm").setValue(alarm);
         mData.child(detailsPath).child("zone").setValue(zone);
         mData.child(detailsPath).child("timeOperation").setValue(this.timeOperation);
     }
@@ -236,6 +240,13 @@ public class PowDevNode {
         this.zone = zone;
     }
 
+    public int getAlarm() {
+        return alarm;
+    }
+
+    public void setAlarm(int alarm) {
+        this.alarm = alarm;
+    }
 
     public boolean isEnable() {
         return isEnable;

@@ -79,10 +79,13 @@ public class SystemManagement {
             }
         });
     }
-        // Check all sensor node in the system
+        // Check all sensor node and powdev in the system
     private void checkAllSensorNode(){
         for (SensorNode sensorNode : sensorNodeHashMap.values()) {
-                checkEachSensorNode(sensorNode);
+            checkEachSensorNode(sensorNode);
+        }
+        for (PowDevNode powDevNode : powDevNodeHashMap.values()) {
+            checkEachPowDevNode(powDevNode);
         }
     }
         // Check each sensor node in the system corressponding with typeOperation
@@ -140,6 +143,18 @@ public class SystemManagement {
         }
 
     }
+
+    private void checkEachPowDevNode(PowDevNode powDevNode){
+        if (powDevNode.getAlarm() == 1) {
+            String body_message;
+            body_message = "Nút khẩn cấp được kích hoạt: "
+                    + powDevNode.getID()+", tại khu vực: " + powDevNode.getZone();
+            new FCMServerThread("PowDevNode",body_message).start();
+            mData.child(FirebasePath.ALERT_DATABASE_PATH).child(System.currentTimeMillis()+"").setValue(body_message);
+            Log.d(TAG,"Sent message to FCM");
+        }
+    }
+
         // Control PowDev when sensor node exceed configured value
     private void controlPowDev(SensorNode sensorNode, boolean isActive ){
         int zone = sensorNode.getZone();

@@ -56,12 +56,6 @@ public class PowDevArrayAdapter extends ArrayAdapter {
         TextView textViewZone = (TextView)view.findViewById(R.id.textViewZone);
         TextView textViewTimeOperation = (TextView)view.findViewById(R.id.textViewTimeOperation);
         TextView textViewTaskDone = (TextView)view.findViewById(R.id.textViewTaskDone);
-        textViewTaskDone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(context, "OK Task Done", Toast.LENGTH_SHORT).show();
-            }
-        });
             // Check Show when Layout row re-create
         checkShow(powDevNodeArrayList.get(position).getID(),linearLayoutContent);
         textViewID.setText(powDevNodeArrayList.get(position).getID());
@@ -79,6 +73,14 @@ public class PowDevArrayAdapter extends ArrayAdapter {
                 powDevNodeArrayList.get(position).setEnable(isChecked);
             }
         });
+            // Check system or not implemented correctly
+        if (powDevNodeArrayList.get(position).isDev0() == powDevNodeArrayList.get(position).isLastCorrectDev0()
+            && powDevNodeArrayList.get(position).isDev1() == powDevNodeArrayList.get(position).isLastCorrectDev1()
+            && powDevNodeArrayList.get(position).isBuzzer() == powDevNodeArrayList.get(position).isLastCorrectBuzzer()){
+            textViewTaskDone.setText("Thực hiện theo lệnh hoàn tất");
+        }   else {
+            textViewTaskDone.setText("Đang thực hiện theo lệnh");
+        }
         if (swEnable.isChecked()) {
             swDev0.setEnabled(true);
             swDev1.setEnabled(true);
