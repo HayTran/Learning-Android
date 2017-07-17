@@ -117,6 +117,7 @@ public class SystemManagement {
             // Check threshold
         if (count >= 2 && count < 4) {
             sensorNode.setExceedAlertCount(sensorNode.getExceedAlertCount() + 1);
+            sensorNode.setExceedImplementCount(0);
         } else if (count >= 4) {
             sensorNode.setExceedImplementCount(sensorNode.getExceedImplementCount() + 1);
         } else {
@@ -138,6 +139,7 @@ public class SystemManagement {
             //  Implement control
         if (sensorNode.getExceedImplementCount() >= 5) {
             controlPowDev(sensorNode,true);
+            alert(sensorNode,exceedString.toString(),true);
         }   else {
             controlPowDev(sensorNode,false);
         }

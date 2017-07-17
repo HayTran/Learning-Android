@@ -39,6 +39,7 @@ public class GraphAsyncTask extends AsyncTask <Void, Integer, BarGraphSeries<Dat
         rawValueArrayList = new ArrayList<>();
         maxValue = -1;
         minValue = 65536;
+        Log.d(TAG,"ConvertName = " + convertedName);
     }
 
     @Override
@@ -92,11 +93,14 @@ public class GraphAsyncTask extends AsyncTask <Void, Integer, BarGraphSeries<Dat
      * @param addedValue
      */
     public void addValueToRawValueArrayList(Double addedValue){
-        this.rawValueArrayList.add(addedValue);
+            // avoid lightIntensity exceed
+        if (addedValue < 30000) {
+            this.rawValueArrayList.add(addedValue);
+        }
         if (minValue > addedValue) {
             minValue = addedValue;
         }
-        if (maxValue < addedValue){
+        if (maxValue < addedValue && addedValue < 30000){
             maxValue = addedValue;
         }
         Log.d(TAG,"MinValue: "+ minValue + "/ MaxValue: " + maxValue);

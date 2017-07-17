@@ -60,26 +60,13 @@ public class GraphFragment extends Fragment {
     private void init() {
         Query query01 = mData.child(FirebasePath.SENSOR_VALUE_DATABASE_PATH).child("SensorNode0")
                 .orderByChild(this.getConvertName());
-        query01.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d(TAG,"query01");
-                GraphAsyncTask graphAsyncTask = new GraphAsyncTask(graphView, avLoadingIndicatorView,dataSnapshot,getConvertName());
-                graphAsyncTask.execute();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        query01.addListenerForSingleValueEvent(valueEventListener);
     }
 
     private void addControls(View view) {
         graphView = (GraphView)view.findViewById(R.id.graph);
         avLoadingIndicatorView = (AVLoadingIndicatorView)view.findViewById(R.id.avLoadingIndicatorView);
     }
-
 
     public void setName(String name) {
         this.name = name;
@@ -109,6 +96,21 @@ public class GraphFragment extends Fragment {
         }
         return convertedName;
     }
+    private ValueEventListener valueEventListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            Log.d(TAG,"query01");
+            GraphAsyncTask graphAsyncTask = new GraphAsyncTask(graphView, avLoadingIndicatorView,dataSnapshot,getConvertName());
+            graphAsyncTask.execute();
+        }
 
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    };
+    private void loadValueData() {
+
+    }
 
 }

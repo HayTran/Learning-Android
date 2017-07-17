@@ -60,10 +60,10 @@ public class SensorNodeConfigActivity extends AppCompatActivity {
         sensorNode = (SensorNode) intent.getSerializableExtra("SensorNodeObject");
         textViewID.setText(sensorNode.getID());
         textViewZone.setText(sensorNode.getZone()+"");
-        textViewTemperature.setText(sensorNode.getTemperature()+"");
-        textViewHumidity.setText(sensorNode.getHumidity()+"");
-        textViewMeanFlameValue.setText(new DecimalFormat("##.##").format(sensorNode.getMeanFlameValue()));
-        textViewLightIntensity.setText(sensorNode.getLightIntensity()+"");
+        textViewTemperature.setText(sensorNode.getTemperature()+" C");
+        textViewHumidity.setText(sensorNode.getHumidity()+" %");
+        textViewMeanFlameValue.setText(new DecimalFormat("##.##").format(sensorNode.getMeanFlameValue()) + " %");
+        textViewLightIntensity.setText(sensorNode.getLightIntensity()+" lux");
         textViewMQ2.setText(sensorNode.getMQ2()+"");
         textViewMQ7.setText(sensorNode.getMQ7()+"");
         editTextTemperature.setText(sensorNode.getConfigTemperature()+"");

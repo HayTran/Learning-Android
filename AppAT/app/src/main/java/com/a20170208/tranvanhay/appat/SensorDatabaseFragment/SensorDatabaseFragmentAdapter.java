@@ -9,7 +9,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
  */
 
 public class SensorDatabaseFragmentAdapter extends FragmentStatePagerAdapter {
-    String  arrTitle [] = new String[] {"Temperature","Humidity","Flame", "MQ2", "MQ7","Light Intensity"};
+    String  arrTitle [] = new String[] {"Temperature","Humidity","Flame", "MQ2", "MQ7", "Light Intensity"};
 
     public SensorDatabaseFragmentAdapter(FragmentManager fm) {
         super(fm);

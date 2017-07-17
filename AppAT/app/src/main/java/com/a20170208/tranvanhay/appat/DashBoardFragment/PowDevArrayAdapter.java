@@ -77,7 +77,7 @@ public class PowDevArrayAdapter extends ArrayAdapter {
         if (powDevNodeArrayList.get(position).isDev0() == powDevNodeArrayList.get(position).isLastCorrectDev0()
             && powDevNodeArrayList.get(position).isDev1() == powDevNodeArrayList.get(position).isLastCorrectDev1()
             && powDevNodeArrayList.get(position).isBuzzer() == powDevNodeArrayList.get(position).isLastCorrectBuzzer()){
-            textViewTaskDone.setText("Thực hiện theo lệnh hoàn tất");
+            textViewTaskDone.setText("Thực hiện lệnh hoàn tất");
         }   else {
             textViewTaskDone.setText("Đang thực hiện theo lệnh");
         }
