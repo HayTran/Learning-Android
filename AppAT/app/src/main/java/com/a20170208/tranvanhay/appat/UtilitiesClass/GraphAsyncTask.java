@@ -20,7 +20,7 @@ import java.util.ArrayList;
  */
 
 public class GraphAsyncTask extends AsyncTask <Void, Integer, BarGraphSeries<DataPoint>>{
-    public static final int X_RESOLUTION = 40;
+    public static  final int X_RESOLUTION = 40;
     private static final String TAG = GraphAsyncTask.class.getSimpleName();
     private ArrayList <Double> rawValueArrayList;
     private double minValue, maxValue;
@@ -39,7 +39,6 @@ public class GraphAsyncTask extends AsyncTask <Void, Integer, BarGraphSeries<Dat
         rawValueArrayList = new ArrayList<>();
         maxValue = -1;
         minValue = 65536;
-        Log.d(TAG,"ConvertName = " + convertedName);
     }
 
     @Override
@@ -103,7 +102,6 @@ public class GraphAsyncTask extends AsyncTask <Void, Integer, BarGraphSeries<Dat
         if (maxValue < addedValue && addedValue < 30000){
             maxValue = addedValue;
         }
-        Log.d(TAG,"MinValue: "+ minValue + "/ MaxValue: " + maxValue);
     }
 
     /**
@@ -111,10 +109,19 @@ public class GraphAsyncTask extends AsyncTask <Void, Integer, BarGraphSeries<Dat
      * @return
      */
     public ArrayList <DataPoint> seperate(){
+        Log.d(TAG,"#######################################" +convertedName
+                + "\nMinValue: "+ minValue + "/ MaxValue: " + maxValue);
         ArrayList <DataPoint> dataPointList = new ArrayList<>();
         Log.d(TAG,"Size of array list: " + rawValueArrayList.size());
         int counterComparedElement = 0;
+        if (maxValue == minValue) {
+                // virtual border point
+            minValue = 0;
+            maxValue = 100;
+        }
         double space =  (maxValue - minValue) / X_RESOLUTION;
+        Log.d(TAG,"Space = " + space);
+        dataPointList.add(new DataPoint(minValue-0.5,0.0));
         for (int i = 0; i < X_RESOLUTION; i++) {
                 // Min and Max Value which used to compare added value
             double minComparedValue = (minValue + space*i);
@@ -123,13 +130,14 @@ public class GraphAsyncTask extends AsyncTask <Void, Integer, BarGraphSeries<Dat
             double count = 0;
             for (int j = 0; j < rawValueArrayList.size(); j ++) {
                 if (rawValueArrayList.get(j) > minComparedValue
-                        && rawValueArrayList.get(j) < maxComparedValue) {
+                        && rawValueArrayList.get(j) <= maxComparedValue) {
                     count++;
                     counterComparedElement ++;
                 }
             }
-            count = (count / rawValueArrayList.size())*100;
+            count = (count / rawValueArrayList.size())*100.0;
             dataPointList.add(new DataPoint(maxComparedValue,count));
+            Log.d(TAG,convertedName + " %%%% " +  maxComparedValue + " & count= " + count);
         }
         Log.d(TAG,"Size of counterComparedElement: " + counterComparedElement);
         Log.d(TAG,"dataPointArrayList size: " + dataPointList.size());

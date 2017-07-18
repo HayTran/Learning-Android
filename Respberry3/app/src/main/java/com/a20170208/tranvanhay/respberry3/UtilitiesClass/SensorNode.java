@@ -26,7 +26,7 @@ public class SensorNode {
     private long timeSend;
     private long timeSaveInDatabase;
     private int [] arrayBytes;
-    private int exceedAlertCount;
+    private int exceedAlertCount, exceedAlertHumidityCount, exceedAlertMQ2Count;
     private int exceedImplementCount;
 
         // Declare paths variable in Firebase
@@ -341,6 +341,22 @@ public class SensorNode {
 
     public void setExceedImplementCount(int exceedImplementCount) {
         this.exceedImplementCount = exceedImplementCount;
+    }
+
+    public int getExceedAlertHumidityCount() {
+        return exceedAlertHumidityCount;
+    }
+
+    public void setExceedAlertHumidityCount(int exceedAlertHumidityCount) {
+        this.exceedAlertHumidityCount = exceedAlertHumidityCount;
+    }
+
+    public int getExceedAlertMQ2Count() {
+        return exceedAlertMQ2Count;
+    }
+
+    public void setExceedAlertMQ2Count(int exceedAlertMQ2Count) {
+        this.exceedAlertMQ2Count = exceedAlertMQ2Count;
     }
 
     @Override

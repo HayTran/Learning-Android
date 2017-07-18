@@ -6,27 +6,33 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.a20170208.tranvanhay.appat.SensorDatabaseFragment.SensorDatabaseFragmentAdapter;
+import com.a20170208.tranvanhay.appat.UtilitiesClass.FirebasePath;
+import com.a20170208.tranvanhay.appat.UtilitiesClass.GraphAsyncTask;
 import com.a20170208.tranvanhay.appat.UtilitiesClass.SensorNode;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.jjoe64.graphview.GraphView;
+
+import static android.content.ContentValues.TAG;
 
 public class SensorValueDatabaseActivity extends AppCompatActivity {
     private static final String TAG = SensorValueDatabaseActivity.class.getSimpleName();
-    DatabaseReference mData = FirebaseDatabase.getInstance().getReference();
     TextView textViewID, textViewZone;
     SensorNode sensorNode;
-    GraphView graphView;
 
     FragmentManager fm;
     SensorDatabaseFragmentAdapter fa;
     TabLayout tabLayout;
     ViewPager viewPager;
-    double maxTemperature, minTemperature;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,11 +64,12 @@ public class SensorValueDatabaseActivity extends AppCompatActivity {
         textViewZone.setText(sensorNode.getZone()+"");
             // Set up fragment
         fm = getSupportFragmentManager();
-        fa = new SensorDatabaseFragmentAdapter(fm);
+        fa = new SensorDatabaseFragmentAdapter(fm, sensorNode.getID());
         viewPager.setAdapter(fa);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+
     }
 
     private void addCotrols() {
@@ -82,5 +89,4 @@ public class SensorValueDatabaseActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
 }

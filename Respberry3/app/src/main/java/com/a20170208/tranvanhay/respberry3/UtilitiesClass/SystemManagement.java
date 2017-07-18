@@ -109,7 +109,7 @@ public class SystemManagement {
             count++;
             exceedString.append("\nKhí dễ cháy: " + sensorNode.getMQ2());
         }
-        if (sensorNode.getMQ7() >= sensorNode.getConfigMQ7()){
+        if (sensorNode.getMQ7() >= sensorNode.getConfigMQ7()) {
             count++;
             exceedString.append("\nKhí CO: " + sensorNode.getMQ7());
         }
@@ -126,17 +126,42 @@ public class SystemManagement {
             alert(sensorNode,null,false);
             controlPowDev(sensorNode,false);
         }
+            // Check threshold alert
+        if (sensorNode.getMQ2() >= sensorNode.getConfigMQ2()) {
+            sensorNode.setExceedAlertMQ2Count(sensorNode.getExceedAlertMQ2Count() + 1);
+        }   else {
+            sensorNode.setExceedAlertMQ2Count(0);
+        }
+        if (sensorNode.getHumidity() >= sensorNode.getConfigHumidity()) {
+            sensorNode.setExceedAlertHumidityCount(sensorNode.getExceedAlertHumidityCount() + 1);
+        }   else {
+            sensorNode.setExceedAlertHumidityCount(0);
+        }
             // Just debug
         Log.d(TAG,"count = " + count);
         Log.d(TAG,"ExceedAlert: " + sensorNode.getExceedAlertCount());
         Log.d(TAG,"ExceedImplement: " + sensorNode.getExceedImplementCount());
-            //  Implement alert
+        /**
+         * Implement alert
+         */
         if (sensorNode.getExceedAlertCount() >= 5) {
             alert(sensorNode,exceedString.toString(),true);
         }   else {
-            alert(sensorNode,exceedString.toString(),false);
+            alert(sensorNode,null,false);
         }
-            //  Implement control
+        if (sensorNode.getExceedAlertMQ2Count() >=5 ) {
+            alert(sensorNode,"Cảm biến khí gas vượt ngưỡng: " + sensorNode.getMQ2(),true);
+        }   else {
+            alert(sensorNode,null,false);
+        }
+        if (sensorNode.getExceedAlertHumidityCount() >= 5) {
+            alert(sensorNode,"Cảm biến độ ẩm vượt ngưỡng: " + sensorNode.getHumidity(),true);
+        }   else {
+            alert(sensorNode,null,false);
+        }
+        /**
+         * Implement control
+         */
         if (sensorNode.getExceedImplementCount() >= 5) {
             controlPowDev(sensorNode,true);
             alert(sensorNode,exceedString.toString(),true);

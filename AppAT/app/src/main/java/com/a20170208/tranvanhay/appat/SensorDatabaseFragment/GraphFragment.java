@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.a20170208.tranvanhay.appat.R;
 import com.a20170208.tranvanhay.appat.UtilitiesClass.FirebasePath;
@@ -28,14 +29,13 @@ import static android.content.ContentValues.TAG;
  */
 
 public class GraphFragment extends Fragment {
+    private String ID;
     private String name;
-    TextView textView;
     GraphView graphView;
     AVLoadingIndicatorView avLoadingIndicatorView;
     private DatabaseReference mData = FirebaseDatabase.getInstance().getReference();
 
     public GraphFragment() {
-
     }
 
     @Nullable
@@ -50,7 +50,6 @@ public class GraphFragment extends Fragment {
         addControls(view);
         init();
         addEvents();
-
     }
 
     private void addEvents() {
@@ -58,7 +57,7 @@ public class GraphFragment extends Fragment {
     }
 
     private void init() {
-        Query query01 = mData.child(FirebasePath.SENSOR_VALUE_DATABASE_PATH).child("SensorNode0")
+        Query query01 = mData.child(FirebasePath.SENSOR_VALUE_DATABASE_PATH).child(this.ID)
                 .orderByChild(this.getConvertName());
         query01.addListenerForSingleValueEvent(valueEventListener);
     }
@@ -72,6 +71,9 @@ public class GraphFragment extends Fragment {
         this.name = name;
     }
 
+    public void setID(String ID) {
+        this.ID = ID;
+    }
     public String getConvertName(){
         String convertedName = null;
         switch (this.name){
@@ -99,9 +101,12 @@ public class GraphFragment extends Fragment {
     private ValueEventListener valueEventListener = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
-            Log.d(TAG,"query01");
-            GraphAsyncTask graphAsyncTask = new GraphAsyncTask(graphView, avLoadingIndicatorView,dataSnapshot,getConvertName());
-            graphAsyncTask.execute();
+            if (dataSnapshot != null) {
+                GraphAsyncTask graphAsyncTask = new GraphAsyncTask(graphView, avLoadingIndicatorView,dataSnapshot,getConvertName());
+                graphAsyncTask.execute();
+            } else {
+                Toast.makeText(getContext(), "Null", Toast.LENGTH_SHORT).show();
+            }
         }
 
         @Override
@@ -109,8 +114,5 @@ public class GraphFragment extends Fragment {
 
         }
     };
-    private void loadValueData() {
-
-    }
 
 }

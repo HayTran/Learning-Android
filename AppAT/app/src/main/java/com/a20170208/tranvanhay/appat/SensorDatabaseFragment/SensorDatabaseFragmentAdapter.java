@@ -10,14 +10,16 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 public class SensorDatabaseFragmentAdapter extends FragmentStatePagerAdapter {
     String  arrTitle [] = new String[] {"Temperature","Humidity","Flame", "MQ2", "MQ7", "Light Intensity"};
-
-    public SensorDatabaseFragmentAdapter(FragmentManager fm) {
+    private String ID;
+    public SensorDatabaseFragmentAdapter(FragmentManager fm, String ID) {
         super(fm);
+        this.ID = ID;
     }
 
     @Override
     public Fragment getItem(int position) {
         GraphFragment graphFragment = new GraphFragment();
+        graphFragment.setID(this.ID);
         graphFragment.setName(arrTitle[position]);
         return graphFragment;
     }
