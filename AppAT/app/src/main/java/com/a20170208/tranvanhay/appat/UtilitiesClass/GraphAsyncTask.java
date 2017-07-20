@@ -137,7 +137,7 @@ public class GraphAsyncTask extends AsyncTask <Void, Integer, BarGraphSeries<Dat
             }
             count = (count / rawValueArrayList.size())*100.0;
             dataPointList.add(new DataPoint(maxComparedValue,count));
-            Log.d(TAG,convertedName + " %%%% " +  maxComparedValue + " & count= " + count);
+//            Log.d(TAG,convertedName + " %%%% " +  maxComparedValue + " & count= " + count);
         }
         Log.d(TAG,"Size of counterComparedElement: " + counterComparedElement);
         Log.d(TAG,"dataPointArrayList size: " + dataPointList.size());

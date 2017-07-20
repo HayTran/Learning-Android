@@ -1,5 +1,6 @@
 package com.a20170208.tranvanhay.respberry3.UtilitiesClass;
 
+import android.os.Handler;
 import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
@@ -16,14 +17,18 @@ import java.util.HashMap;
 
 public class SystemManagement {
     private static final String TAG = SystemManagement.class.getSimpleName();
+    private static final long SPACE_TIME_ALERT_FCM = 5000;
+    private static final long SPACE_TIME_ALERT_GSM = 5000;
     DatabaseReference mData = FirebaseDatabase.getInstance().getReference();
     HashMap <String,SensorNode> sensorNodeHashMap;
     HashMap <String,PowDevNode> powDevNodeHashMap;
     HashMap <String, Integer > conditionHashMap;
-    private boolean callAlert, SMSAlert, internetAlert, autoOperation;
+    public boolean callAlert, SMSAlert, internetAlert, autoOperation;
+    static boolean isAllAlert, isMQ2Alert, isHumidityAlert, isActive;
         // Flag to separate with user's affect
-    private boolean alreadySim0Alert = false, alreadySim1Alert = false;
-    String MACAddrGSMNode;
+    static String MACAddrGSMNode;
+    private long lastTimeAlertInternet;
+    static long lastTimeSendGSM0, lastTimeSendGSM1 ;
 
     public SystemManagement() {
         this.getControllerConfig();
@@ -123,9 +128,12 @@ public class SystemManagement {
         } else {
             sensorNode.setExceedImplementCount(0);
             sensorNode.setExceedAlertCount(0);
-            alert(sensorNode,null,false);
-            controlPowDev(sensorNode,false);
         }
+            // Just debug
+        Log.d(TAG,"count = " + count);
+        Log.d(TAG,"ExceedAlert: " + sensorNode.getExceedAlertCount());
+        Log.d(TAG,"ExceedImplement: " + sensorNode.getExceedImplementCount());
+
             // Check threshold alert
         if (sensorNode.getMQ2() >= sensorNode.getConfigMQ2()) {
             sensorNode.setExceedAlertMQ2Count(sensorNode.getExceedAlertMQ2Count() + 1);
@@ -137,34 +145,41 @@ public class SystemManagement {
         }   else {
             sensorNode.setExceedAlertHumidityCount(0);
         }
-            // Just debug
-        Log.d(TAG,"count = " + count);
-        Log.d(TAG,"ExceedAlert: " + sensorNode.getExceedAlertCount());
-        Log.d(TAG,"ExceedImplement: " + sensorNode.getExceedImplementCount());
+
         /**
          * Implement alert
          */
+            // Check all events
         if (sensorNode.getExceedAlertCount() >= 5) {
-            alert(sensorNode,exceedString.toString(),true);
+            isAllAlert = true;
         }   else {
-            alert(sensorNode,null,false);
+            isAllAlert = false;
         }
-        if (sensorNode.getExceedAlertMQ2Count() >=5 ) {
-            alert(sensorNode,"Cảm biến khí gas vượt ngưỡng: " + sensorNode.getMQ2(),true);
+        if (sensorNode.getExceedAlertMQ2Count() >= 5 ) {
+            exceedString.append("\nKhí gas: " + sensorNode.getMQ2());
+            isMQ2Alert = true;
         }   else {
-            alert(sensorNode,null,false);
+            isMQ2Alert = false;
         }
         if (sensorNode.getExceedAlertHumidityCount() >= 5) {
-            alert(sensorNode,"Cảm biến độ ẩm vượt ngưỡng: " + sensorNode.getHumidity(),true);
+            exceedString.append("\nĐộ ẩm: " + sensorNode.getHumidity());
+            isHumidityAlert = true;
         }   else {
-            alert(sensorNode,null,false);
+            isHumidityAlert = false;
         }
+            // Implement alert
+        if (isAllAlert || isMQ2Alert || isHumidityAlert){
+            alert(sensorNode,exceedString.toString());
+            isActive = true;
+        } else {
+            isActive = false;
+        }
+
         /**
          * Implement control
          */
         if (sensorNode.getExceedImplementCount() >= 5) {
             controlPowDev(sensorNode,true);
-            alert(sensorNode,exceedString.toString(),true);
         }   else {
             controlPowDev(sensorNode,false);
         }
@@ -198,39 +213,32 @@ public class SystemManagement {
                 }
             }
         }
-
-//        Log.d(TAG,"Control PowDev is actived?: " + isActive +", at sensor node: " + sensorNode.getID());
     }
         // Alert when sensor node exceed configured value with ways below
-    private void alert(SensorNode sensorNode, String messageContent, boolean isActive){
-        if (internetAlert == true && isActive == true) {
-            String body_message;
-            body_message = "Nút cảm biến vượt ngưỡng: "
-                    + sensorNode.getID()+", tại khu vực: " + sensorNode.getZone()
-                    + "\nChi tiết: " + messageContent;
-            new FCMServerThread("Sensor Node",body_message).start();
-            mData.child(FirebasePath.ALERT_DATABASE_PATH).child(System.currentTimeMillis()+"").setValue(body_message);
-            Log.d(TAG,"Sent message to FCM");
+    private void alert(SensorNode sensorNode, String messageContent){
+        if (internetAlert == true) {
+            if (System.currentTimeMillis() > lastTimeAlertInternet + SPACE_TIME_ALERT_FCM) {
+                lastTimeAlertInternet = System.currentTimeMillis();
+                String body_message;
+                body_message = "Nút cảm biến vượt ngưỡng: "
+                        + sensorNode.getID()+", tại khu vực: " + sensorNode.getZone()
+                        + "\nChi tiết: " + messageContent;
+                new FCMServerThread("Sensor Node",body_message).start();
+                mData.child(FirebasePath.ALERT_DATABASE_PATH).child(System.currentTimeMillis()+"").setValue(body_message);
+                Log.d(TAG,"Sent message to FCM");
+            }
         }
             // Access PowDev Node has GSM Module
-        if (SMSAlert == true && isActive == true){
+        if (SMSAlert == true){
             powDevNodeHashMap.get(MACAddrGSMNode).setSim0(1);
-            alreadySim0Alert = true;
-        }   else if (alreadySim0Alert == true) {
-                // Just invert it's state when it's 1
-            powDevNodeHashMap.get(MACAddrGSMNode).setSim0(0);
-            alreadySim0Alert = false;
+            lastTimeSendGSM0 = System.currentTimeMillis();
         }
             // Access PowDev Node has GSM Module
-        if (callAlert == true && isActive == true){
+        if (callAlert == true){
             powDevNodeHashMap.get(MACAddrGSMNode).setSim1(1);
-            alreadySim1Alert = true;
-        }   else if (alreadySim1Alert == true) {
-                // Just invert it's state when it's 1
-            powDevNodeHashMap.get(MACAddrGSMNode).setSim1(0);
-            alreadySim1Alert = false;
+            lastTimeSendGSM1 = System.currentTimeMillis();
         }
-//        Log.d(TAG,"Alert is active?: " +isActive + ", at sensor node: " + sensorNode.getID());
+        Log.d(TAG,"Alert is already implemented");
     }
         // The public method is called in SocketServerThread
     public void checkSystem(HashMap<String, SensorNode> sensorNodeHashMap,
@@ -239,4 +247,5 @@ public class SystemManagement {
         this.powDevNodeHashMap = powDevNodeHashMap;
         this.checkAllSensorNode();
     }
+
 }

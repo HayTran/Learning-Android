@@ -1,5 +1,6 @@
 package com.a20170208.tranvanhay.respberry3.UtilitiesClass;
 
+import android.icu.text.LocaleDisplayNames;
 import android.os.Handler;
 import android.util.Log;
 
@@ -18,6 +19,7 @@ import java.util.TimeZone;
 public class NodeOperation {
     DatabaseReference mData = FirebaseDatabase.getInstance().getReference();
     private static final String TAG = NodeOperation.class.getSimpleName();
+    private static final long SPACE_TIME_ALERT_GSM = 5000;
     public NodeOperation() {
     }
     public void execute(){
@@ -27,10 +29,11 @@ public class NodeOperation {
     private Runnable checkNodes = new Runnable() {
         @Override
         public void run() {
+            /**
+             * Check whether or not node is existing
+             */
             HashMap <String,SensorNode> sensorNodeHashMap = SocketServerThread.sensorNodeHashMap;
             HashMap <String,PowDevNode> powdevNodeHashMap = SocketServerThread.powdevNodeHashMap;
-            Log.d(TAG,"Size sensor node: " + sensorNodeHashMap.size());
-            Log.d(TAG,"Size powdev node: " + powdevNodeHashMap.size());
             for (SensorNode sensorNode : sensorNodeHashMap.values()) {
                 if (sensorNode.getTimeSend()!= 0
                         &&  System.currentTimeMillis() - sensorNode.getTimeSend() > 10000) {
@@ -44,7 +47,25 @@ public class NodeOperation {
                     sendNotificationToFCM(powDevNode.getID());
                 }
             }
-            mHandler.postDelayed(checkNodes,10000);
+
+            /**
+             * Check and adjust GSM in PowDev node
+             */
+            try {
+                if (SystemManagement.isActive == false) {
+                    if (SystemManagement.lastTimeSendGSM0 + SPACE_TIME_ALERT_GSM < System.currentTimeMillis()) {
+                        powdevNodeHashMap.get(SystemManagement.MACAddrGSMNode).setSim0(0);
+                    }
+                    if (SystemManagement.lastTimeSendGSM1 + SPACE_TIME_ALERT_GSM < System.currentTimeMillis()) {
+                        powdevNodeHashMap.get(SystemManagement.MACAddrGSMNode).setSim1(0);
+                    }
+                    Log.d(TAG,"Already turn off GSM");
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            mHandler.postDelayed(checkNodes,5000);
         }
     };
 
