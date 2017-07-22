@@ -125,6 +125,7 @@ public class SystemManagement {
             sensorNode.setExceedImplementCount(0);
         } else if (count >= 4) {
             sensorNode.setExceedImplementCount(sensorNode.getExceedImplementCount() + 1);
+            sensorNode.setExceedAlertCount(sensorNode.getExceedAlertCount() + 1);
         } else {
             sensorNode.setExceedImplementCount(0);
             sensorNode.setExceedAlertCount(0);
@@ -156,7 +157,6 @@ public class SystemManagement {
             isAllAlert = false;
         }
         if (sensorNode.getExceedAlertMQ2Count() >= 5 ) {
-            exceedString.append("\nKhí gas: " + sensorNode.getMQ2());
             isMQ2Alert = true;
         }   else {
             isMQ2Alert = false;
@@ -169,7 +169,10 @@ public class SystemManagement {
         }
             // Implement alert
         if (isAllAlert || isMQ2Alert || isHumidityAlert){
-            alert(sensorNode,exceedString.toString());
+            alert(sensorNode,exceedString.toString(),0);
+            isActive = true;
+        } else if (sensorNode.getExceedImplementCount() >=5){
+            alert(sensorNode,exceedString.toString(),1);
             isActive = true;
         } else {
             isActive = false;
@@ -188,12 +191,15 @@ public class SystemManagement {
 
     private void checkEachPowDevNode(PowDevNode powDevNode){
         if (powDevNode.getAlarm() == 1) {
-            String body_message;
-            body_message = "Nút khẩn cấp được kích hoạt: "
-                    + powDevNode.getID()+", tại khu vực: " + powDevNode.getZone();
-            new FCMServerThread("PowDevNode",body_message).start();
-            mData.child(FirebasePath.ALERT_DATABASE_PATH).child(System.currentTimeMillis()+"").setValue(body_message);
-            Log.d(TAG,"Sent message to FCM");
+            if (System.currentTimeMillis() > lastTimeAlertInternet + SPACE_TIME_ALERT_FCM) {
+                lastTimeAlertInternet = System.currentTimeMillis();
+                String body_message;
+                body_message = "Nút khẩn cấp được kích hoạt: "
+                        + powDevNode.getID() + ", tại khu vực: " + powDevNode.getZone();
+                new FCMServerThread("PowDevNode", body_message).start();
+                mData.child(FirebasePath.ALERT_DATABASE_PATH).child(System.currentTimeMillis() + "").setValue(body_message);
+                Log.d(TAG, "Sent message to FCM");
+            }
         }
     }
 
@@ -215,7 +221,7 @@ public class SystemManagement {
         }
     }
         // Alert when sensor node exceed configured value with ways below
-    private void alert(SensorNode sensorNode, String messageContent){
+    private void alert(SensorNode sensorNode, String messageContent, int type){
         if (internetAlert == true) {
             if (System.currentTimeMillis() > lastTimeAlertInternet + SPACE_TIME_ALERT_FCM) {
                 lastTimeAlertInternet = System.currentTimeMillis();
@@ -229,13 +235,15 @@ public class SystemManagement {
             }
         }
             // Access PowDev Node has GSM Module
-        if (SMSAlert == true){
+        if (SMSAlert == true && type == 0){
             powDevNodeHashMap.get(MACAddrGSMNode).setSim0(1);
+            powDevNodeHashMap.get(MACAddrGSMNode).setSim1(0);
             lastTimeSendGSM0 = System.currentTimeMillis();
         }
             // Access PowDev Node has GSM Module
-        if (callAlert == true){
+        if (callAlert == true && type == 1){
             powDevNodeHashMap.get(MACAddrGSMNode).setSim1(1);
+            powDevNodeHashMap.get(MACAddrGSMNode).setSim0(0);
             lastTimeSendGSM1 = System.currentTimeMillis();
         }
         Log.d(TAG,"Alert is already implemented");

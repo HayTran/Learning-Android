@@ -67,6 +67,7 @@ public class OperatingActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_operating);
         mapping();
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         new TimeAndDate().showCurrentTime();
         displayInMonitor();
         captureImage();
@@ -94,7 +95,7 @@ public class OperatingActivity extends Activity {
             public void onDataChange(final DataSnapshot dataSnapshot) {
                 String triggeredData =  dataSnapshot.getValue().toString();
                 Log.d(TAG,"Triggered realtime database. Ref: Warning: "+ triggeredData);
-                new FCMServerThread("Respberry 3",TimeAndDate.currentTime).start();
+                new FCMServerThread("Respberry 3 start up..",TimeAndDate.currentTime).start();
             }
 
             @Override

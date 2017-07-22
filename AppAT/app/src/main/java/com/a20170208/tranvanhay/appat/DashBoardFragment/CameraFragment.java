@@ -120,6 +120,7 @@ public class CameraFragment extends Fragment {
         }
     };
     private void init() {
+        mData.child(FirebasePath.CAMERA_CONTROL).setValue(System.currentTimeMillis());
     }
 
     private void addControls(View view) {

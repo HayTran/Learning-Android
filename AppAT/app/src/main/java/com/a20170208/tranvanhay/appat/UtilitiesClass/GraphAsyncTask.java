@@ -129,7 +129,7 @@ public class GraphAsyncTask extends AsyncTask <Void, Integer, BarGraphSeries<Dat
                 // Count variable to count number of segment
             double count = 0;
             for (int j = 0; j < rawValueArrayList.size(); j ++) {
-                if (rawValueArrayList.get(j) > minComparedValue
+                if (rawValueArrayList.get(j) >= minComparedValue
                         && rawValueArrayList.get(j) <= maxComparedValue) {
                     count++;
                     counterComparedElement ++;
